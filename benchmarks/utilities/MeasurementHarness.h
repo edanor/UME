@@ -14,6 +14,10 @@
 class Test {
 public:
     TimingStatistics stats;
+    bool validTest;
+
+    Test(bool validTest) : validTest(validTest) {}
+    Test() : validTest(false) {}
 
     // All the member functions are forced to never inline,
     // so that the compiler doesn't make any opportunistic guesses.
@@ -62,8 +66,15 @@ public:
                 test->stats.update(end - start);
             }
 
-            std::cout << test->get_test_identifier()
-                << " Elapsed: " << (unsigned long long) test->stats.getAverage() << "\n";
+            if (test->validTest == true) {
+                std::cout << test->get_test_identifier()
+                    << " Elapsed: " << (unsigned long long) test->stats.getAverage() << "\n";
+            }
+            else {
+                std::cout << test->get_test_identifier()
+                    << " RESULTS UNAVAILABLE\n";
+            }
+
         }
     }
 

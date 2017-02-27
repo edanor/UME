@@ -2,13 +2,7 @@
 
 #include "../utilities/MeasurementHarness.h"
 #include "../utilities/UMERandomValues.h"
-
-template <typename SCALAR_T>
-struct ScalarToString { static std::string value() { return "Undefined"; } };
-
-template<> struct ScalarToString<float> { static std::string value() { return "float"; } };
-template<> struct ScalarToString<double> { static std::string value() { return "double"; } };
-
+#include "../utilities/UMEScalarToString.h"
 
 template<typename SCALAR_T, int PROBLEM_LENGTH, int STEP_COUNT>
 class ScalarTest : public Test {
@@ -46,6 +40,7 @@ private:
     SCALAR_T *y_initial; // Copy of initial values of 'y' for verification
 
 public:
+
     UME_NEVER_INLINE virtual void initialize() {
         // Set initial values
         std::random_device rd;
