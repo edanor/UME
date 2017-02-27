@@ -1,0 +1,6 @@
+[submodule "umesimd"]
+	path = umesimd
+	url = https://github.com/edanor/umesimd
+[submodule "umevector"]
+	path = umevector
+	url = https://github.com/edanor/umevector
