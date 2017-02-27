@@ -320,6 +320,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\polynomial\polynomial.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\polynomial\AVX512Test.h" />
+    <ClInclude Include="..\..\polynomial\AVXTest.h" />
+    <ClInclude Include="..\..\polynomial\ScalarTest.h" />
+    <ClInclude Include="..\..\polynomial\UMESimdTest.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
