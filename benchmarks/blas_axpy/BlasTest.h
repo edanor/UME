@@ -97,7 +97,9 @@ public:
         UME::DynamicMemory::AlignedFree(y);
     }
 
-    UME_NEVER_INLINE virtual void verify() { // TODO}
+    UME_NEVER_INLINE virtual void verify() { 
+        // TODO
+    }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
@@ -193,7 +195,9 @@ public:
 
     }
 
-    UME_NEVER_INLINE virtual void verify() { // TODO }
+    UME_NEVER_INLINE virtual void verify() { 
+        // TODO
+    }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
