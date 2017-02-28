@@ -50,6 +50,7 @@ private:
 
 template<>
 class AXPY_kernel<float> {
+public:
     UME_FORCE_INLINE static void blas_axpy(int N, float a, float *x, float *y) {
         cblas_saxpy(N, a, x, 1, y, 1);
     }
@@ -57,6 +58,7 @@ class AXPY_kernel<float> {
 
 template<>
 class AXPY_kernel<double> {
+public:
     UME_FORCE_INLINE static void blas_axpy(int N, double a, double *x, double *y) {
         cblas_daxpy(N, a, x, 1, y, 1);
     }
@@ -70,15 +72,15 @@ class BlasSingleTest : public Test {
     FLOAT_T alpha;
 
 public:
-    BlasSingleTest(int problem_size) : Test(false), problem_size(problem_size) {}
+    BlasSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
 
     UME_NEVER_INLINE virtual void initialize() {
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
+        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
 
         srand((unsigned int)time(NULL));
         // Initialize arrays with random data
-        for (int i = 0; i < ARRAY_SIZE; i++)
+        for (int i = 0; i < problem_size; i++)
         {
             // Generate random numbers in range (0.0;1.0)
             x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
@@ -89,7 +91,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        AXPY_kernel::blas_axpy(problem_size, alpha, x, y);
+        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha, x, y);
     }
 
     UME_NEVER_INLINE virtual void cleanup() {
@@ -106,6 +108,7 @@ public:
         retval += "BLAS single, " +
             ScalarToString<FLOAT_T>::value() + " " +
             std::to_string(problem_size);
+        return retval;
     }
 };
 
@@ -116,7 +119,7 @@ class BlasChainedTest : public Test {
     FLOAT_T *x0, *x1, *x2, *x3, *x4, *x5, *x6, *x7, *x8, *x9, *y, *alpha;
 
 public:
-    BlasSingleTest(int problem_size) : Test(false), problem_size(problem_size) {}
+    BlasChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
 
     // All the member functions are forced to never inline,
     // so that the compiler doesn't make any opportunistic guesses.
@@ -126,23 +129,23 @@ public:
     // negligible.
     UME_NEVER_INLINE virtual void initialize()
     {
-        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x2 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x3 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x4 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x5 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x6 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x7 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x8 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x9 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(ARRAY_SIZE * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        alpha = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(10 * sizeof(FLOAT_T), sizeof(FLOAT_T));
+        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x2 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x3 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x4 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x5 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x6 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x7 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x8 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        x9 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        alpha = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(10 * sizeof(FLOAT_T), 64);
 
         srand((unsigned int)time(NULL));
 
         // Initialize arrays with random data
-        for (int i = 0; i < ARRAY_SIZE; i++)
+        for (int i = 0; i < problem_size; i++)
         {
             // Generate random numbers in range (0.0;1.0)
             x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
@@ -204,6 +207,7 @@ public:
         retval += "BLAS chained, " +
             ScalarToString<FLOAT_T>::value() + " " +
             std::to_string(problem_size);
+        return retval;
     }
 };
 

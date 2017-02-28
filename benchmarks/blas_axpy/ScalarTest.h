@@ -87,8 +87,8 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
-        retval += "Scalar single, " +
-            ScalarToString<FLOAT_T>::value() + " " +
+        retval += "Scalar single, (" +
+            ScalarToString<FLOAT_T>::value() + ") " +
             std::to_string(problem_size);
         return retval;
     }
@@ -184,8 +184,8 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
-        retval += "Scalar chained, " +
-            ScalarToString<FLOAT_T>::value() + " " +
+        retval += "Scalar chained, (" +
+            ScalarToString<FLOAT_T>::value() + ") " +
             std::to_string(problem_size);
         return retval;
     }
