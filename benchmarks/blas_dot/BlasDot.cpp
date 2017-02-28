@@ -60,10 +60,10 @@ int main()
     std::cout <<
         "[Compile with -DUSE_BLAS to enable blas benchmarks (requires BLAS)]\n"
         "\n"
-        "This benchmark measures execution of Y = a * X + Y (AXPY) kernel.\n"
+        "This benchmark measures execution of a = dot_prod(X, Y) (DOT) kernel.\n"
         "Two modes are being measured:\n"
         " - single kernel execution (as defined by BLAS)\n"
-        " - chained execution, where 10 AXPY kernels are used in a daisy-chain\n\n"
+        //" - chained execution, where 10 AXPY kernels are used in a daisy-chain\n\n"
         "Usually BLAS primitives' performance is shown with a single highly tuned\n"
         "implementation in mind. However what is ommited is the ability to exploit\n"
         "data locality in context of more than a single BLAS call.\n"
@@ -95,9 +95,9 @@ int main()
         harness.registerTest(new UMESimdSingleTest<double, 16>(i));
     }
 
-
+    /*
     // Chained execution (single precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= 100) {
         harness.registerTest(new ScalarChainedTest<float>(i));
         harness.registerTest(new BlasChainedTest<float>(i));
         harness.registerTest(new UMEVectorChainedTest<float>(i));
@@ -110,7 +110,7 @@ int main()
     }
 
     // Chained execution (double precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= 100) {
         harness.registerTest(new ScalarChainedTest<double>(i));
         harness.registerTest(new BlasChainedTest<double>(i));
         harness.registerTest(new UMEVectorChainedTest<double>(i));
@@ -119,7 +119,7 @@ int main()
         harness.registerTest(new UMESimdChainedTest<double, 4>(i));
         harness.registerTest(new UMESimdChainedTest<double, 8>(i));
         harness.registerTest(new UMESimdChainedTest<double, 16>(i));
-    }
+    }*/
 
     harness.runAllTests(ITERATIONS);
 }
