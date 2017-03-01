@@ -141,6 +141,8 @@ class BlasChainedTest : public Test {
     FLOAT_T *x0, *x1, *y0, *y1;
     FLOAT_T dot_result;
 
+    FLOAT_T alpha0, alpha1;
+
 public:
     BlasChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
 
@@ -154,15 +156,8 @@ public:
     {
         x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
         x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x2 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x3 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x4 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x5 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x6 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x7 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x8 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x9 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        y0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
+        y1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
 
         srand((unsigned int)time(NULL));
 
@@ -172,52 +167,26 @@ public:
             // Generate random numbers in range (0.0;1.0)
             x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
             x1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x2[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x3[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x4[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x5[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x6[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x7[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x8[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x9[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = 0.0f;
+            y0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+            y1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
         }
 
-        for (int i = 0; i < 10; i++)
-        {
-            alpha[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
+        alpha0 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+        alpha1 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
     }
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[0], x0, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[1], x1, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[2], x2, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[3], x3, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[4], x4, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[5], x5, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[6], x6, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[7], x7, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[8], x8, y);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha[9], x9, y);
+        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha0, x0, y0);
+        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha1, x1, y1);
+        dot_result = DOT_kernel<FLOAT_T>::blas_dot(problem_size, y0, y1);
     }
 
     UME_NEVER_INLINE virtual void cleanup() {
-
         UME::DynamicMemory::AlignedFree(x0);
         UME::DynamicMemory::AlignedFree(x1);
-        UME::DynamicMemory::AlignedFree(x2);
-        UME::DynamicMemory::AlignedFree(x3);
-        UME::DynamicMemory::AlignedFree(x4);
-        UME::DynamicMemory::AlignedFree(x5);
-        UME::DynamicMemory::AlignedFree(x6);
-        UME::DynamicMemory::AlignedFree(x7);
-        UME::DynamicMemory::AlignedFree(x8);
-        UME::DynamicMemory::AlignedFree(x9);
-        UME::DynamicMemory::AlignedFree(y);
-        UME::DynamicMemory::AlignedFree(alpha);
-
+        UME::DynamicMemory::AlignedFree(y0);
+        UME::DynamicMemory::AlignedFree(y1);
     }
 
     UME_NEVER_INLINE virtual void verify() { 
@@ -226,7 +195,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
-        retval += "BLAS chained, " +
+        retval += "BLAS dot(axpy(x0, y0), axpy(x1, y1)), " +
             ScalarToString<FLOAT_T>::value() + " " +
             std::to_string(problem_size);
         return retval;
@@ -263,7 +232,7 @@ public:
         return retval;
     }
 };
-/*
+
 template<typename FLOAT_T>
 class BlasChainedTest : public Test {
 public:
@@ -283,13 +252,13 @@ public:
     UME_NEVER_INLINE virtual void verify() {}
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
-        retval += "BLAS chained, " +
+        retval += "BLAS dot(axpy(x0, y0), axpy(x1, y1)), " +
             ScalarToString<FLOAT_T>::value() + " " +
             std::to_string(problem_size);
         return retval;
     }
 };
-*/
+
 #endif
 
 #endif

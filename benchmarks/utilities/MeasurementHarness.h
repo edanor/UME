@@ -68,7 +68,8 @@ public:
 
             if (test->validTest == true) {
                 std::cout << test->get_test_identifier()
-                    << " Elapsed: " << (unsigned long long) test->stats.getAverage() << "\n";
+                    << " Elapsed: " << (unsigned long long) test->stats.getAverage() 
+                    << " (dev: " << (unsigned long long) test->stats.getStdDev() << ")\n";
             }
             else {
                 std::cout << test->get_test_identifier()
