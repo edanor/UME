@@ -29,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blas_axpy", "blas_axpy\blas
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blas_dot", "blas_dot\blas_dot.vcxproj", "{4A8127F8-FC12-420E-A785-F93905A7515B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blas_rotg", "blas_rotg\blas_rotg.vcxproj", "{513B1EF6-B5B0-4C12-A3E2-F7E669B51BE1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blas_rot", "blas_rot\blas_rot.vcxproj", "{513B1EF6-B5B0-4C12-A3E2-F7E669B51BE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
