@@ -32,52 +32,18 @@
 
 #include <umevector/UMEVector.h>
 #include "../utilities/MeasurementHarness.h"
-#include <umevector/evaluators/TriadicEvaluator.h>
 
 template<typename FLOAT_T>
-class UMEVectorSingleTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x, *y;
-    FLOAT_T dot_result;
-
+class UMEVectorSingleTest : public DotSingleTest<FLOAT_T> {
 public:
-    UMEVectorSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-    }
+    UMEVectorSingleTest(int problem_size) : DotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        UME::VECTOR::Vector<FLOAT_T> x_vec(problem_size, x);
-        UME::VECTOR::Vector<FLOAT_T> y_vec(problem_size, y);
+        UME::VECTOR::Vector<FLOAT_T> x_vec(this->problem_size, this->x);
+        UME::VECTOR::Vector<FLOAT_T> y_vec(this->problem_size, this->y);
 
-        dot_result = (x_vec * y_vec).hadd();
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
+        this->dot_result = (x_vec * y_vec).hadd();
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -85,70 +51,26 @@ public:
         std::string retval = "";
         retval += "UME::VECTOR single, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };
 
 template<typename FLOAT_T>
-class UMEVectorChainedTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x0, *x1, *y0, *y1;
-    FLOAT_T alpha0, alpha1;
-
-    FLOAT_T dot_result;
-
+class UMEVectorChainedTest : public DotChainedTest<FLOAT_T> {
 public:
-    UMEVectorChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        alpha0 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        alpha1 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-    }
+    UMEVectorChainedTest(int problem_size) : DotChainedTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        UME::VECTOR::Vector<FLOAT_T> x0_vec(problem_size, x0);
-        UME::VECTOR::Vector<FLOAT_T> x1_vec(problem_size, x1);
-        UME::VECTOR::Vector<FLOAT_T> y0_vec(problem_size, y0);
-        UME::VECTOR::Vector<FLOAT_T> y1_vec(problem_size, y1);
+        UME::VECTOR::Vector<FLOAT_T> x0_vec(this->problem_size, this->x0);
+        UME::VECTOR::Vector<FLOAT_T> x1_vec(this->problem_size, this->x1);
+        UME::VECTOR::Vector<FLOAT_T> y0_vec(this->problem_size, this->y0);
+        UME::VECTOR::Vector<FLOAT_T> y1_vec(this->problem_size, this->y1);
 
-        auto t0 = y0_vec.adda(alpha0*x0_vec); // equivalent of Y = aX + Y (AXPY)
-        auto t1 = y1_vec.adda(alpha1*x1_vec);
-        dot_result = (t0 * t1).hadd();
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x0);
-        UME::DynamicMemory::AlignedFree(x1);
-        UME::DynamicMemory::AlignedFree(y0);
-        UME::DynamicMemory::AlignedFree(y1);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
+        auto t0 = y0_vec.adda(this->alpha0*x0_vec); // equivalent of Y = aX + Y (AXPY)
+        auto t1 = y1_vec.adda(this->alpha1*x1_vec);
+        this->dot_result = (t0 * t1).hadd();
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -156,7 +78,7 @@ public:
         std::string retval = "";
         retval += "UME::VECTOR dot(axpy(x0, y0), axpy(x1, y1)), (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };

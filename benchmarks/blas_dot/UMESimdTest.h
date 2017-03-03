@@ -31,68 +31,35 @@
 #pragma once
 
 #include <umesimd/UMESimd.h>
-#include "../utilities/MeasurementHarness.h"
 
+#include "DotTest.h"
 
 template<typename FLOAT_T, int STRIDE>
-class UMESimdSingleTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x, *y;
-    FLOAT_T dot_result;
-
+class UMESimdSingleTest : public DotSingleTest<FLOAT_T> {
 public:
-    UMESimdSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        int OPTIMAL_ALIGNMENT = UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::alignment();
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-    }
+    UMESimdSingleTest(int problem_size) : DotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        int LOOP_COUNT = problem_size / STRIDE;
+        int LOOP_COUNT = this->problem_size / STRIDE;
         int LOOP_PEEL_OFFSET = LOOP_COUNT * STRIDE;
 
         UME::SIMD::SIMDVec<FLOAT_T, STRIDE> x_vec, y_vec, dot_vec(FLOAT_T(0));
 
         for (int i = 0; i < LOOP_PEEL_OFFSET; i+= STRIDE)
         {
-            x_vec.loada(&x[i]);
-            y_vec.loada(&y[i]);
+            x_vec.loada(&this->x[i]);
+            y_vec.loada(&this->y[i]);
             dot_vec += x_vec * y_vec;
         }
 
-        dot_result = dot_vec.hadd();
+        this->dot_result = dot_vec.hadd();
 
         // Use scalar code to handle the reminder of elements.
-        for (int i = LOOP_PEEL_OFFSET; i < problem_size; i++)
+        for (int i = LOOP_PEEL_OFFSET; i < this->problem_size; i++)
         {
-            dot_result += x[i]*y[i];
+            this->dot_result += this->x[i]* this->y[i];
         }
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -101,95 +68,51 @@ public:
         retval += "UME::SIMD single, (" +
             ScalarToString<FLOAT_T>::value() + ", " +
             std::to_string(STRIDE) + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };
 
 template<typename FLOAT_T, int STRIDE>
-class UMESimdChainedTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x0, *x1, *y0, *y1;
-    FLOAT_T alpha0, alpha1;
-
-    FLOAT_T dot_result;
+class UMESimdChainedTest : public DotChainedTest<FLOAT_T> {
 public:
-    UMESimdChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        int OPTIMAL_ALIGNMENT = UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::alignment();
-        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        y0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        y1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        alpha0 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        alpha1 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-
-    }
+    UMESimdChainedTest(int problem_size) : DotChainedTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        int LOOP_COUNT = problem_size / STRIDE;
+        int LOOP_COUNT = this->problem_size / STRIDE;
         int LOOP_PEEL_OFFSET = LOOP_COUNT * STRIDE;
 
         UME::SIMD::SIMDVec<FLOAT_T, STRIDE> 
             x0_vec, x1_vec, y0_vec, y1_vec, t0, t1, dot_vec(FLOAT_T(0.0f));
 
-        dot_result = FLOAT_T(0.0f);
+        this->dot_result = FLOAT_T(0.0f);
         for (int i = 0; i < LOOP_PEEL_OFFSET; i+=STRIDE)
         {
-            x0_vec.loada(&x0[i]);
-            x1_vec.loada(&x1[i]);
-            y0_vec.loada(&y0[i]);
-            y1_vec.loada(&y1[i]);
+            x0_vec.loada(&this->x0[i]);
+            x1_vec.loada(&this->x1[i]);
+            y0_vec.loada(&this->y0[i]);
+            y1_vec.loada(&this->y1[i]);
 
-            t0 = alpha0 * x0_vec + y0_vec;
-            t1 = alpha1 * x1_vec + y1_vec;
+            t0 = this->alpha0 * x0_vec + y0_vec;
+            t1 = this->alpha1 * x1_vec + y1_vec;
 
-            t0.storea(&y0[i]);
-            t1.storea(&y1[i]);
+            t0.storea(&this->y0[i]);
+            t1.storea(&this->y1[i]);
 
             dot_vec += t0 * t1;
         }
 
-        dot_result = dot_vec.hadd();
+        this->dot_result = dot_vec.hadd();
 
         // Use scalar code to handle the reminder of elements.
-        for (int i = LOOP_PEEL_OFFSET; i < problem_size; i++)
+        for (int i = LOOP_PEEL_OFFSET; i < this->problem_size; i++)
         {
-            y0[i] = alpha0*x0[i] + y0[i];
-            y1[i] = alpha1*x1[i] + y1[i];
+            this->y0[i] = this->alpha0*this->x0[i] + this->y0[i];
+            this->y1[i] = this->alpha1*this->x1[i] + this->y1[i];
 
-            dot_result += y0[i] * y1[i];
+            this->dot_result += this->y0[i] * this->y1[i];
         }
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x0);
-        UME::DynamicMemory::AlignedFree(x1);
-        UME::DynamicMemory::AlignedFree(y0);
-        UME::DynamicMemory::AlignedFree(y1);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -198,7 +121,7 @@ public:
         retval += "UME::SIMD dot(axpy(x0,y0), axpy(x1, y1)), (" +
             ScalarToString<FLOAT_T>::value() + ", " +
             std::to_string(STRIDE) + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };

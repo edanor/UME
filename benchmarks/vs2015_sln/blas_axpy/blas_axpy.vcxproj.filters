@@ -27,6 +27,9 @@
     <ClInclude Include="..\..\blas_axpy\UMESimdTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\blas_axpy\AxpyTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas_axpy\BlasAxpy.cpp">

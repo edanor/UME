@@ -27,14 +27,14 @@
 //  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
-#ifndef BLAS_BENCH_H_
-#define BLAS_BENCH_H_
+#ifndef BLAS_DOT_BENCH_H_
+#define BLAS_DOT_BENCH_H_
 
 #include <assert.h>
 
 #include <umesimd/UMESimd.h>
 
-#include "../utilities/MeasurementHarness.h"
+#include "DotTest.h"
 #include "../utilities/UMEScalarToString.h"
 
 #ifdef USE_BLAS
@@ -89,115 +89,40 @@ public:
 };
 
 template<typename FLOAT_T>
-class BlasSingleTest : public Test {
-    int problem_size;
-
-    FLOAT_T *x, *y;
-    FLOAT_T dot_result;
-
+class BlasSingleTest : public DotSingleTest<FLOAT_T> {
 public:
-    BlasSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize() {
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-    }
+    BlasSingleTest(int problem_size) : DotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        dot_result = DOT_kernel<FLOAT_T>::blas_dot(problem_size, x, y);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify() { 
-        // TODO
+        this->dot_result = DOT_kernel<FLOAT_T>::blas_dot(this->problem_size, this->x, this->y);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "BLAS single, " +
             ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };
 
 template<typename FLOAT_T>
-class BlasChainedTest : public Test {
-    int problem_size;
-
-    FLOAT_T *x0, *x1, *y0, *y1;
-    FLOAT_T dot_result;
-
-    FLOAT_T alpha0, alpha1;
-
+class BlasChainedTest : public DotChainedTest<FLOAT_T> {
 public:
-    BlasChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    // All the member functions are forced to never inline,
-    // so that the compiler doesn't make any opportunistic guesses.
-    // Since the cost consuming part of the benchmark, contained
-    // in 'benchmarked_code' is measured all at once, the 
-    // measurement offset caused by virtual function call should be
-    // negligible.
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        y0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        y1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-
-        srand((unsigned int)time(NULL));
-
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        alpha0 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        alpha1 = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-    }
+    BlasChainedTest(int problem_size) : DotChainedTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha0, x0, y0);
-        AXPY_kernel<FLOAT_T>::blas_axpy(problem_size, alpha1, x1, y1);
-        dot_result = DOT_kernel<FLOAT_T>::blas_dot(problem_size, y0, y1);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x0);
-        UME::DynamicMemory::AlignedFree(x1);
-        UME::DynamicMemory::AlignedFree(y0);
-        UME::DynamicMemory::AlignedFree(y1);
-    }
-
-    UME_NEVER_INLINE virtual void verify() { 
-        // TODO
+        AXPY_kernel<FLOAT_T>::blas_axpy(this->problem_size, this->alpha0, this->x0, this->y0);
+        AXPY_kernel<FLOAT_T>::blas_axpy(this->problem_size, this->alpha1, this->x1, this->y1);
+        this->dot_result = DOT_kernel<FLOAT_T>::blas_dot(this->problem_size, this->y0, this->y1);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "BLAS dot(axpy(x0, y0), axpy(x1, y1)), " +
             ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };

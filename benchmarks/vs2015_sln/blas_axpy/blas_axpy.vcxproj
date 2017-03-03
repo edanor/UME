@@ -326,6 +326,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\blas_axpy\AxpyTest.h" />
     <ClInclude Include="..\..\blas_axpy\BlasTest.h" />
     <ClInclude Include="..\..\blas_axpy\ScalarTest.h" />
     <ClInclude Include="..\..\blas_axpy\UMESimdTest.h" />

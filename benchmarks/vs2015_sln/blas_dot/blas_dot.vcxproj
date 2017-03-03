@@ -136,6 +136,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -319,6 +320,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\blas_dot\BlasTest.h" />
+    <ClInclude Include="..\..\blas_dot\DotTest.h" />
     <ClInclude Include="..\..\blas_dot\ScalarTest.h" />
     <ClInclude Include="..\..\blas_dot\UMESimdTest.h" />
     <ClInclude Include="..\..\blas_dot\UMEVectorTest.h" />
@@ -326,7 +328,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\blas_dot\BlasDot.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\utilities\ttmath\ttmath\ttmathuint_x86_64_msvc.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
