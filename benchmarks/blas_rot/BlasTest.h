@@ -27,14 +27,15 @@
 //  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
-#ifndef BLAS_BENCH_H_
-#define BLAS_BENCH_H_
+#ifndef BLAS_ROT_BENCH_H_
+#define BLAS_ROT_BENCH_H_
 
 #include <assert.h>
 
 #include <umesimd/UMESimd.h>
 
-#include "../utilities/MeasurementHarness.h"
+#include "RotTest.h"
+
 #include "../utilities/UMEScalarToString.h"
 
 #ifdef USE_BLAS
@@ -113,50 +114,19 @@ public:
 };
 
 template<typename FLOAT_T>
-class BlasSingleTest : public Test {
-    int problem_size;
-
-    FLOAT_T *x, *y, c, s;
-
+class BlasSingleTest : public RotSingleTest<FLOAT_T> {
 public:
-    BlasSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize() {
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), 64);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        FLOAT_T theta = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX) * FLOAT_T(6.28);
-        c = std::cos(theta);
-        s = std::sin(theta);
-    }
+    BlasSingleTest(int problem_size) : RotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        rotg_kernel<FLOAT_T>::blas_rotg(problem_size, x, y, c, s);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify() { 
-        // TODO
+        rotg_kernel<FLOAT_T>::blas_rotg(this->problem_size, this->x, this->y, this->c, this->s);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "BLAS single, " +
             ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };

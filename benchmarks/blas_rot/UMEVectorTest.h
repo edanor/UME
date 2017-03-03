@@ -31,58 +31,25 @@
 #pragma once
 
 #include <umevector/UMEVector.h>
-#include "../utilities/MeasurementHarness.h"
+
+#include "RotTest.h"
+
 #include <umevector/evaluators/DyadicEvaluator.h>
 
 template<typename FLOAT_T>
-class UMEVectorSingleTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x, *y, c, s;
-
+class UMEVectorSingleTest : public RotSingleTest<FLOAT_T> {
 public:
-    UMEVectorSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        FLOAT_T theta = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX) * FLOAT_T(6.28);
-        c = std::cos(theta);
-        s = std::sin(theta);
-    }
+    UMEVectorSingleTest(int problem_size) : RotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        UME::VECTOR::Vector<FLOAT_T> x_vec(problem_size, x);
-        UME::VECTOR::Vector<FLOAT_T> y_vec(problem_size, y);
+        UME::VECTOR::Vector<FLOAT_T> x_vec(this->problem_size, this->x);
+        UME::VECTOR::Vector<FLOAT_T> y_vec(this->problem_size, this->y);
 
-        auto t0 = c * x_vec + s * y_vec;
-        auto t1 = c * y_vec - s * x_vec;
+        auto t0 = this->c * x_vec + this->s * y_vec;
+        auto t1 = this->c * y_vec - this->s * x_vec;
 
         UME::VECTOR::DyadicEvaluator eval(x_vec, t0, y_vec, t1);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -90,7 +57,7 @@ public:
         std::string retval = "";
         retval += "UME::VECTOR single, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };

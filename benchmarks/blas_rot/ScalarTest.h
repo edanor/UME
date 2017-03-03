@@ -33,20 +33,14 @@
 
 #include <umesimd/UMESimd.h>
 
-#include "../utilities/MeasurementHarness.h"
+#include "RotTest.h"
+
 #include "../utilities/UMEScalarToString.h"
 
 // Test single execution of naive AXPY kernel.
 template<typename FLOAT_T>
-class ScalarSingleTest : public Test {
+class ScalarSingleTest : public RotSingleTest<FLOAT_T> {
 private:
-    static const int OPTIMAL_ALIGNMENT = 64;
-
-    FLOAT_T *x, *y, c, s;
-
-    FLOAT_T dot_result;
-    int problem_size;
-
     UME_FORCE_INLINE void scalar_rot(int N, FLOAT_T* X, FLOAT_T* Y, FLOAT_T c, FLOAT_T s) {
         for (int i = 0; i < N; i++) {
             FLOAT_T t0 = c * X[i] + s * Y[i];
@@ -57,47 +51,19 @@ private:
     }
 
 public:
-    ScalarSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize() {
-        x = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
-        y = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        FLOAT_T theta = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX) * FLOAT_T(6.28);
-        c = std::cos(theta);
-        s = std::sin(theta);
-    }
+    ScalarSingleTest(int problem_size) : RotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        scalar_rot(problem_size, x, y, c, s);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify() {
-        // TODO:
+        scalar_rot(this->problem_size, this->x, this->y, this->c, this->s);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "Scalar single, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
-
 };
 /*
 // Test chained execution of naive AXPY kernel.

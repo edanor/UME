@@ -52,7 +52,7 @@
 
 int main()
 {
-    int MAX_SIZE = 100000000;
+    int MAX_SIZE = 10000; // 0000;
     int ITERATIONS = 10;
 
     BenchmarkHarness harness;

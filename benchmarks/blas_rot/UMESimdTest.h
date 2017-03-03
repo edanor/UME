@@ -31,78 +31,42 @@
 #pragma once
 
 #include <umesimd/UMESimd.h>
-#include "../utilities/MeasurementHarness.h"
 
+#include "RotTest.h"
 
 template<typename FLOAT_T, int STRIDE>
-class UMESimdSingleTest : public Test {
-private:
-    int problem_size;
-
-    FLOAT_T *x, *y, c, s;
-
+class UMESimdSingleTest : public RotSingleTest<FLOAT_T> {
 public:
-    UMESimdSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize()
-    {
-        int OPTIMAL_ALIGNMENT = UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::alignment();
-        x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        FLOAT_T theta = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX) * FLOAT_T(6.28);
-        c = std::cos(theta);
-        s = std::sin(theta);
-    }
+    UMESimdSingleTest(int problem_size) : RotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
-        int LOOP_COUNT = problem_size / STRIDE;
+        int LOOP_COUNT = this->problem_size / STRIDE;
         int LOOP_PEEL_OFFSET = LOOP_COUNT * STRIDE;
 
         UME::SIMD::SIMDVec<FLOAT_T, STRIDE> x_vec, y_vec, t0_vec, t1_vec;
 
         for (int i = 0; i < LOOP_PEEL_OFFSET; i+= STRIDE)
         {
-            x_vec.loada(&x[i]);
-            y_vec.loada(&y[i]);
+            x_vec.loada(&this->x[i]);
+            y_vec.loada(&this->y[i]);
 
-            t0_vec = c*x_vec + s*y_vec;
-            t1_vec = c*y_vec - s*x_vec;
+            t0_vec = this->c*x_vec + this->s*y_vec;
+            t1_vec = this->c*y_vec - this->s*x_vec;
 
-            t0_vec.storea(&x[i]);
-            t1_vec.storea(&y[i]);
+            t0_vec.storea(&this->x[i]);
+            t1_vec.storea(&this->y[i]);
         }
 
         // Use scalar code to handle the reminder of elements.
-        for (int i = LOOP_PEEL_OFFSET; i < problem_size; i++)
+        for (int i = LOOP_PEEL_OFFSET; i < this->problem_size; i++)
         {
-            FLOAT_T t0 = c * x[i] + s * y[i];
-            FLOAT_T t1 = c * y[i] - s * x[i];
+            FLOAT_T t0 = this->c * this->x[i] + this->s * this->y[i];
+            FLOAT_T t1 = this->c * this->y[i] - this->s * this->x[i];
 
-            x[i] = t0;
-            y[i] = t1;
+            this->x[i] = t0;
+            this->y[i] = t1;
         }
-    }
-
-    UME_NEVER_INLINE virtual void cleanup()
-    {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify()
-    {
-        // TODO
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -111,7 +75,7 @@ public:
         retval += "UME::SIMD single, (" +
             ScalarToString<FLOAT_T>::value() + ", " +
             std::to_string(STRIDE) + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 };
