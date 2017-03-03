@@ -9,12 +9,14 @@
 
 #include <list>
 
+#include "../utilities/ttmath/ttmath/ttmath.h"
 
 // The test shouldn't allocate large memory buffers before initialize is called.
 class Test {
 public:
     TimingStatistics stats;
     bool validTest;
+    ttmath::Big<8, 8> error_norm_bignum;
 
     Test(bool validTest) : validTest(validTest) {}
     Test() : validTest(false) {}
@@ -61,6 +63,7 @@ public:
                     test->benchmarked_code();
                 end = get_timestamp();
 
+                test->verify();
                 test->cleanup();
 
                 test->stats.update(end - start);
@@ -68,8 +71,9 @@ public:
 
             if (test->validTest == true) {
                 std::cout << test->get_test_identifier()
-                    << " Elapsed: " << (unsigned long long) test->stats.getAverage() 
-                    << " (dev: " << (unsigned long long) test->stats.getStdDev() << ")\n";
+                    << " Elapsed: " << (unsigned long long) test->stats.getAverage()
+                    << " (dev: " << (unsigned long long) test->stats.getStdDev()
+                    << "), error: " << test->error_norm_bignum.ToDouble() << ")\n";
             }
             else {
                 std::cout << test->get_test_identifier()

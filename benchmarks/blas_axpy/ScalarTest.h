@@ -36,17 +36,12 @@
 #include "../utilities/MeasurementHarness.h"
 #include "../utilities/UMEScalarToString.h"
 
+#include "AxpyTest.h"
+
 // Test single execution of naive AXPY kernel.
 template<typename FLOAT_T>
-class ScalarSingleTest : public Test {
+class ScalarSingleTest : public AxpySingleTest<FLOAT_T> {
 private:
-    static const int OPTIMAL_ALIGNMENT = 64;
-
-    FLOAT_T *x, *y;
-
-    FLOAT_T alpha;
-    int problem_size;
-
     UME_FORCE_INLINE void scalar_axpy(int N, FLOAT_T a, FLOAT_T* X, FLOAT_T* Y) {
         for (int i = 0; i < N; i++) {
             Y[i] = a*X[i] + Y[i];
@@ -54,42 +49,17 @@ private:
     }
 
 public:
-    ScalarSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize() {
-        x = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
-        y = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-
-        alpha = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-    }
+    ScalarSingleTest(int problem_size) : AxpySingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        scalar_axpy(problem_size, alpha, x, y);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify() {
-        // TODO:
+        scalar_axpy(this->problem_size, this->alpha, this->x, this->y);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "Scalar single, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 
@@ -97,13 +67,8 @@ public:
 
 // Test chained execution of naive AXPY kernel.
 template<typename FLOAT_T>
-class ScalarChainedTest : public Test {
+class ScalarChainedTest : public AxpyChainedTest<FLOAT_T> {
 private:
-    static const int OPTIMAL_ALIGNMENT = 64;
-
-    FLOAT_T *x0, *x1, *x2, *x3, *x4, *x5, *x6, *x7, *x8, *x9, *y, *alpha;
-
-    int problem_size;
 
     UME_FORCE_INLINE void scalar_axpy(int N, FLOAT_T a, FLOAT_T* X, FLOAT_T* Y) {
         for (int i = 0; i < N; i++) {
@@ -112,81 +77,26 @@ private:
     }
 
 public:
-    ScalarChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
-
-    UME_NEVER_INLINE virtual void initialize() {
-        x0 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x1 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x2 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x3 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x4 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x5 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x6 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x7 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x8 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        x9 = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        y = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-        alpha = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(10 * sizeof(FLOAT_T), OPTIMAL_ALIGNMENT);
-
-        srand((unsigned int)time(NULL));
-        // Initialize arrays with random data
-        for (int i = 0; i < problem_size; i++)
-        {
-            // Generate random numbers in range (0.0;1.0)
-            x0[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x1[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x2[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x3[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x4[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x5[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x6[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x7[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x8[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            x9[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = 0.0f;
-        }
-
-        for (int i = 0; i < 10; i++) {
-            alpha[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-        }
-    }
+    ScalarChainedTest(int problem_size) : AxpyChainedTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        scalar_axpy(problem_size, alpha[0], x0, y);
-        scalar_axpy(problem_size, alpha[1], x1, y);
-        scalar_axpy(problem_size, alpha[2], x2, y);
-        scalar_axpy(problem_size, alpha[3], x3, y);
-        scalar_axpy(problem_size, alpha[4], x4, y);
-        scalar_axpy(problem_size, alpha[5], x5, y);
-        scalar_axpy(problem_size, alpha[6], x6, y);
-        scalar_axpy(problem_size, alpha[7], x7, y);
-        scalar_axpy(problem_size, alpha[8], x8, y);
-        scalar_axpy(problem_size, alpha[9], x9, y);
-    }
-
-    UME_NEVER_INLINE virtual void cleanup() {
-        UME::DynamicMemory::AlignedFree(x0);
-        UME::DynamicMemory::AlignedFree(x1);
-        UME::DynamicMemory::AlignedFree(x2);
-        UME::DynamicMemory::AlignedFree(x3);
-        UME::DynamicMemory::AlignedFree(x4);
-        UME::DynamicMemory::AlignedFree(x5);
-        UME::DynamicMemory::AlignedFree(x6);
-        UME::DynamicMemory::AlignedFree(x7);
-        UME::DynamicMemory::AlignedFree(x8);
-        UME::DynamicMemory::AlignedFree(x9);
-        UME::DynamicMemory::AlignedFree(y);
-    }
-
-    UME_NEVER_INLINE virtual void verify() {
-        // TODO:
+        scalar_axpy(this->problem_size, this->alpha[0], this->x0, this->y);
+        scalar_axpy(this->problem_size, this->alpha[1], this->x1, this->y);
+        scalar_axpy(this->problem_size, this->alpha[2], this->x2, this->y);
+        scalar_axpy(this->problem_size, this->alpha[3], this->x3, this->y);
+        scalar_axpy(this->problem_size, this->alpha[4], this->x4, this->y);
+        scalar_axpy(this->problem_size, this->alpha[5], this->x5, this->y);
+        scalar_axpy(this->problem_size, this->alpha[6], this->x6, this->y);
+        scalar_axpy(this->problem_size, this->alpha[7], this->x7, this->y);
+        scalar_axpy(this->problem_size, this->alpha[8], this->x8, this->y);
+        scalar_axpy(this->problem_size, this->alpha[9], this->x9, this->y);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
         retval += "Scalar chained, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(problem_size);
+            std::to_string(this->problem_size);
         return retval;
     }
 
