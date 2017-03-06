@@ -51,8 +51,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{513B1EF6-B5B0-4C12-A3E2-F7E669B51BE1}</ProjectGuid>
-    <RootNamespace>blas_rotg</RootNamespace>
+    <ProjectGuid>{5790B87F-CDAB-40C8-9A95-7C8B5CBEC20D}</ProjectGuid>
+    <RootNamespace>blas_gemv_simple</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -136,6 +136,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -318,16 +319,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\blas_rot\BlasRot.cpp" />
+    <ClInclude Include="..\..\blas_gemv_simple\BlasTest.h" />
+    <ClInclude Include="..\..\blas_gemv_simple\GemvTest.h" />
+    <ClInclude Include="..\..\blas_gemv_simple\ScalarTest.h" />
+    <ClInclude Include="..\..\blas_gemv_simple\UMESimdTest.h" />
+    <ClInclude Include="..\..\blas_gemv_simple\UMEVectorTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\blas_rot\BlasTest.h" />
-    <ClInclude Include="..\..\blas_rot\RotTest.h" />
-    <ClInclude Include="..\..\blas_rot\ScalarTest.h" />
-    <ClInclude Include="..\..\blas_rot\UMESimdTest.h" />
-    <ClInclude Include="..\..\blas_rot\UMEVectorTest.h" />
+    <ClCompile Include="..\..\blas_gemv_simple\BlasGemvSimple.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\utilities\ttmath\ttmath\ttmathuint_x86_64_msvc.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

@@ -108,8 +108,8 @@ public:
             x_max_err = x_max_err > x_diff ? x_max_err : x_diff;
             y_max_err = y_max_err > y_diff ? y_max_err : y_diff;
 
-            BigFloat x_abs = ttmath::Abs(BigFloat(x[i]));
-            BigFloat y_abs = ttmath::Abs(BigFloat(y[i]));
+            BigFloat x_abs = ttmath::Abs(BigFloat(x_expected[i]));
+            BigFloat y_abs = ttmath::Abs(BigFloat(y_expected[i]));
 
             x_norm = x_abs > x_norm ? x_abs : x_norm;
             y_norm = y_abs > y_norm ? y_abs : y_norm;
