@@ -49,6 +49,7 @@
 #include "BlasTest.h"
 #include "UMESimdTest.h"
 #include "UMEVectorTest.h"
+#include "AsmjitTest.h"
 
 int main()
 {
@@ -73,6 +74,7 @@ int main()
     // Single execution (single precision)
     for (int i = 1; i <= MAX_SIZE; i *= 10) {
         harness.registerTest(new ScalarSingleTest<float>(i));
+        harness.registerTest(new UMEVectorAsmjitSingleTest<float>(i));
         harness.registerTest(new BlasSingleTest<float>(i));
         harness.registerTest(new UMEVectorSingleTest<float>(i));
         harness.registerTest(new UMESimdSingleTest<float, 1>(i));

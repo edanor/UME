@@ -136,6 +136,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -331,11 +332,82 @@
     <ClInclude Include="..\..\blas_axpy\ScalarTest.h" />
     <ClInclude Include="..\..\blas_axpy\UMESimdTest.h" />
     <ClInclude Include="..\..\blas_axpy\UMEVectorTest.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\arm.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apibegin.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apiend.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_build.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\arch.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\assembler.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codeemitter.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codeholder.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\constpool.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\cpuinfo.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\func.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\globals.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\logging.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\misc_p.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\operand.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\osutils.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\regalloc_p.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\runtime.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\simdtypes.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\string.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\utils.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\vmem.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\zone.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86assembler.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86builder.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86compiler.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86emitter.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86globals.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86inst.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86internal_p.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86logging_p.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86misc.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86operand.h" />
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86regalloc_p.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas_axpy\BlasAxpy.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\arch.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\assembler.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeemitter.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeholder.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\constpool.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\cpuinfo.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\func.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\globals.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\logging.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\operand.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\osutils.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\regalloc.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\runtime.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\string.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\utils.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\vmem.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\zone.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86assembler.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86builder.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86compiler.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86inst.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86internal.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86logging.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86operand.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86operand_regs.cpp" />
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86regalloc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\utilities\ttmath\ttmath\ttmathuint_x86_64_msvc.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
