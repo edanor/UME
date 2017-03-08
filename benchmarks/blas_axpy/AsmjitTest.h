@@ -69,6 +69,7 @@ public:
             asmjit::Error err;
 
             asmjit::X86Compiler cc(&code);
+
             //cc.addFunc(asmjit::FuncSignature2<void, float*, float*>());
             cc.addFunc(asmjit::FuncSignature4<void, int, float, float*, float*>());
 
@@ -77,11 +78,11 @@ public:
             asmjit::X86Gp cnt = cc.newInt32("cnt");
             asmjit::X86Gp x_off_reg = cc.newIntPtr("x_off_reg");
             asmjit::X86Gp y_off_reg = cc.newIntPtr("y_off_reg");
-            asmjit::X86Xmm result = cc.newXmmPs("result");
+            asmjit::X86Ymm result = cc.newYmmPs("result");
             asmjit::X86Xmm alpha = cc.newXmmPs("alpha");
-            asmjit::X86Xmm alpha_vec = cc.newXmmPs("alpha_vec");
+            asmjit::X86Ymm alpha_vec = cc.newYmmPs("alpha_vec");
 
-            asmjit::X86Xmm t0 = cc.newXmmPs("t0");
+            asmjit::X86Ymm t0 = cc.newYmmPs("t0");
 
             //asmjit::X86Mem alpha = cc.newFloatConst(asmjit::kConstScopeLocal, this->alpha);
             //asmjit::X86Mem N = cc.newInt32Const(asmjit::kConstScopeLocal, this->problem_size);
@@ -101,22 +102,22 @@ public:
             asmjit::Label reminder_loop_end = cc.newLabel();
             asmjit::Label exit = cc.newLabel();
 
-            err = cc.cmp(cnt, 4);
+            err = cc.cmp(cnt, 8);
             err = cc.jl(peel_loop_end); // skip the peel loop if element count too small
 
-            err = err = cc.vshufps(alpha_vec, alpha, alpha, 0); //cc.vbroadcastss(alpha_vec, alpha);
+            err = err = cc.vshufps(alpha_vec, alpha.ymm(), alpha.ymm(), 0); //cc.vbroadcastss(alpha_vec, alpha);
 
             err = cc.bind(peel_loop_begin);
                 err = cc.vmulps(t0, alpha_vec, asmjit::x86::ptr(x_off_reg));
                 err = cc.vaddps(result, t0, asmjit::x86::ptr(y_off_reg));
-                err = cc.vmovaps(asmjit::x86::ptr(y_off_reg), result);
+                err = cc.vmovaps(asmjit::x86::yword_ptr(y_off_reg), result.zmm());
                 
-                err = cc.add(x_off_reg, 16);
-                err = cc.add(y_off_reg, 16);
+                err = cc.add(x_off_reg, 32);
+                err = cc.add(y_off_reg, 32);
 
-                err = cc.add(cnt, -4);
-            err = cc.cmp(cnt, 4);
-            err = cc.jg(peel_loop_begin);
+                err = cc.add(cnt, -8);
+            err = cc.cmp(cnt, 8);
+            err = cc.jge(peel_loop_begin);
             err = cc.bind(peel_loop_end);
 
             // Check if reminder present
@@ -125,10 +126,10 @@ public:
 
             // Scalar code to handle reminder
             err = cc.bind(reminder_loop_begin);
-                err = cc.movss(result, alpha);
-                err = cc.mulss(result, asmjit::x86::ptr(x_off_reg)); // multiply 'alpha' and x[i]
-                err = cc.addss(result, asmjit::x86::ptr(y_off_reg)); // add 'x*alpha' and 'y[i]'
-                err = cc.movss(asmjit::x86::ptr(y_off_reg), result);
+                err = cc.movss(result.xmm(), alpha.xmm());
+                err = cc.mulss(result.xmm(), asmjit::x86::ptr(x_off_reg)); // multiply 'alpha' and x[i]
+                err = cc.addss(result.xmm(), asmjit::x86::ptr(y_off_reg)); // add 'x*alpha' and 'y[i]'
+                err = cc.movss(asmjit::x86::ptr(y_off_reg), result.xmm());
 
                 err = cc.add(x_off_reg, 4);                          // Increment 'arr' pointer.
                 err = cc.add(y_off_reg, 4);                          // Increment 'arr' pointer.
