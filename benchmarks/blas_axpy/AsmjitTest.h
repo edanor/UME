@@ -44,6 +44,8 @@
 
 #include "AxpyTest.h"
 
+#define USE_ASMJIT
+
 #if defined (USE_ASMJIT)
 template<typename FLOAT_T>
 class UMEVectorAsmjitSingleTest : public AxpySingleTest<FLOAT_T>{
@@ -77,6 +79,9 @@ public:
             asmjit::X86Gp y_off_reg = cc.newIntPtr("y_off_reg");
             asmjit::X86Xmm result = cc.newXmmPs("result");
             asmjit::X86Xmm alpha = cc.newXmmPs("alpha");
+            asmjit::X86Xmm alpha_vec = cc.newXmmPs("alpha_vec");
+
+            asmjit::X86Xmm t0 = cc.newXmmPs("t0");
 
             //asmjit::X86Mem alpha = cc.newFloatConst(asmjit::kConstScopeLocal, this->alpha);
             //asmjit::X86Mem N = cc.newInt32Const(asmjit::kConstScopeLocal, this->problem_size);
@@ -90,13 +95,51 @@ public:
 
             // Code generation
 
-            asmjit::Label loop = cc.newLabel();
+            asmjit::Label peel_loop_begin = cc.newLabel();
+            asmjit::Label peel_loop_end = cc.newLabel();
+            asmjit::Label reminder_loop_begin = cc.newLabel();
+            asmjit::Label reminder_loop_end = cc.newLabel();
             asmjit::Label exit = cc.newLabel();
 
-            err = cc.test(cnt, cnt);
-            err = cc.jz(exit);
+            err = cc.cmp(cnt, 4);
+            err = cc.jl(peel_loop_end); // skip the peel loop if element count too small
 
-            err = cc.bind(loop); // start of 'for (int i = problem_size; i >= 0; i--)'
+            err = err = cc.vshufps(alpha_vec, alpha, alpha, 0); //cc.vbroadcastss(alpha_vec, alpha);
+
+            err = cc.bind(peel_loop_begin);
+                err = cc.vmulps(t0, alpha_vec, asmjit::x86::ptr(x_off_reg));
+                err = cc.vaddps(result, t0, asmjit::x86::ptr(y_off_reg));
+                err = cc.vmovaps(asmjit::x86::ptr(y_off_reg), result);
+                
+                err = cc.add(x_off_reg, 16);
+                err = cc.add(y_off_reg, 16);
+
+                err = cc.add(cnt, -4);
+            err = cc.cmp(cnt, 4);
+            err = cc.jg(peel_loop_begin);
+            err = cc.bind(peel_loop_end);
+
+            // Check if reminder present
+            err = cc.test(cnt, cnt);
+            err = cc.jz(exit);  // Exit if no reminder
+
+            // Scalar code to handle reminder
+            err = cc.bind(reminder_loop_begin);
+                err = cc.movss(result, alpha);
+                err = cc.mulss(result, asmjit::x86::ptr(x_off_reg)); // multiply 'alpha' and x[i]
+                err = cc.addss(result, asmjit::x86::ptr(y_off_reg)); // add 'x*alpha' and 'y[i]'
+                err = cc.movss(asmjit::x86::ptr(y_off_reg), result);
+
+                err = cc.add(x_off_reg, 4);                          // Increment 'arr' pointer.
+                err = cc.add(y_off_reg, 4);                          // Increment 'arr' pointer.
+
+                err = cc.dec(cnt);
+            err = cc.jnz(reminder_loop_begin);
+
+            err = cc.bind(exit);
+            cc.ret();
+
+            /*err = cc.bind(loop); // start of 'for (int i = problem_size; i >= 0; i--)'
 
             // Loop content
             err = cc.movss(result, alpha);
@@ -109,10 +152,10 @@ public:
 
             err = cc.dec(cnt);  // i--;
             err = cc.jnz(loop); // end of 'for(int i = problem_size; i >= 0; i--)'
-
             err = cc.bind(exit);
             cc.ret();
 
+            */
             ///////
             cc.endFunc();
             err = cc.finalize();
