@@ -353,6 +353,7 @@ public:
                 err = cc.vaddps(t2, t1, t0);
 
                 err = cc.vaddps(result, t2, asmjit::x86::ptr(y_off_reg));
+                err = cc.vmovaps(asmjit::x86::yword_ptr(y_off_reg), result.ymm());
 
                 err = cc.add(x0_off_reg, 32);
                 err = cc.add(x1_off_reg, 32);
@@ -364,6 +365,8 @@ public:
                 err = cc.add(x7_off_reg, 32);
                 err = cc.add(x8_off_reg, 32);
                 err = cc.add(x9_off_reg, 32);
+
+                err = cc.add(y_off_reg, 32);
 
                 err = cc.add(cnt, -8);
                 err = cc.cmp(cnt, 8);
