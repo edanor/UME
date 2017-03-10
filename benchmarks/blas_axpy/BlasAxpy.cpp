@@ -50,11 +50,13 @@
 #include "UMESimdTest.h"
 #include "UMEVectorTest.h"
 #include "AsmjitTest.h"
+#include "AsmjitUMEVectorTest.h"
 
 int main()
 {
-    int MAX_SIZE = 100000000;
+    int MAX_SIZE = 1000000;
     int ITERATIONS = 10;
+    int PROGRESSION = 2;
 
     BenchmarkHarness harness;
 
@@ -70,10 +72,10 @@ int main()
         "data locality in context of more than a single BLAS call.\n"
         "UME::VECTOR version shows that treatment of vector programs using\n"
         "expressions instead of kernels can give additional performance boost.\n\n";
-
     // Single execution (single precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= PROGRESSION) {
         harness.registerTest(new ScalarSingleTest<float>(i));
+        harness.registerTest(new UMEAsmjitSingleTest<float>(i));
         harness.registerTest(new UMEVectorAsmjitSingleTest<float>(i));
         harness.registerTest(new BlasSingleTest<float>(i));
         harness.registerTest(new UMEVectorSingleTest<float>(i));
@@ -85,8 +87,9 @@ int main()
         harness.registerTest(new UMESimdSingleTest<float, 32>(i));
     }
 
+    /*
     // Single execution (double precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= PROGRESSION) {
         harness.registerTest(new ScalarSingleTest<double>(i));
         harness.registerTest(new BlasSingleTest<double>(i));
         harness.registerTest(new UMEVectorSingleTest<double>(i));
@@ -97,10 +100,11 @@ int main()
         harness.registerTest(new UMESimdSingleTest<double, 16>(i));
     }
 
-
     // Chained execution (single precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= PROGRESSION) {
         harness.registerTest(new ScalarChainedTest<float>(i));
+        harness.registerTest(new UMEAsmjitChainedTest<float>(i));
+        harness.registerTest(new UMEVectorAsmjitChainedTest<float>(i));
         harness.registerTest(new BlasChainedTest<float>(i));
         harness.registerTest(new UMEVectorChainedTest<float>(i));
         harness.registerTest(new UMESimdChainedTest<float, 1>(i));
@@ -112,7 +116,7 @@ int main()
     }
 
     // Chained execution (double precision)
-    for (int i = 1; i <= MAX_SIZE; i *= 10) {
+    for (int i = 1; i <= MAX_SIZE; i *= PROGRESSION) {
         harness.registerTest(new ScalarChainedTest<double>(i));
         harness.registerTest(new BlasChainedTest<double>(i));
         harness.registerTest(new UMEVectorChainedTest<double>(i));
@@ -122,6 +126,7 @@ int main()
         harness.registerTest(new UMESimdChainedTest<double, 8>(i));
         harness.registerTest(new UMESimdChainedTest<double, 16>(i));
     }
+    */
 
     harness.runAllTests(ITERATIONS);
 }

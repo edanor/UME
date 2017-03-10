@@ -44,151 +44,280 @@
 
 #include "AxpyTest.h"
 
+#include <algorithm>
+
 #define USE_ASMJIT
 
 #if defined (USE_ASMJIT)
-template<typename FLOAT_T>
-class UMEAsmjitSingleTest : public AxpySingleTest<FLOAT_T>{
-private:
-    bool isCodeGenerated;
 
-    // JIT structures
+// This is a POC for a Monadic evaluator using AsmJIT as the code-generation mechanism.
+// 1. We need to traverse the tree and store pointers to all terminal symbols, so that
+//    a function can be called with proper data
+// 2. We need to traverse the tree and compile the function. This should happen preferrably
+//    only once per expression evaluation (some global context needed?).
+// 3. We have to call the pre-compiled function on local data settings.
+template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+class AsmjitEvaluator {
     asmjit::JitRuntime runtime;
     asmjit::CodeHolder code;
+    asmjit::X86Compiler* cc;
+    asmjit::FuncSignatureX evaluator_signature;
 
-    typedef void(*Func)(int N, float alpha, float* x, float* y);
-    Func fn;
+    static const int MAX_ARG_COUNT = 128;
+
+    int argCount;
+
+    typedef void(*wrapperFunc)(void);
+
+    // Argument 1 is the destination, but since argument 0 is number of elements, we 
+    // dont store it here. 'arguments[0]' is then destination pointer.
+    uint64_t arguments[MAX_ARG_COUNT];
+    bool isScalar[MAX_ARG_COUNT];
+    // Offset registers for each pointer argument
+    asmjit::X86Gp offsetRegisters[MAX_ARG_COUNT];
+
+public:
+    template<typename SCALAR_T, typename EXP_T>
+    AsmjitEvaluator(
+        UME::VECTOR::Vector<SCALAR_T, VEC_LEN, SIMD_STRIDE> & dst,
+        UME::VECTOR::ArithmeticExpression<SCALAR_T, SIMD_STRIDE, EXP_T> & exp)
+    {
+        EXP_T & reinterpret_exp = static_cast<EXP_T &>(exp);
+
+        code.init(runtime.getCodeInfo());
+        asmjit::Error err;
+        cc = new asmjit::X86Compiler(&code);
+
+
+        // configure the function
+        evaluator_signature.setRetT<void>(); // the function evaluates by side-effects on input parameters
+
+        asmjit::X86Gp cnt = cc->newInt32("cnt");
+        offsetRegisters[0] = cc->newIntPtr("Dst");
+
+        evaluator_signature.addArg(asmjit::TypeIdOf<int>::kTypeId);
+        evaluator_signature.addArg(asmjit::TypeIdOf<SCALAR_T*>::kTypeId);
+
+        // Visit all nodes and figure out the function signature.
+        argCount = 1;
+        map_arguments(reinterpret_exp);
+
+        // Now when all arguments are already mapped, we can initialize parameters
+        asmjit::CCFunc* evaluator = cc->addFunc(evaluator_signature);
+
+        // Initialize iteration count
+        asmjit::X86Mem t0 = cc->newInt64Const(asmjit::kConstScopeLocal, dst.LENGTH());
+        cc->mov(cnt, t0);
+
+        // Initialize destination offset register
+        asmjit::X86Mem t1 = cc->newInt64Const(asmjit::kConstScopeLocal, (uint64_t)dst.elements);
+        cc->mov(offsetRegisters[0], t1);
+
+        // Initialize remaining offset registers
+        for (int i = 1; i < argCount; i++) {
+            asmjit::X86Mem tX = cc->newInt64Const(asmjit::kConstScopeLocal, arguments[i]);
+            cc->mov(offsetRegisters[i], tX);
+        }
+
+        {
+            //err = cc->setArg(0, cnt);
+            //err = cc->setArg(1, offsetRegisters[0]);
+
+            asmjit::Label peel_loop_begin = cc->newLabel();
+            asmjit::Label peel_loop_end = cc->newLabel();
+            asmjit::Label reminder_loop_begin = cc->newLabel();
+            asmjit::Label reminder_loop_end = cc->newLabel();
+            asmjit::Label exit = cc->newLabel();
+
+            err = cc->cmp(cnt, SIMD_STRIDE);
+            err = cc->jl(peel_loop_end); // skip the peel loop if element count too small
+
+            err = cc->bind(peel_loop_begin);
+            {
+                // SIMD loop
+                asmjit::X86Ymm dst = cc->newYmmPs();
+                eval_simd(reinterpret_exp, dst);
+
+                cc->vmovaps(asmjit::x86::yword_ptr(offsetRegisters[0]), dst);
+
+                // Advance loop
+                //    Advance destination register
+                cc->add(offsetRegisters[0], sizeof(SCALAR_T)*SIMD_STRIDE);
+                //    Advance other registers
+                for (int i = 1; i < argCount; i++)
+                {
+                    if (isScalar[i] == false)
+                    {
+                        cc->add(offsetRegisters[i], sizeof(SCALAR_T)*SIMD_STRIDE);
+                    }
+                }
+            }
+            err = cc->add(cnt, -(int)SIMD_STRIDE);
+            err = cc->cmp(cnt, SIMD_STRIDE);
+            err = cc->jge(peel_loop_begin);
+            err = cc->bind(peel_loop_end);
+
+            // Check if reminder present
+            err = cc->test(cnt, cnt);
+            err = cc->jz(exit);  // Exit if no reminder
+
+                                // Scalar code to handle reminder
+            err = cc->bind(reminder_loop_begin);
+            {
+                // scalar loop
+            }
+            err = cc->dec(cnt);
+            err = cc->jnz(reminder_loop_begin);
+
+            err = cc->bind(exit);
+            cc->ret();
+        }
+        cc->endFunc(); // Close the evaluator function
+        //err = cc->finalize();
+        /*err = runtime.add(, &code);
+        if (err) {
+            assert(false);
+        }*/
+
+        // Build wrapper caller
+        // Destroy the old compiler, and build a new one.
+        //delete cc;
+
+        //asmjit::CodeHolder wrapperCode;
+        //wrapperCode.init(runtime.getCodeInfo());
+        //cc = new asmjit::X86Compiler(&wrapperCode);
+
+        asmjit::CCFunc* wrapper_func = cc->addFunc(asmjit::FuncSignature0<void>()); // add a trivial function
+
+        asmjit::CCFuncCall* call = cc->call(evaluator->getLabel(), evaluator_signature);
+
+        // Set actual arguments
+//        asmjit::X86Gp t0 = cc->newInt32();
+  //      cc->mov(t0, dst.LENGTH());
+    //    call->setArg(0, t0);
+        //call->setArg(1, asmjit::X86Mem(uint64_t(dst.elements)));
+
+        for (int i = 1; i < argCount; i++) {
+            //  call->setArg(i + 1, arguments[i]);
+        }
+
+        cc->endFunc();
+        cc->finalize();
+
+        wrapperFunc fun;
+        //err = runtime.add(&fun, &wrapperCode);
+        err = runtime.add(&fun, &code);
+        if (err) {
+            assert(false);
+        }
+
+        // Call the wrapper function
+        fun();
+
+        delete cc;
+    }
+
+    template<typename SCALAR_T> 
+    void map_arguments(UME::VECTOR::FloatVector<SCALAR_T, VEC_LEN, SIMD_STRIDE> exp)
+    {
+        // We have to register every terminal to get proper function call parameters.
+        // register a new pointer-type argument
+        evaluator_signature.addArg(asmjit::TypeIdOf<SCALAR_T*>::kTypeId);
+        // remember the terminal address
+        arguments[argCount] = (uint64_t)exp.elements;
+        isScalar[argCount] = false;
+        // allocate an offset register
+        offsetRegisters[argCount] = cc->newIntPtr();
+        argCount++;
+    }
+
+    template<typename SCALAR_T, typename E1, typename E2>
+    void map_arguments(UME::VECTOR::ArithmeticADDExpression<SCALAR_T, SIMD_STRIDE, E1, E2> exp)
+    {
+        // No need to mapp an ADD node. Map children in left-to-right order.
+        map_arguments(exp._e1);
+        map_arguments(exp._e2);
+    }
+
+    template<typename SCALAR_T>
+    void eval_simd(UME::VECTOR::FloatVector<SCALAR_T, VEC_LEN, SIMD_STRIDE> & exp, asmjit::X86Ymm & dst) {
+        // 1. Find the offset register from mapping
+        int id = -1;
+        for (int i = 0; i < argCount; i++) {
+            if (arguments[i] == (uint64_t)exp.elements) {
+                id = i;
+                break;
+            }
+        }
+        assert(id >= 0);
+
+        // 2. Add a load operation to the operation list
+        cc->vmovaps(dst, asmjit::x86::yword_ptr(offsetRegisters[id]));
+    }
+
+    template<typename SCALAR_T>
+    void eval_scalar(UME::VECTOR::FloatVector<SCALAR_T, VEC_LEN, SIMD_STRIDE> exp, asmjit::X86Xmm & dst) {
+        // 1. Find the offset register from mapping
+        int id = -1;
+        for (int i = 0; i < argCount; i++) {
+            if (arguments[i] == exp.elements) {
+                id = i;
+                break;
+            }
+        }
+        assert(id >= 0);
+
+        // 2. Add a load operation to the operation list
+        cc->movss(dst, asmjit::x86::ptr(offsetRegisters[id]));
+    }
+
+
+    // TODO: this has to be specialized!
+    /*template<typename SCALAR_T, typename E1, typename E2>
+    void eval_simd(UME::VECTOR::ArithmeticADDExpression<SCALAR_T, SIMD_STRIDE, E1, E2> exp) {
+        assert(false);
+    }*/
+
+    template<typename SCALAR_T, typename E1, typename E2>
+    void eval_simd(UME::VECTOR::ArithmeticADDExpression<SCALAR_T, SIMD_STRIDE, E1, E2> & exp, asmjit::X86Ymm & dst) {
+        asmjit::X86Ymm t0 = cc->newYmmPs();
+        asmjit::X86Ymm t1 = cc->newYmmPs();
+        eval_simd(exp._e1, t0);
+        eval_simd(exp._e2, t1);
+
+        cc->vaddps(dst, t0, t1);
+    }
+
+};
+
+
+template<typename FLOAT_T>
+class UMEVectorAsmjitSingleTest : public AxpySingleTest<FLOAT_T>{
+private:
+
+   // typedef void(*Func)(int N, float alpha, float* x, float* y);
+    //Func fn;
 
 public:
 
-    UMEAsmjitSingleTest(int problem_size) : AxpySingleTest<FLOAT_T>(problem_size), isCodeGenerated(false) {
-        code.init(runtime.getCodeInfo());
+    UMEVectorAsmjitSingleTest(int problem_size) : AxpySingleTest<FLOAT_T>(problem_size) {}
 
-        if (!isCodeGenerated)
-        {
-            asmjit::Error err;
-
-            asmjit::X86Compiler cc(&code);
-
-            //cc.addFunc(asmjit::FuncSignature2<void, float*, float*>());
-            cc.addFunc(asmjit::FuncSignature4<void, int, float, float*, float*>());
-
-            ////////////////////////////////////////////
-            // Declare registers
-            asmjit::X86Gp cnt = cc.newInt32("cnt");
-            asmjit::X86Gp x_off_reg = cc.newIntPtr("x_off_reg");
-            asmjit::X86Gp y_off_reg = cc.newIntPtr("y_off_reg");
-            asmjit::X86Ymm result = cc.newYmmPs("result");
-            asmjit::X86Xmm alpha = cc.newXmmPs("alpha");
-            asmjit::X86Ymm alpha_vec = cc.newYmmPs("alpha_vec");
-
-            asmjit::X86Ymm t0 = cc.newYmmPs("t0");
-
-            //asmjit::X86Mem alpha = cc.newFloatConst(asmjit::kConstScopeLocal, this->alpha);
-            //asmjit::X86Mem N = cc.newInt32Const(asmjit::kConstScopeLocal, this->problem_size);
-
-            // Define input mapping
-            cc.setArg(0, cnt);
-            cc.setArg(1, alpha);
-
-            cc.setArg(2, x_off_reg);
-            cc.setArg(3, y_off_reg);
-
-            // Code generation
-
-            asmjit::Label peel_loop_begin = cc.newLabel();
-            asmjit::Label peel_loop_end = cc.newLabel();
-            asmjit::Label reminder_loop_begin = cc.newLabel();
-            asmjit::Label reminder_loop_end = cc.newLabel();
-            asmjit::Label exit = cc.newLabel();
-
-            err = cc.cmp(cnt, 8);
-            err = cc.jl(peel_loop_end); // skip the peel loop if element count too small
-
-            err = err = cc.vshufps(alpha_vec, alpha.ymm(), alpha.ymm(), 0); //cc.vbroadcastss(alpha_vec, alpha);
-
-            err = cc.bind(peel_loop_begin);
-                err = cc.vmulps(t0, alpha_vec, asmjit::x86::ptr(x_off_reg));
-                err = cc.vaddps(result, t0, asmjit::x86::ptr(y_off_reg));
-                err = cc.vmovaps(asmjit::x86::yword_ptr(y_off_reg), result.zmm());
-                
-                err = cc.add(x_off_reg, 32);
-                err = cc.add(y_off_reg, 32);
-
-                err = cc.add(cnt, -8);
-            err = cc.cmp(cnt, 8);
-            err = cc.jge(peel_loop_begin);
-            err = cc.bind(peel_loop_end);
-
-            // Check if reminder present
-            err = cc.test(cnt, cnt);
-            err = cc.jz(exit);  // Exit if no reminder
-
-            // Scalar code to handle reminder
-            err = cc.bind(reminder_loop_begin);
-                err = cc.movss(result.xmm(), alpha.xmm());
-                err = cc.mulss(result.xmm(), asmjit::x86::ptr(x_off_reg)); // multiply 'alpha' and x[i]
-                err = cc.addss(result.xmm(), asmjit::x86::ptr(y_off_reg)); // add 'x*alpha' and 'y[i]'
-                err = cc.movss(asmjit::x86::ptr(y_off_reg), result.xmm());
-
-                err = cc.add(x_off_reg, 4);                          // Increment 'arr' pointer.
-                err = cc.add(y_off_reg, 4);                          // Increment 'arr' pointer.
-
-                err = cc.dec(cnt);
-            err = cc.jnz(reminder_loop_begin);
-
-            err = cc.bind(exit);
-            cc.ret();
-
-            /*err = cc.bind(loop); // start of 'for (int i = problem_size; i >= 0; i--)'
-
-            // Loop content
-            err = cc.movss(result, alpha);
-            err = cc.mulss(result, asmjit::x86::ptr(x_off_reg)); // multiply 'alpha' and x[i]
-            err = cc.addss(result, asmjit::x86::ptr(y_off_reg)); // add 'x*alpha' and 'y[i]'
-            err = cc.movss(asmjit::x86::ptr(y_off_reg), result);
-
-            err = cc.add(x_off_reg, 4);                          // Increment 'arr' pointer.
-            err = cc.add(y_off_reg, 4);                          // Increment 'arr' pointer.
-
-            err = cc.dec(cnt);  // i--;
-            err = cc.jnz(loop); // end of 'for(int i = problem_size; i >= 0; i--)'
-            err = cc.bind(exit);
-            cc.ret();
-
-            */
-            ///////
-            cc.endFunc();
-            err = cc.finalize();
-
-            err = runtime.add(&fn, &code);
-            if (err) {
-                assert(false);
-            }
-        }
-    }
-
-    ~UMEAsmjitSingleTest() {
-        runtime.release(fn);
-    }
+    ~UMEVectorAsmjitSingleTest() {}
 
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
+        UME::VECTOR::Vector<FLOAT_T> x_vec(this->problem_size, this->x);
+        UME::VECTOR::Vector<FLOAT_T> y_vec(this->problem_size, this->y);
 
-        fn(this->problem_size, this->alpha, this->x, this->y);
-        //UME::VECTOR::Vector<FLOAT_T> x_vec(this->problem_size, this->x);
-        //UME::VECTOR::Vector<FLOAT_T> y_vec(this->problem_size, this->y);
-        //UME::VECTOR::Scalar<FLOAT_T> alpha_s(this->alpha);
-
-        //y_vec = alpha_s*x_vec + y_vec;
-
+        auto t0 =  x_vec + y_vec;
+        AsmjitEvaluator<UME_DYNAMIC_LENGTH, UME_DEFAULT_SIMD_STRIDE> eval(y_vec, t0);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
         std::string retval = "";
-        retval += "AsmJIT single, (" +
+        retval += "AsmJIT(UME::VECTOR) single, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
             std::to_string(this->problem_size);
         return retval;
@@ -196,7 +325,7 @@ public:
 };
 
 template<typename FLOAT_T>
-class UMEAsmjitChainedTest : public AxpyChainedTest<FLOAT_T> {
+class UMEVectorAsmjitChainedTest : public AxpyChainedTest<FLOAT_T> {
 private:
     bool isCodeGenerated;
 
@@ -216,7 +345,7 @@ private:
 
     Func fn;
 public:
-    UMEAsmjitChainedTest(int problem_size) : AxpyChainedTest<FLOAT_T>(problem_size)
+    UMEVectorAsmjitChainedTest(int problem_size) : AxpyChainedTest<FLOAT_T>(problem_size)
     {
         code.init(runtime.getCodeInfo());
 
@@ -442,7 +571,7 @@ public:
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
         std::string retval = "";
-        retval += "AsmJIT chained, (" +
+        retval += "AsmJIT(UME::VECTOR) chained, (" +
             ScalarToString<FLOAT_T>::value() + ") " +
             std::to_string(this->problem_size);
         return retval;

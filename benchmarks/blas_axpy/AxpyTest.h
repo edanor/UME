@@ -70,7 +70,8 @@ public:
             y_expected[i] = y[i];
         }
 
-        alpha = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+        //alpha = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+        alpha = 1.0f;
     }
 
     UME_NEVER_INLINE virtual void benchmarked_code() = 0;
