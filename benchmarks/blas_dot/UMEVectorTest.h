@@ -48,10 +48,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::VECTOR single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::VECTOR single";
         return retval;
     }
 };
@@ -75,10 +72,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::VECTOR dot(axpy(x0, y0), axpy(x1, y1)), (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::VECTOR dot(axpy(x0, y0), axpy(x1, y1))";
         return retval;
     }
 };

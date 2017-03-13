@@ -43,7 +43,7 @@ template<typename FLOAT_T>
 class AxpySingleTest : public Test {
 protected:
     static const int OPTIMAL_ALIGNMENT = 64;
-    typedef ttmath::Big<8, 8> BigFloat;
+    typedef ttmath::Big<2, 2> BigFloat;
 
     FLOAT_T *x, *y;
 
@@ -58,7 +58,9 @@ public:
     UME_NEVER_INLINE virtual void initialize() {
         x = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
         y = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*problem_size, OPTIMAL_ALIGNMENT);
+#if defined(ENABLE_VERIFICATION)
         y_expected = (BigFloat*)UME::DynamicMemory::AlignedMalloc(sizeof(BigFloat)*problem_size, OPTIMAL_ALIGNMENT);
+#endif
 
         srand((unsigned int)time(NULL));
         // Initialize arrays with random data
@@ -67,7 +69,9 @@ public:
             // Generate random numbers in range (0.0;1.0)
             x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
             y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+#if defined(ENABLE_VERIFICATION)
             y_expected[i] = y[i];
+#endif
         }
 
         //alpha = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
@@ -79,10 +83,13 @@ public:
     UME_NEVER_INLINE virtual void cleanup() {
         UME::DynamicMemory::AlignedFree(x);
         UME::DynamicMemory::AlignedFree(y);
+#if defined (ENABLE_VERIFICATION)
         UME::DynamicMemory::AlignedFree(y_expected);
+#endif
     }
 
     UME_NEVER_INLINE virtual void verify() {
+#if defined(ENABLE_VERIFICATION)
         // calculate the expected values
         for (int i = 0; i < problem_size; i++)
         {
@@ -103,6 +110,7 @@ public:
         }
         // Calculate final norm
         error_norm_bignum = norm / y_norm;
+#endif
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() = 0;

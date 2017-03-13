@@ -57,10 +57,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "Scalar single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "Scalar single";
         return retval;
     }
 
@@ -82,10 +79,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "Scalar dot(axpy(x0, t0), axpy(x1, y1)), (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "Scalar dot(axpy(x0, t0), axpy(x1, y1))";
         return retval;
     }
 };

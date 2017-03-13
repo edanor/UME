@@ -150,6 +150,9 @@
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86builder.h">
       <Filter>asmjit</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\blas_axpy\AsmjitTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas_axpy\BlasAxpy.cpp">

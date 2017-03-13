@@ -10,16 +10,48 @@
 #include <list>
 
 #include "../utilities/ttmath/ttmath/ttmath.h"
+#include <tclap/CmdLine.h>
+
+// Each Benchmark can be ran with some parameters, which could make
+// comparison with 
+class TestParameter {
+public:
+    virtual std::string getName() = 0;
+    virtual std::string getValueAsString() = 0;
+};
+
+// This class represents a specific value parameter.
+// It should be specialized for non-fundamental types.
+template<typename T>
+class ValueParameter : public TestParameter {
+public:
+    T value;
+    std::string name;
+
+    ValueParameter(std::string & name, T value) :
+        value(value),
+        name(name)
+    {}
+
+    virtual std::string getName() {
+        return name;
+    }
+
+    virtual std::string getValueAsString() {
+        return std::to_string(value);
+    }
+};
 
 // The test shouldn't allocate large memory buffers before initialize is called.
 class Test {
 public:
+    int iterationOverrider;
     TimingStatistics stats;
     bool validTest;
     ttmath::Big<8, 8> error_norm_bignum;
 
-    Test(bool validTest) : validTest(validTest) {}
-    Test() : validTest(false) {}
+    Test(bool validTest) : validTest(validTest), iterationOverrider(-1) {}
+    Test() : validTest(false), iterationOverrider(-1) {}
 
     // All the member functions are forced to never inline,
     // so that the compiler doesn't make any opportunistic guesses.
@@ -34,54 +66,225 @@ public:
     UME_NEVER_INLINE virtual std::string get_test_identifier() = 0;
 };
 
-class BenchmarkHarness {
-private:
-    std::list<Test*> tests;
-
+// Test category represents all tests with directly comparable results.
+// All tests in a category should be using the same set of parameters,
+// but might differ in actual benchmark implementation.
+class TestCategory {
 public:
+    int iterationOverrider;
+    std::string name;
+    std::list<Test*> tests;
+    std::list<TestParameter*> parameters;
+    int iterations;
+
+    TestCategory(std::string name) : name(name), iterationOverrider(-1) {}
 
     void registerTest(Test *newTest) {
         tests.push_back(newTest);
     }
 
-    void runAllTests(int RUNS) {
+    void registerParameter(TestParameter* newParam) {
+        parameters.push_back(newParam);
+    }
+};
 
-        for (auto iter = tests.begin(); iter != tests.end(); iter++) {
-            Test* test = *iter;
+class BenchmarkHarness {
+private:
+    // Command line input
+    TCLAP::CmdLine *cmd;
+    int _argc;
+    char **_argv;
 
-            unsigned long long start, end;
-            for (int i = 0; i < RUNS; i++) {
+    // Command line status:
+    //  fastExit flag indicates that no tests should be executed. It
+    //  will be set when command line parameters require purely indicative
+    //  output (such as '-h' for HELP).
+    bool fastExit;
 
-                // Initialization phase is skipped, as the
-                // overhead of memory allocations is not
-                // interesting for us
-                test->initialize();
+    //  This flag is set when '-i' parameter is passed. It will print a list of all
+    //  available tests.
+    bool displayTestInfo;
+    bool displayCategoriesInfo;
 
-                // Start measurement
-                start = get_timestamp();
-                    // The critical fragment of the code being benchmarked
-                    test->benchmarked_code();
-                end = get_timestamp();
+    // Uncategorized test info
+    std::list<Test*> tests;
 
-                test->verify();
-                test->cleanup();
+    // Tests grouped by category
+    std::list<TestCategory *> testCategories;
 
-                test->stats.update(end - start);
-            }
+public:
 
-            if (test->validTest == true) {
-                std::cout << test->get_test_identifier()
-                    << " Elapsed: " << (unsigned long long) test->stats.getAverage()
-                    << " (dev: " << (unsigned long long) test->stats.getStdDev()
-                    << "), error: " << test->error_norm_bignum.ToDouble() << ")\n";
-            }
-            else {
-                std::cout << test->get_test_identifier()
-                    << " RESULTS UNAVAILABLE\n";
-            }
+    // Construct without input parameters handling
+    BenchmarkHarness() : 
+        _argc(0),
+        _argv(nullptr),
+        cmd(nullptr),
+        fastExit(false),
+        displayTestInfo(false),
+        displayCategoriesInfo(false)
+        {}
 
+    // Construct with input parameters handling
+    BenchmarkHarness(int argc, char **argv) :
+        _argc(argc),
+        _argv(argv),
+        fastExit(false),
+        displayTestInfo(false),
+        displayCategoriesInfo(false)
+    {
+        // Parse the input
+        cmd = new TCLAP::CmdLine("Use -h for help.", ' ', "");
+
+
+        TCLAP::SwitchArg infoFlag("i", "info", "Display list of available tests");
+        cmd->add(infoFlag);
+
+        TCLAP::SwitchArg categoriesFlag("c", "categories", "Display list of available test categories");
+        cmd->add(categoriesFlag);
+
+        cmd->parse(_argc, __argv);
+
+        if (infoFlag.getValue()) {
+            fastExit = true;
+            displayTestInfo = true;
+            // Tests are not yet registered.
+            // Actual printing has to be delayed.
+        }
+        else if (categoriesFlag.getValue()) {
+            fastExit = true;
+            displayCategoriesInfo = true;
+            // Tests are not yet registered.
+            // Actual printing has to be delayed.
         }
     }
 
+    ~BenchmarkHarness() {
+        delete cmd;
+    }
+
+    // Register a test without a category
+    void registerTest(Test *newTest) {
+        tests.push_back(newTest);
+    }
+
+    void registerTest(Test *newTest, int iterations) {
+        newTest->iterationOverrider = iterations;
+        tests.push_back(newTest);
+    }
+
+    void registerTestCategory(TestCategory *newCategory) {
+        testCategories.push_back(newCategory);
+    }
+
+    void registerTestCategory(TestCategory *newCategory, int iterations) {
+        newCategory->iterationOverrider = iterations;
+        testCategories.push_back(newCategory);
+    }
+
+
+    void runSingleTest(Test* test, int RUNS) {
+
+        unsigned long long start, end;
+
+        int iterations = test->iterationOverrider > 0 ? test->iterationOverrider : RUNS;
+
+        for (int i = 0; i < iterations; i++) {
+
+            // Initialization phase is skipped, as the
+            // overhead of memory allocations is not
+            // interesting for us
+            test->initialize();
+
+            // Start measurement
+            start = get_timestamp();
+                // The critical fragment of the code being benchmarked
+                test->benchmarked_code();
+
+            end = get_timestamp();
+
+            test->verify();
+            test->cleanup();
+
+            test->stats.update(end - start);
+        }
+    }
+
+    void runAllTests(int RUNS) {
+
+        // Execute all categorized tests
+        for (auto catIter = testCategories.begin(); catIter != testCategories.end(); catIter++)
+        {
+            TestCategory* cat = (*catIter);
+            for (auto testIter = cat->tests.begin(); testIter != cat->tests.end(); testIter++)
+            {
+                runSingleTest(*testIter, RUNS);
+
+                if ((*testIter)->validTest == true) {
+                    std::cout << (*testIter)->get_test_identifier()
+                        << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
+                        << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
+                        << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+                }
+                else {
+                    std::cout << (*testIter)->get_test_identifier()
+                        << " RESULTS UNAVAILABLE\n";
+                }
+            }
+        }
+
+        // Also execute all uncategorized tests
+        for (auto testIter = tests.begin(); testIter != tests.end(); testIter++) {
+            runSingleTest(*testIter, RUNS);
+
+            if ((*testIter)->validTest == true) {
+                std::cout << (*testIter)->get_test_identifier()
+                    << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
+                    << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
+                    << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+            }
+            else {
+                std::cout << (*testIter)->get_test_identifier()
+                    << " RESULTS UNAVAILABLE\n";
+            }
+        }
+    }
+
+    void runTests(int RUNS) {
+        if (displayTestInfo)
+        {
+            for (auto iter = testCategories.begin(); iter != testCategories.end(); iter++) {
+                std::cout << (*iter)->name << " {";
+                for (auto paramIter = (*iter)->parameters.begin(); paramIter != (*iter)->parameters.end(); paramIter++) {
+                    std::cout << "{" << (*paramIter)->getName() << ": ";
+                    std::cout << (*paramIter)->getValueAsString() << "}";
+                }
+                std::cout << "}\n";
+
+                // Displays all tests
+                for (auto test = (*iter)->tests.begin(); test != (*iter)->tests.end(); test++) {
+                    std::cout << " " << (*test)->get_test_identifier() << "\n";
+                }
+            }
+        }
+        else if (displayCategoriesInfo)
+        {
+            // Displays all test categories
+            for (auto iter = testCategories.begin(); iter != testCategories.end(); iter++) {
+                std::cout << (*iter)->name << " {";
+                for (auto paramIter = (*iter)->parameters.begin(); paramIter != (*iter)->parameters.end(); paramIter++) {
+                    std::cout << "{" << (*paramIter)->getName() << ": ";
+                    std::cout << (*paramIter)->getValueAsString() << "}";
+                }
+                std::cout << "}\n";
+            }
+        }
+
+        if (fastExit) {
+            // Do not run tests when fastExit set.
+            return;
+        }
+
+        runAllTests(RUNS);
+    }
 
 };

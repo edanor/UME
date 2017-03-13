@@ -65,7 +65,6 @@ public:
             // Compute the SIMD part of dot product
             FLOAT_T reduction = reduction_vec.hadd();
 
-
             // Use scalar code to handle the reminder of elements.
             for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
             {
@@ -78,11 +77,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD single, (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD single";
         return retval;
     }
 };
@@ -132,20 +127,141 @@ public:
 
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
+        int LOOP_COUNT = this->problem_size / STRIDE;
+        int LOOP_PEEL_OFFSET = LOOP_COUNT * STRIDE;
+        // Traverse 'y'
+        for (int i = 0; i < this->problem_size; i++)
+        {
+            int row_offset = i * this->problem_size;
+            UME::SIMD::SIMDVec<FLOAT_T, STRIDE> x_vec, a_vec, reduction_vec;
+            FLOAT_T reduction;
+            // A0
+UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::prefetch0(&this->A1[row_offset]);
+
+            reduction_vec = FLOAT_T(0.0f);
+            for (int j = 0; j < LOOP_PEEL_OFFSET; j += STRIDE)
+            {
+                // Cannot load aligned because there is no guarantee that
+                // all rows are aligned to the OPTIMAL_ALIGNMENT boundaries.
+                x_vec.load(&this->x0[j]);
+                a_vec.load(&this->A0[row_offset + j]);
+
+                reduction_vec += a_vec * x_vec;
+            }
+
+            reduction = reduction_vec.hadd();
+
+            // Use scalar code to handle the reminder of elements.
+            for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
+            {
+                reduction += this->A0[row_offset + j] * this->x0[j];
+            }
+
+            FLOAT_T t0 = this->alpha[0] * reduction + this->beta[0] * this->y[i];
+
+            // A1
+            reduction_vec = FLOAT_T(0.0f);
+UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::prefetch0(&this->A2[row_offset]);
+            for (int j = 0; j < LOOP_PEEL_OFFSET; j += STRIDE)
+            {
+                // Cannot load aligned because there is no guarantee that
+                // all rows are aligned to the OPTIMAL_ALIGNMENT boundaries.
+                x_vec.load(&this->x1[j]);
+                a_vec.load(&this->A1[row_offset + j]);
+
+                reduction_vec += a_vec * x_vec;
+            }
+
+            reduction = reduction_vec.hadd();
+
+            // Use scalar code to handle the reminder of elements.
+            for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
+            {
+                reduction += this->A1[row_offset + j] * this->x1[j];
+            }
+
+            FLOAT_T t1 = this->alpha[1] * reduction + this->beta[1] * t0;
+
+            // A2
+            reduction_vec = FLOAT_T(0.0f);
+UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::prefetch0(&this->A3[row_offset]);
+            for (int j = 0; j < LOOP_PEEL_OFFSET; j += STRIDE)
+            {
+                // Cannot load aligned because there is no guarantee that
+                // all rows are aligned to the OPTIMAL_ALIGNMENT boundaries.
+                x_vec.load(&this->x2[j]);
+                a_vec.load(&this->A2[row_offset + j]);
+
+                reduction_vec += a_vec * x_vec;
+            }
+
+            reduction = reduction_vec.hadd();
+
+            // Use scalar code to handle the reminder of elements.
+            for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
+            {
+                reduction += this->A2[row_offset + j] * this->x2[j];
+            }
+
+            FLOAT_T t2 = this->alpha[2] * reduction + this->beta[2] * t1;
+
+            // A3
+            reduction_vec = FLOAT_T(0.0f);
+UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::prefetch0(&this->A4[row_offset]);
+            for (int j = 0; j < LOOP_PEEL_OFFSET; j += STRIDE)
+            {
+                // Cannot load aligned because there is no guarantee that
+                // all rows are aligned to the OPTIMAL_ALIGNMENT boundaries.
+                x_vec.load(&this->x3[j]);
+                a_vec.load(&this->A3[row_offset + j]);
+
+                reduction_vec += a_vec * x_vec;
+            }
+
+            reduction = reduction_vec.hadd();
+
+            // Use scalar code to handle the reminder of elements.
+            for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
+            {
+                reduction += this->A3[row_offset + j] * this->x3[j];
+            }
+
+            FLOAT_T t3 = this->alpha[3] * reduction + this->beta[3] * t2;
+
+            // A4
+            reduction_vec = FLOAT_T(0.0f);
+UME::SIMD::SIMDVec<FLOAT_T, STRIDE>::prefetch0(&this->A0[row_offset + this->problem_size]);
+            for (int j = 0; j < LOOP_PEEL_OFFSET; j += STRIDE)
+            {
+                // Cannot load aligned because there is no guarantee that
+                // all rows are aligned to the OPTIMAL_ALIGNMENT boundaries.
+                x_vec.load(&this->x4[j]);
+                a_vec.load(&this->A4[row_offset + j]);
+
+                reduction_vec += a_vec * x_vec;
+            }
+
+            reduction = reduction_vec.hadd();
+
+            // Use scalar code to handle the reminder of elements.
+            for (int j = LOOP_PEEL_OFFSET; j < this->problem_size; j++)
+            {
+                reduction += this->A4[row_offset + j] * this->x4[j];
+            }
+
+            this->y[i] = this->alpha[4] * reduction + this->beta[4] * t3;
+        }
+        /*
         simd_gemv(this->problem_size, this->A0, this->alpha[0], this->x0, this->beta[0], this->y);
         simd_gemv(this->problem_size, this->A1, this->alpha[1], this->x1, this->beta[1], this->y);
         simd_gemv(this->problem_size, this->A2, this->alpha[2], this->x2, this->beta[2], this->y);
         simd_gemv(this->problem_size, this->A3, this->alpha[3], this->x3, this->beta[3], this->y);
-        simd_gemv(this->problem_size, this->A4, this->alpha[4], this->x4, this->beta[4], this->y);
+        simd_gemv(this->problem_size, this->A4, this->alpha[4], this->x4, this->beta[4], this->y);*/
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD chained, (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD chained";
         return retval;
     }
 };

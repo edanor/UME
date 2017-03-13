@@ -64,11 +64,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD single, (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD single, (SIMD: " + std::to_string(STRIDE) + ")";
         return retval;
     }
 };
@@ -117,11 +113,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD dot(axpy(x0,y0), axpy(x1, y1)), (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD dot(axpy(x0,y0), axpy(x1, y1)) (SIMD: " + std::to_string(STRIDE) + ")";
         return retval;
     }
 };

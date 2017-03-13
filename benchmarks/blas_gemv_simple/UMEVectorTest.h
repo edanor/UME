@@ -39,10 +39,21 @@ class UMEVectorSingleTest : public GemvSingleTest<FLOAT_T> {
 public:
     UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
 
+    UME_NEVER_INLINE void evaluateRow(int N, FLOAT_T alpha, FLOAT_T* A_row, FLOAT_T* x, FLOAT_T beta, FLOAT_T* y)
+    {
+        UME::VECTOR::Vector<FLOAT_T> A_vec(N, A_row);
+        UME::VECTOR::Vector<FLOAT_T> x_vec(N, x);
+
+        auto t0 = (A_vec * x_vec).hadd(); // dot product
+        FLOAT_T t1 = beta * (*y);
+        auto t2 = alpha * t0 + t1;
+        UME::VECTOR::MonadicEvaluator eval(y, t2); // evaluate the reduction operation
+    }
+
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
         // Traverse rows of A
-        for (int i = 0; i < this->problem_size; i++)
+        /*for (int i = 0; i < this->problem_size; i++)
         {
             int row_offset = i * this->problem_size;
             UME::VECTOR::Vector<FLOAT_T> A_vec(this->problem_size, &this->A[row_offset]);
@@ -52,15 +63,17 @@ public:
             FLOAT_T t1 = this->beta * this->y[i];
             auto t2 = this->alpha * t0 + t1;
             UME::VECTOR::MonadicEvaluator eval((FLOAT_T*)&this->y[i], t2); // evaluate the reduction operation
+        }*/
+        for (int i = 0; i < this->problem_size; i++)
+        {
+            int row_offset = i * this->problem_size;
+            evaluateRow(i, this->alpha, &this->A[row_offset], this->x, this->beta, &this->y[i]);
         }
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::VECTOR single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::VECTOR single";
         return retval;
     }
 };
@@ -90,6 +103,55 @@ class UMEVectorChainedTest : public GemvChainedTest<FLOAT_T> {
 public:
     UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
 
+    // WA: problem with Inlining
+    UME_NEVER_INLINE void evaluateForRow(
+        int N,
+        FLOAT_T* A0_row,
+        FLOAT_T* A1_row,
+        FLOAT_T* A2_row,
+        FLOAT_T* A3_row,
+        FLOAT_T* A4_row,
+        FLOAT_T* alphas,
+        FLOAT_T* x0,
+        FLOAT_T* x1,
+        FLOAT_T* x2,
+        FLOAT_T* x3,
+        FLOAT_T* x4,
+        FLOAT_T* betas,
+        FLOAT_T* y)
+    {
+        // Load rows of A's.
+        UME::VECTOR::Vector<FLOAT_T> A0_vec(N, A0_row);
+        UME::VECTOR::Vector<FLOAT_T> A1_vec(N, A1_row);
+        UME::VECTOR::Vector<FLOAT_T> A2_vec(N, A2_row);
+        UME::VECTOR::Vector<FLOAT_T> A3_vec(N, A3_row);
+        UME::VECTOR::Vector<FLOAT_T> A4_vec(N, A4_row);
+
+        // Load x vectors.
+        UME::VECTOR::Vector<FLOAT_T> x0_vec(N, x0);
+        UME::VECTOR::Vector<FLOAT_T> x1_vec(N, x1);
+        UME::VECTOR::Vector<FLOAT_T> x2_vec(N, x2);
+        UME::VECTOR::Vector<FLOAT_T> x3_vec(N, x3);
+        UME::VECTOR::Vector<FLOAT_T> x4_vec(N, x4);
+
+        /*x0_vec.elements = this->x0;
+        x1_vec.elements = this->x1;
+        x2_vec.elements = this->x2;
+        x3_vec.elements = this->x3;
+        x4_vec.elements = this->x4;*/
+
+        // This code touches only one row of each array per iteration!
+        // y vector is accessed therefore exactly once.
+        auto y_i_0 = (alphas[0] * ((A0_vec * x0_vec).hadd())) + (this->beta[0] * (*y));
+        auto y_i_1 = (alphas[1] * ((A1_vec * x1_vec).hadd())) + (this->beta[1] * y_i_0);
+        auto y_i_2 = (alphas[2] * ((A2_vec * x2_vec).hadd())) + (this->beta[2] * y_i_1);
+        auto y_i_3 = (alphas[3] * ((A3_vec * x3_vec).hadd())) + (this->beta[3] * y_i_2);
+        auto y_i_4 = (alphas[4] * ((A4_vec * x4_vec).hadd())) + (this->beta[4] * y_i_3);
+
+        //ExpressionPrinter<decltype(y_i_4)> printer(y_i_4);
+        UME::VECTOR::MonadicEvaluator eval(y, y_i_4);
+    }
+
     UME_NEVER_INLINE virtual void benchmarked_code()
     {
         /*printArray(this->problem_size, this->x0, std::string("x0"));
@@ -105,7 +167,7 @@ public:
         printMatrix(this->problem_size, this->problem_size, this->A4, "A4");
         */
         // Traverse rows of A's
-        for (int i = 0; i < this->problem_size; i++)
+        /*for (int i = 0; i < this->problem_size; i++)
         {
             int row_offset = i * this->problem_size;
             // Load rows of A's.
@@ -132,15 +194,32 @@ public:
 
             //ExpressionPrinter<decltype(y_i_4)> printer(y_i_4);
             UME::VECTOR::MonadicEvaluator eval((FLOAT_T*)&this->y[i], y_i_4);
+        }*/
+
+        for (int i = 0; i < this->problem_size; i++)
+        {
+            int rowOffset = i*this->problem_size;
+            evaluateForRow(
+                this->problem_size,
+                &this->A0[rowOffset],
+                &this->A1[rowOffset],
+                &this->A2[rowOffset],
+                &this->A3[rowOffset],
+                &this->A4[rowOffset],
+                this->alpha,
+                this->x0,
+                this->x1,
+                this->x2,
+                this->x3,
+                this->x4,
+                this->beta,
+                &this->y[i]);
         }
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::VECTOR chained, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::VECTOR chained";
         return retval;
     }
 };

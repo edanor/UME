@@ -31,10 +31,6 @@
 #include <iostream>
 #include <memory>
 
-#if defined(__i386__) || defined(__x86_64__)
-#include <immintrin.h> 
-#endif
-
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
@@ -50,14 +46,15 @@
 #include "UMESimdTest.h"
 #include "UMEVectorTest.h"
 
-int main()
+int main(int argc, char **argv)
 {
     int MIN_SIZE = 1;
     int MAX_SIZE = 32768;
-    int ITERATIONS = 1;
+    int PROGRESSION = 2;
+    int ITERATIONS = 10;
 
-    BenchmarkHarness harness;
-    /*
+    BenchmarkHarness harness(argc, argv);
+
     std::cout <<
         "[Compile with -DUSE_BLAS to enable blas benchmarks (requires BLAS)]\n"
         "\n"
@@ -70,56 +67,84 @@ int main()
         "data locality in context of more than a single BLAS call.\n"
         "UME::VECTOR version shows that treatment of vector programs using\n"
         "expressions instead of kernels can give additional performance boost.\n\n";
-    */
+
     // Single execution (single precision)
-    for (int i = MIN_SIZE; i <= MAX_SIZE; i *= 2) {
-        harness.registerTest(new ScalarSingleTest<float>(i));
-        harness.registerTest(new BlasSingleTest<float>(i));
-        harness.registerTest(new UMEVectorSingleTest<float>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 1>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 2>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 4>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 8>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 16>(i));
-        harness.registerTest(new UMESimdSingleTest<float, 32>(i));
+    for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION) {
+        std::string categoryName = std::string("BLAS_GEMV");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+
+        newCategory->registerTest(new ScalarSingleTest<float>(i));
+        newCategory->registerTest(new BlasSingleTest<float>(i));
+        newCategory->registerTest(new UMEVectorSingleTest<float>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 1>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 2>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 4>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 8>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 16>(i));
+        newCategory->registerTest(new UMESimdSingleTest<float, 32>(i));
+
+        harness.registerTestCategory(newCategory);
     }
 
     // Single execution (double precision)
     for (int i = MIN_SIZE; i <= MAX_SIZE; i *= 2) {
-        harness.registerTest(new ScalarSingleTest<double>(i));
-        harness.registerTest(new BlasSingleTest<double>(i));
-        harness.registerTest(new UMEVectorSingleTest<double>(i));
-        harness.registerTest(new UMESimdSingleTest<double, 1>(i));
-        harness.registerTest(new UMESimdSingleTest<double, 2>(i));
-        harness.registerTest(new UMESimdSingleTest<double, 4>(i));
-        harness.registerTest(new UMESimdSingleTest<double, 8>(i));
-        harness.registerTest(new UMESimdSingleTest<double, 16>(i));
+        std::string categoryName = std::string("BLAS_GEMV");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+
+        newCategory->registerTest(new ScalarSingleTest<double>(i));
+        newCategory->registerTest(new BlasSingleTest<double>(i));
+        newCategory->registerTest(new UMEVectorSingleTest<double>(i));
+        newCategory->registerTest(new UMESimdSingleTest<double, 1>(i));
+        newCategory->registerTest(new UMESimdSingleTest<double, 2>(i));
+        newCategory->registerTest(new UMESimdSingleTest<double, 4>(i));
+        newCategory->registerTest(new UMESimdSingleTest<double, 8>(i));
+        newCategory->registerTest(new UMESimdSingleTest<double, 16>(i));
+
+        harness.registerTestCategory(newCategory);
     }
 
     // Chained execution (single precision)
-    for (int i = MIN_SIZE; i <= MAX_SIZE/2; i *= 2) {
-        harness.registerTest(new ScalarChainedTest<float>(i));
-        harness.registerTest(new BlasChainedTest<float>(i));
-        harness.registerTest(new UMEVectorChainedTest<float>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 1>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 2>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 4>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 8>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 16>(i));
-        harness.registerTest(new UMESimdChainedTest<float, 32>(i));
+    for (int i = MIN_SIZE; i <= MAX_SIZE/2; i *= PROGRESSION) {
+        std::string categoryName = std::string("BLAS_GEMV_chained");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+
+        newCategory->registerTest(new ScalarChainedTest<float>(i));
+        newCategory->registerTest(new BlasChainedTest<float>(i));
+        newCategory->registerTest(new UMEVectorChainedTest<float>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 1>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 2>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 4>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 8>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 16>(i));
+        newCategory->registerTest(new UMESimdChainedTest<float, 32>(i));
+
+        harness.registerTestCategory(newCategory);
     }
 
     // Chained execution (double precision)
     for (int i = MIN_SIZE; i <= MAX_SIZE/2; i *= 4) {
-        harness.registerTest(new ScalarChainedTest<double>(i));
-        harness.registerTest(new BlasChainedTest<double>(i));
-        harness.registerTest(new UMEVectorChainedTest<double>(i));
-        harness.registerTest(new UMESimdChainedTest<double, 1>(i));
-        harness.registerTest(new UMESimdChainedTest<double, 2>(i));
-        harness.registerTest(new UMESimdChainedTest<double, 4>(i));
-        harness.registerTest(new UMESimdChainedTest<double, 8>(i));
-        harness.registerTest(new UMESimdChainedTest<double, 16>(i));
+        std::string categoryName = std::string("BLAS_GEMV_chained");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+
+        newCategory->registerTest(new ScalarChainedTest<double>(i));
+        newCategory->registerTest(new BlasChainedTest<double>(i));
+        newCategory->registerTest(new UMEVectorChainedTest<double>(i));
+        newCategory->registerTest(new UMESimdChainedTest<double, 1>(i));
+        newCategory->registerTest(new UMESimdChainedTest<double, 2>(i));
+        newCategory->registerTest(new UMESimdChainedTest<double, 4>(i));
+        newCategory->registerTest(new UMESimdChainedTest<double, 8>(i));
+        newCategory->registerTest(new UMESimdChainedTest<double, 16>(i));
+
+        harness.registerTestCategory(newCategory);
     }
 
-    harness.runAllTests(ITERATIONS);
+    harness.runTests(ITERATIONS);
 }

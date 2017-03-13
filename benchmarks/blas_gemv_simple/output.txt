@@ -1,0 +1,1513 @@
+^C
+[pkarpins@opladev39 blas_gemv_simple]$ icpc -std=c++11 BlasGemvSimple.cpp -O3 -DUSE_BLAS -mkl -mavx
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=float]" at line 77 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=float]" at line 77 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(70): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+                            ^
+          detected during:
+            instantiation of "void UMEVectorSingleTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=float]" at line 40
+            instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                   ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=1]" at line 79 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                   ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=1]" at line 79 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=2]" at line 80 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=2]" at line 80 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=4]" at line 81 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=4]" at line 81 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=8]" at line 82 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=8]" at line 82 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=16]" at line 83 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=16]" at line 83 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=32]" at line 84 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=32]" at line 84 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                           ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                           ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                         ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=double]" at line 90 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                         ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=double]" at line 90 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                              ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(70): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+              ^
+          detected during:
+            instantiation of "void UMEVectorSingleTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=double]" at line 40
+            instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                              ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=1]" at line 92 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=1]" at line 92 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=2]" at line 93 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=2]" at line 93 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=4]" at line 94 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=4]" at line 94 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=8]" at line 95 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=8]" at line 95 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=16]" at line 96 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=16]" at line 96 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                    ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                    ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=float]" at line 102 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=float]" at line 102 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                       ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(198): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+                            ^
+          detected during:
+            instantiation of "void UMEVectorChainedTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=float]" at line 107
+            instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                       ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=1]" at line 104 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=1]" at line 104 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=2]" at line 105 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=2]" at line 105 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=4]" at line 106 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=4]" at line 106 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=8]" at line 107 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=8]" at line 107 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=16]" at line 108 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=16]" at line 108 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=32]" at line 109 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=32]" at line 109 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                          ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=double]" at line 115 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                          ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=double]" at line 115 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                               ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(198): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+              ^
+          detected during:
+            instantiation of "void UMEVectorChainedTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=double]" at line 107
+            instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                               ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=1]" at line 117 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=1]" at line 117 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=2]" at line 118 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=2]" at line 118 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=4]" at line 119 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=4]" at line 119 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=8]" at line 120 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=8]" at line 120 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=16]" at line 121 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=16]" at line 121 of "BlasGemvSimple.cpp"
+
+[pkarpins@opladev39 blas_gemv_simple]$ ./a.out
+Scalar single, (float) 1 Elapsed: 147 (dev: 52), error: 0.270723)
+BLAS single, float 1 Elapsed: 169077 (dev: 164584), error: 0.270723)
+UME::VECTOR single, (float) 1 Elapsed: 112 (dev: 5), error: 0.270723)
+UME::SIMD single, (float, 1) 1 Elapsed: 109 (dev: 4), error: 0.270723)
+UME::SIMD single, (float, 2) 1 Elapsed: 166 (dev: 57), error: 0.270723)
+UME::SIMD single, (float, 4) 1 Elapsed: 112 (dev: 5), error: 0.270723)
+UME::SIMD single, (float, 8) 1 Elapsed: 113 (dev: 5), error: 0.270723)
+UME::SIMD single, (float, 16) 1 Elapsed: 121 (dev: 5), error: 0.270723)
+UME::SIMD single, (float, 32) 1 Elapsed: 169 (dev: 9), error: 0.270723)
+Scalar single, (float) 2 Elapsed: 112 (dev: 2), error: 0.106596)
+BLAS single, float 2 Elapsed: 184 (dev: 13), error: 0.106596)
+UME::VECTOR single, (float) 2 Elapsed: 118 (dev: 2), error: 0.106596)
+UME::SIMD single, (float, 1) 2 Elapsed: 111 (dev: 2), error: 0.106596)
+UME::SIMD single, (float, 2) 2 Elapsed: 119 (dev: 6), error: 0.106596)
+UME::SIMD single, (float, 4) 2 Elapsed: 118 (dev: 2), error: 0.106596)
+UME::SIMD single, (float, 8) 2 Elapsed: 117 (dev: 2), error: 0.106596)
+UME::SIMD single, (float, 16) 2 Elapsed: 134 (dev: 4), error: 0.106596)
+UME::SIMD single, (float, 32) 2 Elapsed: 211 (dev: 7), error: 0.106596)
+Scalar single, (float) 4 Elapsed: 128 (dev: 3), error: 0.205396)
+BLAS single, float 4 Elapsed: 193 (dev: 17), error: 0.205396)
+UME::VECTOR single, (float) 4 Elapsed: 141 (dev: 3), error: 0.205396)
+UME::SIMD single, (float, 1) 4 Elapsed: 127 (dev: 3), error: 0.205396)
+UME::SIMD single, (float, 2) 4 Elapsed: 131 (dev: 4), error: 0.205396)
+UME::SIMD single, (float, 4) 4 Elapsed: 125 (dev: 3), error: 0.205396)
+UME::SIMD single, (float, 8) 4 Elapsed: 136 (dev: 4), error: 0.205396)
+UME::SIMD single, (float, 16) 4 Elapsed: 148 (dev: 3), error: 0.205396)
+UME::SIMD single, (float, 32) 4 Elapsed: 291 (dev: 6), error: 0.205396)
+Scalar single, (float) 8 Elapsed: 167 (dev: 4), error: 0.122137)
+BLAS single, float 8 Elapsed: 206 (dev: 12), error: 0.122137)
+UME::VECTOR single, (float) 8 Elapsed: 162 (dev: 2), error: 0.122137)
+UME::SIMD single, (float, 1) 8 Elapsed: 166 (dev: 2), error: 0.122137)
+UME::SIMD single, (float, 2) 8 Elapsed: 171 (dev: 4), error: 0.122137)
+UME::SIMD single, (float, 4) 8 Elapsed: 151 (dev: 2), error: 0.122137)
+UME::SIMD single, (float, 8) 8 Elapsed: 156 (dev: 6), error: 0.122137)
+UME::SIMD single, (float, 16) 8 Elapsed: 202 (dev: 3), error: 0.122137)
+UME::SIMD single, (float, 32) 8 Elapsed: 467 (dev: 9), error: 0.122137)
+Scalar single, (float) 16 Elapsed: 188 (dev: 2), error: 0.419233)
+BLAS single, float 16 Elapsed: 228 (dev: 18), error: 0.419233)
+UME::VECTOR single, (float) 16 Elapsed: 229 (dev: 6), error: 0.419233)
+UME::SIMD single, (float, 1) 16 Elapsed: 192 (dev: 3), error: 0.419233)
+UME::SIMD single, (float, 2) 16 Elapsed: 358 (dev: 3), error: 0.419233)
+UME::SIMD single, (float, 4) 16 Elapsed: 212 (dev: 4), error: 0.419233)
+UME::SIMD single, (float, 8) 16 Elapsed: 210 (dev: 2), error: 0.419233)
+UME::SIMD single, (float, 16) 16 Elapsed: 262 (dev: 2), error: 0.419233)
+UME::SIMD single, (float, 32) 16 Elapsed: 786 (dev: 17), error: 0.419233)
+Scalar single, (float) 32 Elapsed: 319 (dev: 10), error: 0.445471)
+BLAS single, float 32 Elapsed: 301 (dev: 15), error: 0.445471)
+UME::VECTOR single, (float) 32 Elapsed: 399 (dev: 5), error: 0.445471)
+UME::SIMD single, (float, 1) 32 Elapsed: 308 (dev: 4), error: 0.445471)
+UME::SIMD single, (float, 2) 32 Elapsed: 1004 (dev: 4), error: 0.445471)
+UME::SIMD single, (float, 4) 32 Elapsed: 417 (dev: 6), error: 0.445471)
+UME::SIMD single, (float, 8) 32 Elapsed: 414 (dev: 26), error: 0.445471)
+UME::SIMD single, (float, 16) 32 Elapsed: 490 (dev: 4), error: 0.445471)
+UME::SIMD single, (float, 32) 32 Elapsed: 1428 (dev: 11), error: 0.445471)
+Scalar single, (float) 64 Elapsed: 663 (dev: 8), error: 0.390111)
+BLAS single, float 64 Elapsed: 484 (dev: 20), error: 0.390111)
+UME::VECTOR single, (float) 64 Elapsed: 884 (dev: 3), error: 0.390111)
+UME::SIMD single, (float, 1) 64 Elapsed: 674 (dev: 3), error: 0.390111)
+UME::SIMD single, (float, 2) 64 Elapsed: 3462 (dev: 4), error: 0.390111)
+UME::SIMD single, (float, 4) 64 Elapsed: 1545 (dev: 448), error: 0.390111)
+UME::SIMD single, (float, 8) 64 Elapsed: 1008 (dev: 77), error: 0.390111)
+UME::SIMD single, (float, 16) 64 Elapsed: 1123 (dev: 3), error: 0.390111)
+UME::SIMD single, (float, 32) 64 Elapsed: 2847 (dev: 10), error: 0.390111)
+Scalar single, (float) 128 Elapsed: 11786 (dev: 492), error: 0.408116)
+BLAS single, float 128 Elapsed: 90727 (dev: 82998), error: 0.408116)
+UME::VECTOR single, (float) 128 Elapsed: 14034 (dev: 34), error: 0.408116)
+UME::SIMD single, (float, 1) 128 Elapsed: 13312 (dev: 39), error: 0.408116)
+UME::SIMD single, (float, 2) 128 Elapsed: 24160 (dev: 141), error: 0.408116)
+UME::SIMD single, (float, 4) 128 Elapsed: 3881 (dev: 10), error: 0.408116)
+UME::SIMD single, (float, 8) 128 Elapsed: 13481 (dev: 80), error: 0.408116)
+UME::SIMD single, (float, 16) 128 Elapsed: 13765 (dev: 43), error: 0.259422)
+UME::SIMD single, (float, 32) 128 Elapsed: 17350 (dev: 807), error: 0.259422)
+Scalar single, (float) 256 Elapsed: 18644 (dev: 296), error: 0.0758594)
+BLAS single, float 256 Elapsed: 20722 (dev: 1464), error: 0.0758595)
+UME::VECTOR single, (float) 256 Elapsed: 21121 (dev: 89), error: 0.0758594)
+UME::SIMD single, (float, 1) 256 Elapsed: 20319 (dev: 933), error: 0.0758594)
+UME::SIMD single, (float, 2) 256 Elapsed: 64342 (dev: 236), error: 0.0758594)
+UME::SIMD single, (float, 4) 256 Elapsed: 16406 (dev: 525), error: 0.0758594)
+UME::SIMD single, (float, 8) 256 Elapsed: 22615 (dev: 490), error: 0.0758594)
+UME::SIMD single, (float, 16) 256 Elapsed: 22250 (dev: 144), error: 0.425369)
+UME::SIMD single, (float, 32) 256 Elapsed: 26497 (dev: 106), error: 0.425369)
+Scalar single, (float) 512 Elapsed: 46327 (dev: 1821), error: 0.102305)
+BLAS single, float 512 Elapsed: 33681 (dev: 1741), error: 0.353136)
+UME::VECTOR single, (float) 512 Elapsed: 53674 (dev: 288), error: 0.353136)
+UME::SIMD single, (float, 1) 512 Elapsed: 47274 (dev: 231), error: 0.34126)
+UME::SIMD single, (float, 2) 512 Elapsed: 243742 (dev: 1108), error: 0.381779)
+UME::SIMD single, (float, 4) 512 Elapsed: 67575 (dev: 504), error: 0.381779)
+UME::SIMD single, (float, 8) 512 Elapsed: 60553 (dev: 689), error: 0.10972)
+UME::SIMD single, (float, 16) 512 Elapsed: 56043 (dev: 339), error: 0.10972)
+UME::SIMD single, (float, 32) 512 Elapsed: 63987 (dev: 388), error: 0.269366)
+Scalar single, (float) 1024 Elapsed: 163953 (dev: 7902), error: 0.28101)
+BLAS single, float 1024 Elapsed: 73828 (dev: 4921), error: 0.403175)
+UME::VECTOR single, (float) 1024 Elapsed: 199976 (dev: 3161), error: 0.426045)
+UME::SIMD single, (float, 1) 1024 Elapsed: 172554 (dev: 1430), error: 0.432765)
+UME::SIMD single, (float, 2) 1024 Elapsed: 1029765 (dev: 6620), error: 0.491946)
+UME::SIMD single, (float, 4) 1024 Elapsed: 288555 (dev: 1695), error: 0.46401)
+UME::SIMD single, (float, 8) 1024 Elapsed: 234704 (dev: 6946), error: 0.322875)
+UME::SIMD single, (float, 16) 1024 Elapsed: 196460 (dev: 1581), error: 0.41913)
+UME::SIMD single, (float, 32) 1024 Elapsed: 215308 (dev: 1622), error: 0.36751)
+Scalar single, (float) 2048 Elapsed: 1430632 (dev: 14853), error: 0.13414)
+BLAS single, float 2048 Elapsed: 1096246 (dev: 7824), error: 0.150206)
+UME::VECTOR single, (float) 2048 Elapsed: 1506336 (dev: 8180), error: 0.25352)
+UME::SIMD single, (float, 1) 2048 Elapsed: 1491192 (dev: 7473), error: 0.438355)
+UME::SIMD single, (float, 2) 2048 Elapsed: 4267835 (dev: 38786), error: 0.199434)
+UME::SIMD single, (float, 4) 2048 Elapsed: 1651173 (dev: 4025), error: 0.270648)
+UME::SIMD single, (float, 8) 2048 Elapsed: 1586763 (dev: 4958), error: 0.382385)
+UME::SIMD single, (float, 16) 2048 Elapsed: 1524824 (dev: 3868), error: 0.0507244)
+UME::SIMD single, (float, 32) 2048 Elapsed: 1564758 (dev: 2670), error: 0.172842)
+Scalar single, (double) 1 Elapsed: 401 (dev: 246), error: 0.187407)
+BLAS single, double 1 Elapsed: 9090 (dev: 8573), error: 0.187407)
+UME::VECTOR single, (double) 1 Elapsed: 168 (dev: 8), error: 0.187407)
+UME::SIMD single, (double, 1) 1 Elapsed: 158 (dev: 8), error: 0.187407)
+UME::SIMD single, (double, 2) 1 Elapsed: 166 (dev: 10), error: 0.187407)
+UME::SIMD single, (double, 4) 1 Elapsed: 166 (dev: 10), error: 0.187407)
+UME::SIMD single, (double, 8) 1 Elapsed: 169 (dev: 11), error: 0.187407)
+UME::SIMD single, (double, 16) 1 Elapsed: 204 (dev: 15), error: 0.187407)
+Scalar single, (double) 2 Elapsed: 160 (dev: 3), error: 0.182972)
+BLAS single, double 2 Elapsed: 303 (dev: 17), error: 0.182972)
+UME::VECTOR single, (double) 2 Elapsed: 178 (dev: 4), error: 0.182972)
+UME::SIMD single, (double, 1) 2 Elapsed: 163 (dev: 4), error: 0.182972)
+UME::SIMD single, (double, 2) 2 Elapsed: 169 (dev: 5), error: 0.182972)
+UME::SIMD single, (double, 4) 2 Elapsed: 170 (dev: 5), error: 0.182972)
+UME::SIMD single, (double, 8) 2 Elapsed: 173 (dev: 4), error: 0.182972)
+UME::SIMD single, (double, 16) 2 Elapsed: 230 (dev: 9), error: 0.182972)
+Scalar single, (double) 4 Elapsed: 184 (dev: 6), error: 0.0564559)
+BLAS single, double 4 Elapsed: 308 (dev: 16), error: 0.0564559)
+UME::VECTOR single, (double) 4 Elapsed: 213 (dev: 6), error: 0.0564559)
+UME::SIMD single, (double, 1) 4 Elapsed: 181 (dev: 5), error: 0.0564559)
+UME::SIMD single, (double, 2) 4 Elapsed: 186 (dev: 5), error: 0.0564559)
+UME::SIMD single, (double, 4) 4 Elapsed: 185 (dev: 5), error: 0.0564559)
+UME::SIMD single, (double, 8) 4 Elapsed: 201 (dev: 5), error: 0.0564559)
+UME::SIMD single, (double, 16) 4 Elapsed: 318 (dev: 7), error: 0.0564559)
+Scalar single, (double) 8 Elapsed: 304 (dev: 62), error: 0.0817643)
+BLAS single, double 8 Elapsed: 316 (dev: 15), error: 0.0817643)
+UME::VECTOR single, (double) 8 Elapsed: 247 (dev: 6), error: 0.0817643)
+UME::SIMD single, (double, 1) 8 Elapsed: 223 (dev: 4), error: 0.0817643)
+UME::SIMD single, (double, 2) 8 Elapsed: 261 (dev: 4), error: 0.0817643)
+UME::SIMD single, (double, 4) 8 Elapsed: 224 (dev: 4), error: 0.0817643)
+UME::SIMD single, (double, 8) 8 Elapsed: 237 (dev: 4), error: 0.0817643)
+UME::SIMD single, (double, 16) 8 Elapsed: 456 (dev: 10), error: 0.0817643)
+Scalar single, (double) 16 Elapsed: 292 (dev: 7), error: 0.269937)
+BLAS single, double 16 Elapsed: 351 (dev: 17), error: 0.269937)
+UME::VECTOR single, (double) 16 Elapsed: 368 (dev: 4), error: 0.269937)
+UME::SIMD single, (double, 1) 16 Elapsed: 294 (dev: 7), error: 0.269937)
+UME::SIMD single, (double, 2) 16 Elapsed: 476 (dev: 4), error: 0.269937)
+UME::SIMD single, (double, 4) 16 Elapsed: 355 (dev: 6), error: 0.269937)
+UME::SIMD single, (double, 8) 16 Elapsed: 356 (dev: 4), error: 0.269937)
+UME::SIMD single, (double, 16) 16 Elapsed: 717 (dev: 13), error: 0.269937)
+Scalar single, (double) 32 Elapsed: 538 (dev: 6), error: 0.453654)
+BLAS single, double 32 Elapsed: 525 (dev: 37), error: 0.453654)
+UME::VECTOR single, (double) 32 Elapsed: 798 (dev: 8), error: 0.453654)
+UME::SIMD single, (double, 1) 32 Elapsed: 597 (dev: 6), error: 0.453654)
+UME::SIMD single, (double, 2) 32 Elapsed: 1551 (dev: 6), error: 0.453654)
+UME::SIMD single, (double, 4) 32 Elapsed: 855 (dev: 10), error: 0.453654)
+UME::SIMD single, (double, 8) 32 Elapsed: 803 (dev: 9), error: 0.453654)
+UME::SIMD single, (double, 16) 32 Elapsed: 1522 (dev: 46), error: 0.453654)
+Scalar single, (double) 64 Elapsed: 1608 (dev: 12), error: 0.0631495)
+BLAS single, double 64 Elapsed: 2143 (dev: 247), error: 0.0631495)
+UME::VECTOR single, (double) 64 Elapsed: 2275 (dev: 15), error: 0.0631495)
+UME::SIMD single, (double, 1) 64 Elapsed: 1634 (dev: 12), error: 0.0631495)
+UME::SIMD single, (double, 2) 64 Elapsed: 5333 (dev: 16), error: 0.0631495)
+UME::SIMD single, (double, 4) 64 Elapsed: 2427 (dev: 12), error: 0.0631495)
+UME::SIMD single, (double, 8) 64 Elapsed: 2298 (dev: 12), error: 0.0631495)
+UME::SIMD single, (double, 16) 64 Elapsed: 3123 (dev: 20), error: 0.0631495)
+Scalar single, (double) 128 Elapsed: 15291 (dev: 552), error: 0.400126)
+BLAS single, double 128 Elapsed: 24542 (dev: 2734), error: 0.400126)
+UME::VECTOR single, (double) 128 Elapsed: 18648 (dev: 160), error: 0.400126)
+UME::SIMD single, (double, 1) 128 Elapsed: 16486 (dev: 69), error: 0.400126)
+UME::SIMD single, (double, 2) 128 Elapsed: 30613 (dev: 76), error: 0.400126)
+UME::SIMD single, (double, 4) 128 Elapsed: 19546 (dev: 144), error: 0.400126)
+UME::SIMD single, (double, 8) 128 Elapsed: 18928 (dev: 339), error: 0.400126)
+UME::SIMD single, (double, 16) 128 Elapsed: 19517 (dev: 69), error: 0.400126)
+Scalar single, (double) 256 Elapsed: 35895 (dev: 572), error: 0.303213)
+BLAS single, double 256 Elapsed: 37835 (dev: 1581), error: 0.303213)
+UME::VECTOR single, (double) 256 Elapsed: 43869 (dev: 593), error: 0.303213)
+UME::SIMD single, (double, 1) 256 Elapsed: 37185 (dev: 282), error: 0.301632)
+UME::SIMD single, (double, 2) 256 Elapsed: 88557 (dev: 619), error: 0.301632)
+UME::SIMD single, (double, 4) 256 Elapsed: 44596 (dev: 319), error: 0.301632)
+UME::SIMD single, (double, 8) 256 Elapsed: 41308 (dev: 274), error: 0.301632)
+UME::SIMD single, (double, 16) 256 Elapsed: 42405 (dev: 519), error: 0.301632)
+Scalar single, (double) 512 Elapsed: 103256 (dev: 1784), error: 0.220468)
+BLAS single, double 512 Elapsed: 55252 (dev: 3674), error: 0.0230689)
+UME::VECTOR single, (double) 512 Elapsed: 130788 (dev: 2342), error: 0.259414)
+UME::SIMD single, (double, 1) 512 Elapsed: 106406 (dev: 717), error: 0.45455)
+UME::SIMD single, (double, 2) 512 Elapsed: 330141 (dev: 2379), error: 0.156071)
+UME::SIMD single, (double, 4) 512 Elapsed: 133487 (dev: 1167), error: 0.156071)
+UME::SIMD single, (double, 8) 512 Elapsed: 116337 (dev: 1137), error: 0.338304)
+UME::SIMD single, (double, 16) 512 Elapsed: 116557 (dev: 810), error: 0.304183)
+Scalar single, (double) 1024 Elapsed: 502174 (dev: 3847), error: 0.104258)
+BLAS single, double 1024 Elapsed: 255631 (dev: 6737), error: 0.178762)
+UME::VECTOR single, (double) 1024 Elapsed: 574221 (dev: 11097), error: 0.250332)
+UME::SIMD single, (double, 1) 1024 Elapsed: 508636 (dev: 3690), error: 0.122107)
+UME::SIMD single, (double, 2) 1024 Elapsed: 1213169 (dev: 8618), error: 0.4238)
+UME::SIMD single, (double, 4) 1024 Elapsed: 569990 (dev: 3560), error: 0.435604)
+UME::SIMD single, (double, 8) 1024 Elapsed: 529751 (dev: 2195), error: 0.324213)
+UME::SIMD single, (double, 16) 1024 Elapsed: 528723 (dev: 2546), error: 0.0119246)
+Scalar single, (double) 2048 Elapsed: 2659744 (dev: 9806), error: 0.19543)
+BLAS single, double 2048 Elapsed: 2223356 (dev: 5135), error: 0.31762)
+UME::VECTOR single, (double) 2048 Elapsed: 2780928 (dev: 16459), error: 0.315004)
+UME::SIMD single, (double, 1) 2048 Elapsed: 2686561 (dev: 11181), error: 0.389662)
+UME::SIMD single, (double, 2) 2048 Elapsed: 4459271 (dev: 39787), error: 0.422418)
+UME::SIMD single, (double, 4) 2048 Elapsed: 2842536 (dev: 7587), error: 0.399792)
+UME::SIMD single, (double, 8) 2048 Elapsed: 2733655 (dev: 10047), error: 0.395378)
+UME::SIMD single, (double, 16) 2048 Elapsed: 2770848 (dev: 7418), error: 0.329482)
+Scalar chained, (float) 1 Elapsed: 317 (dev: 87), error: 1.56263e-07)
+BLAS chained, float 1 Elapsed: 1617 (dev: 764), error: 1.16426e-08)
+UME::VECTOR chained, (float) 1 Elapsed: 237 (dev: 29), error: 1.56263e-07)
+UME::SIMD chained, (float, 1) 1 Elapsed: 675 (dev: 382), error: 1.56263e-07)
+UME::SIMD chained, (float, 2) 1 Elapsed: 378 (dev: 161), error: 1.56263e-07)
+UME::SIMD chained, (float, 4) 1 Elapsed: 342 (dev: 93), error: 1.56263e-07)
+UME::SIMD chained, (float, 8) 1 Elapsed: 342 (dev: 99), error: 1.56263e-07)
+UME::SIMD chained, (float, 16) 1 Elapsed: 368 (dev: 113), error: 1.56263e-07)
+UME::SIMD chained, (float, 32) 1 Elapsed: 799 (dev: 123), error: 1.56263e-07)
+Scalar chained, (float) 2 Elapsed: 268 (dev: 21), error: 1.01056e-08)
+BLAS chained, float 2 Elapsed: 878 (dev: 88), error: 1.01056e-08)
+UME::VECTOR chained, (float) 2 Elapsed: 276 (dev: 18), error: 1.01056e-08)
+UME::SIMD chained, (float, 1) 2 Elapsed: 214 (dev: 6), error: 1.01056e-08)
+UME::SIMD chained, (float, 2) 2 Elapsed: 264 (dev: 34), error: 1.01056e-08)
+UME::SIMD chained, (float, 4) 2 Elapsed: 303 (dev: 23), error: 1.01056e-08)
+UME::SIMD chained, (float, 8) 2 Elapsed: 281 (dev: 24), error: 1.01056e-08)
+UME::SIMD chained, (float, 16) 2 Elapsed: 332 (dev: 21), error: 1.01056e-08)
+UME::SIMD chained, (float, 32) 2 Elapsed: 1069 (dev: 72), error: 1.01056e-08)
+Scalar chained, (float) 4 Elapsed: 404 (dev: 31), error: 4.77905e-08)
+BLAS chained, float 4 Elapsed: 978 (dev: 90), error: 4.77905e-08)
+UME::VECTOR chained, (float) 4 Elapsed: 387 (dev: 18), error: 4.77905e-08)
+UME::SIMD chained, (float, 1) 4 Elapsed: 273 (dev: 11), error: 4.77905e-08)
+UME::SIMD chained, (float, 2) 4 Elapsed: 342 (dev: 19), error: 1.21551e-07)
+UME::SIMD chained, (float, 4) 4 Elapsed: 298 (dev: 17), error: 4.77905e-08)
+UME::SIMD chained, (float, 8) 4 Elapsed: 408 (dev: 38), error: 4.77905e-08)
+UME::SIMD chained, (float, 16) 4 Elapsed: 493 (dev: 24), error: 4.77905e-08)
+UME::SIMD chained, (float, 32) 4 Elapsed: 1663 (dev: 90), error: 4.77905e-08)
+Scalar chained, (float) 8 Elapsed: 641 (dev: 28), error: 7.2957e-08)
+BLAS chained, float 8 Elapsed: 1015 (dev: 89), error: 9.43421e-08)
+UME::VECTOR chained, (float) 8 Elapsed: 684 (dev: 29), error: 7.2957e-08)
+UME::SIMD chained, (float, 1) 8 Elapsed: 410 (dev: 37), error: 3.16809e-08)
+UME::SIMD chained, (float, 2) 8 Elapsed: 661 (dev: 32), error: 4.27057e-08)
+UME::SIMD chained, (float, 4) 8 Elapsed: 447 (dev: 15), error: 8.11538e-08)
+UME::SIMD chained, (float, 8) 8 Elapsed: 443 (dev: 43), error: 3.16809e-08)
+UME::SIMD chained, (float, 16) 8 Elapsed: 918 (dev: 21), error: 7.2957e-08)
+UME::SIMD chained, (float, 32) 8 Elapsed: 3191 (dev: 103), error: 7.2957e-08)
+Scalar chained, (float) 16 Elapsed: 1423 (dev: 528), error: 7.47859e-08)
+BLAS chained, float 16 Elapsed: 1171 (dev: 58), error: 7.47859e-08)
+UME::VECTOR chained, (float) 16 Elapsed: 1019 (dev: 16), error: 7.47859e-08)
+UME::SIMD chained, (float, 1) 16 Elapsed: 690 (dev: 9), error: 7.47859e-08)
+UME::SIMD chained, (float, 2) 16 Elapsed: 2305 (dev: 28), error: 7.47859e-08)
+UME::SIMD chained, (float, 4) 16 Elapsed: 986 (dev: 55), error: 9.24674e-08)
+UME::SIMD chained, (float, 8) 16 Elapsed: 865 (dev: 70), error: 7.47859e-08)
+UME::SIMD chained, (float, 16) 16 Elapsed: 1256 (dev: 23), error: 9.30572e-08)
+UME::SIMD chained, (float, 32) 16 Elapsed: 6000 (dev: 425), error: 7.47859e-08)
+Scalar chained, (float) 32 Elapsed: 11859 (dev: 511), error: 1.29633e-07)
+BLAS chained, float 32 Elapsed: 12454 (dev: 153), error: 7.21127e-08)
+UME::VECTOR chained, (float) 32 Elapsed: 12726 (dev: 137), error: 1.18341e-07)
+UME::SIMD chained, (float, 1) 32 Elapsed: 12190 (dev: 49), error: 7.21127e-08)
+UME::SIMD chained, (float, 2) 32 Elapsed: 17619 (dev: 68), error: 1.18341e-07)
+UME::SIMD chained, (float, 4) 32 Elapsed: 2446 (dev: 34), error: 1.18341e-07)
+UME::SIMD chained, (float, 8) 32 Elapsed: 12407 (dev: 64), error: 8.97194e-08)
+UME::SIMD chained, (float, 16) 32 Elapsed: 13335 (dev: 58), error: 1.5189e-07)
+UME::SIMD chained, (float, 32) 32 Elapsed: 20988 (dev: 110), error: 1.5189e-07)
+Scalar chained, (float) 64 Elapsed: 15513 (dev: 279), error: 1.39826e-07)
+BLAS chained, float 64 Elapsed: 14547 (dev: 435), error: 8.98458e-08)
+UME::VECTOR chained, (float) 64 Elapsed: 15922 (dev: 61), error: 8.76827e-08)
+UME::SIMD chained, (float, 1) 64 Elapsed: 15572 (dev: 613), error: 8.63147e-08)
+UME::SIMD chained, (float, 2) 64 Elapsed: 36802 (dev: 253), error: 8.76827e-08)
+UME::SIMD chained, (float, 4) 64 Elapsed: 8021 (dev: 72), error: 1.21528e-07)
+UME::SIMD chained, (float, 8) 64 Elapsed: 16544 (dev: 71), error: 1.01873e-07)
+UME::SIMD chained, (float, 16) 64 Elapsed: 17815 (dev: 99), error: 2.21279e-07)
+UME::SIMD chained, (float, 32) 64 Elapsed: 31550 (dev: 557), error: 1.80171e-07)
+Scalar chained, (float) 128 Elapsed: 28149 (dev: 686), error: 1.03852e-07)
+BLAS chained, float 128 Elapsed: 50955 (dev: 2662), error: 9.28514e-08)
+UME::VECTOR chained, (float) 128 Elapsed: 32245 (dev: 457), error: 1.46836e-07)
+UME::SIMD chained, (float, 1) 128 Elapsed: 28945 (dev: 281), error: 1.12198e-07)
+UME::SIMD chained, (float, 2) 128 Elapsed: 116013 (dev: 735), error: 1.23171e-07)
+UME::SIMD chained, (float, 4) 128 Elapsed: 33371 (dev: 290), error: 1.48904e-07)
+UME::SIMD chained, (float, 8) 128 Elapsed: 34084 (dev: 275), error: 9.51434e-08)
+UME::SIMD chained, (float, 16) 128 Elapsed: 37322 (dev: 181), error: 1.27376e-07)
+UME::SIMD chained, (float, 32) 128 Elapsed: 57585 (dev: 619), error: 1.97725e-07)
+Scalar chained, (float) 256 Elapsed: 69724 (dev: 741), error: 1.29974e-07)
+BLAS chained, float 256 Elapsed: 99951 (dev: 969), error: 1.12865e-07)
+UME::VECTOR chained, (float) 256 Elapsed: 77676 (dev: 1119), error: 1.59186e-07)
+UME::SIMD chained, (float, 1) 256 Elapsed: 66772 (dev: 396), error: 1.58464e-07)
+UME::SIMD chained, (float, 2) 256 Elapsed: 404845 (dev: 2715), error: 1.59308e-07)
+UME::SIMD chained, (float, 4) 256 Elapsed: 110434 (dev: 751), error: 1.7575e-07)
+UME::SIMD chained, (float, 8) 256 Elapsed: 86138 (dev: 578), error: 1.90237e-07)
+UME::SIMD chained, (float, 16) 256 Elapsed: 89450 (dev: 471), error: 1.72913e-07)
+UME::SIMD chained, (float, 32) 256 Elapsed: 123251 (dev: 924), error: 1.4154e-07)
+Scalar chained, (float) 512 Elapsed: 271089 (dev: 9296), error: 1.34862e-07)
+BLAS chained, float 512 Elapsed: 143914 (dev: 2838), error: 1.24721e-07)
+UME::VECTOR chained, (float) 512 Elapsed: 277956 (dev: 9547), error: 1.31666e-07)
+UME::SIMD chained, (float, 1) 512 Elapsed: 208351 (dev: 2505), error: 1.42715e-07)
+UME::SIMD chained, (float, 2) 512 Elapsed: 1376762 (dev: 8564), error: 1.54073e-07)
+UME::SIMD chained, (float, 4) 512 Elapsed: 413944 (dev: 5751), error: 2.96611e-07)
+UME::SIMD chained, (float, 8) 512 Elapsed: 324791 (dev: 6610), error: 1.69263e-07)
+UME::SIMD chained, (float, 16) 512 Elapsed: 311996 (dev: 7406), error: 1.66032e-07)
+UME::SIMD chained, (float, 32) 512 Elapsed: 365138 (dev: 7372), error: 1.91592e-07)
+Scalar chained, (float) 1024 Elapsed: 1747348 (dev: 3790), error: 1.66216e-07)
+BLAS chained, float 1024 Elapsed: 1408409 (dev: 2270), error: 1.60759e-07)
+^C
+[pkarpins@opladev39 blas_gemv_simple]$ ^C
+[pkarpins@opladev39 blas_gemv_simple]$ g++ -std=c++11 BlasGemvSimple.cpp -O2 -DUSE_BLAS -lopenblas -mavx
+[pkarpins@opladev39 blas_gemv_simple]$ ./a.out
+Scalar single, (float) 1 Elapsed: 975 (dev: 194), error: 1.05437)
+BLAS single, float 1 Elapsed: 2187 (dev: 1063), error: 1.05437)
+UME::VECTOR single, (float) 1 Elapsed: 866 (dev: 51), error: 1.05437)
+UME::SIMD single, (float, 1) 1 Elapsed: 781 (dev: 20), error: 1.05437)
+UME::SIMD single, (float, 2) 1 Elapsed: 1003 (dev: 182), error: 1.05437)
+UME::SIMD single, (float, 4) 1 Elapsed: 1004 (dev: 182), error: 1.05437)
+UME::SIMD single, (float, 8) 1 Elapsed: 949 (dev: 117), error: 1.05437)
+UME::SIMD single, (float, 16) 1 Elapsed: 1008 (dev: 36), error: 1.05437)
+UME::SIMD single, (float, 32) 1 Elapsed: 1353 (dev: 58), error: 1.05437)
+Scalar single, (float) 2 Elapsed: 808 (dev: 10), error: 0.0250579)
+BLAS single, float 2 Elapsed: 1358 (dev: 269), error: 0.0250579)
+UME::VECTOR single, (float) 2 Elapsed: 896 (dev: 36), error: 0.0250579)
+UME::SIMD single, (float, 1) 2 Elapsed: 817 (dev: 17), error: 0.0250579)
+UME::SIMD single, (float, 2) 2 Elapsed: 836 (dev: 12), error: 0.0250579)
+UME::SIMD single, (float, 4) 2 Elapsed: 888 (dev: 15), error: 0.0250579)
+UME::SIMD single, (float, 8) 2 Elapsed: 942 (dev: 69), error: 0.0250579)
+UME::SIMD single, (float, 16) 2 Elapsed: 1198 (dev: 28), error: 0.0250579)
+UME::SIMD single, (float, 32) 2 Elapsed: 1707 (dev: 51), error: 0.0250579)
+Scalar single, (float) 4 Elapsed: 910 (dev: 16), error: 0.304222)
+BLAS single, float 4 Elapsed: 858 (dev: 290), error: 0.304222)
+UME::VECTOR single, (float) 4 Elapsed: 236 (dev: 4), error: 0.304222)
+UME::SIMD single, (float, 1) 4 Elapsed: 201 (dev: 4), error: 0.304222)
+UME::SIMD single, (float, 2) 4 Elapsed: 210 (dev: 5), error: 0.304222)
+UME::SIMD single, (float, 4) 4 Elapsed: 214 (dev: 3), error: 0.304222)
+UME::SIMD single, (float, 8) 4 Elapsed: 227 (dev: 5), error: 0.304222)
+UME::SIMD single, (float, 16) 4 Elapsed: 347 (dev: 8), error: 0.304222)
+UME::SIMD single, (float, 32) 4 Elapsed: 536 (dev: 15), error: 0.304222)
+Scalar single, (float) 8 Elapsed: 264 (dev: 3), error: 0.425125)
+BLAS single, float 8 Elapsed: 299 (dev: 11), error: 0.425125)
+UME::VECTOR single, (float) 8 Elapsed: 269 (dev: 3), error: 0.425125)
+UME::SIMD single, (float, 1) 8 Elapsed: 275 (dev: 3), error: 0.425125)
+UME::SIMD single, (float, 2) 8 Elapsed: 275 (dev: 3), error: 0.425125)
+UME::SIMD single, (float, 4) 8 Elapsed: 260 (dev: 2), error: 0.425125)
+UME::SIMD single, (float, 8) 8 Elapsed: 240 (dev: 4), error: 0.425125)
+UME::SIMD single, (float, 16) 8 Elapsed: 515 (dev: 6), error: 0.425125)
+UME::SIMD single, (float, 32) 8 Elapsed: 840 (dev: 11), error: 0.425125)
+Scalar single, (float) 16 Elapsed: 479 (dev: 4), error: 0.111387)
+BLAS single, float 16 Elapsed: 376 (dev: 35), error: 0.111387)
+UME::VECTOR single, (float) 16 Elapsed: 381 (dev: 4), error: 0.111387)
+UME::SIMD single, (float, 1) 16 Elapsed: 492 (dev: 5), error: 0.111387)
+UME::SIMD single, (float, 2) 16 Elapsed: 476 (dev: 4), error: 0.111387)
+UME::SIMD single, (float, 4) 16 Elapsed: 393 (dev: 2), error: 0.111387)
+UME::SIMD single, (float, 8) 16 Elapsed: 376 (dev: 48), error: 0.445688)
+UME::SIMD single, (float, 16) 16 Elapsed: 671 (dev: 14), error: 0.445688)
+UME::SIMD single, (float, 32) 16 Elapsed: 1545 (dev: 19), error: 0.445688)
+Scalar single, (float) 32 Elapsed: 1327 (dev: 9), error: 0.456047)
+BLAS single, float 32 Elapsed: 547 (dev: 73), error: 0.456047)
+UME::VECTOR single, (float) 32 Elapsed: 646 (dev: 7), error: 0.456047)
+UME::SIMD single, (float, 1) 32 Elapsed: 1345 (dev: 7), error: 0.456047)
+UME::SIMD single, (float, 2) 32 Elapsed: 1294 (dev: 12), error: 0.456047)
+UME::SIMD single, (float, 4) 32 Elapsed: 953 (dev: 8), error: 0.456047)
+UME::SIMD single, (float, 8) 32 Elapsed: 723 (dev: 82), error: 0.456047)
+UME::SIMD single, (float, 16) 32 Elapsed: 1340 (dev: 8), error: 0.456047)
+UME::SIMD single, (float, 32) 32 Elapsed: 2764 (dev: 15), error: 0.456047)
+Scalar single, (float) 64 Elapsed: 5836 (dev: 12), error: 0.182967)
+BLAS single, float 64 Elapsed: 1220 (dev: 534), error: 0.182967)
+UME::VECTOR single, (float) 64 Elapsed: 836 (dev: 6), error: 0.182967)
+UME::SIMD single, (float, 1) 64 Elapsed: 3397 (dev: 50), error: 0.182967)
+UME::SIMD single, (float, 2) 64 Elapsed: 2599 (dev: 19), error: 0.182967)
+UME::SIMD single, (float, 4) 64 Elapsed: 1988 (dev: 4), error: 0.182967)
+UME::SIMD single, (float, 8) 64 Elapsed: 782 (dev: 67), error: 0.182967)
+UME::SIMD single, (float, 16) 64 Elapsed: 1350 (dev: 32), error: 0.182967)
+UME::SIMD single, (float, 32) 64 Elapsed: 2727 (dev: 16), error: 0.182967)
+Scalar single, (float) 128 Elapsed: 13173 (dev: 64), error: 0.101448)
+BLAS single, float 128 Elapsed: 25091 (dev: 7836), error: 0.101448)
+UME::VECTOR single, (float) 128 Elapsed: 15394 (dev: 56), error: 0.101448)
+UME::SIMD single, (float, 1) 128 Elapsed: 17011 (dev: 646), error: 0.101448)
+UME::SIMD single, (float, 2) 128 Elapsed: 10056 (dev: 74), error: 0.101448)
+UME::SIMD single, (float, 4) 128 Elapsed: 7958 (dev: 30), error: 0.101448)
+UME::SIMD single, (float, 8) 128 Elapsed: 12711 (dev: 193), error: 0.101448)
+UME::SIMD single, (float, 16) 128 Elapsed: 13636 (dev: 123), error: 0.101448)
+UME::SIMD single, (float, 32) 128 Elapsed: 16271 (dev: 100), error: 0.101448)
+Scalar single, (float) 256 Elapsed: 56943 (dev: 470), error: 0.375327)
+BLAS single, float 256 Elapsed: 34004 (dev: 1164), error: 0.375327)
+UME::VECTOR single, (float) 256 Elapsed: 23580 (dev: 822), error: 0.375327)
+UME::SIMD single, (float, 1) 256 Elapsed: 63009 (dev: 247), error: 0.282433)
+UME::SIMD single, (float, 2) 256 Elapsed: 36607 (dev: 207), error: 0.282432)
+UME::SIMD single, (float, 4) 256 Elapsed: 38825 (dev: 300), error: 0.282432)
+UME::SIMD single, (float, 8) 256 Elapsed: 19904 (dev: 66), error: 0.282432)
+UME::SIMD single, (float, 16) 256 Elapsed: 20814 (dev: 87), error: 0.282432)
+UME::SIMD single, (float, 32) 256 Elapsed: 25207 (dev: 88), error: 0.282432)
+Scalar single, (float) 512 Elapsed: 253327 (dev: 1288), error: 0.416287)
+BLAS single, float 512 Elapsed: 41839 (dev: 1792), error: 0.271622)
+UME::VECTOR single, (float) 512 Elapsed: 55752 (dev: 814), error: 0.487239)
+UME::SIMD single, (float, 1) 512 Elapsed: 287360 (dev: 1880), error: 0.487239)
+UME::SIMD single, (float, 2) 512 Elapsed: 155512 (dev: 1238), error: 0.409511)
+UME::SIMD single, (float, 4) 512 Elapsed: 194555 (dev: 1496), error: 0.409511)
+UME::SIMD single, (float, 8) 512 Elapsed: 53574 (dev: 520), error: 0.320684)
+UME::SIMD single, (float, 16) 512 Elapsed: 50776 (dev: 499), error: 0.320684)
+UME::SIMD single, (float, 32) 512 Elapsed: 60179 (dev: 598), error: 0.42312)
+Scalar single, (float) 1024 Elapsed: 1092151 (dev: 6204), error: 0.156562)
+BLAS single, float 1024 Elapsed: 106751 (dev: 1232), error: 0.424323)
+UME::VECTOR single, (float) 1024 Elapsed: 182638 (dev: 2272), error: 0.064238)
+UME::SIMD single, (float, 1) 1024 Elapsed: 1202290 (dev: 6999), error: 0.252305)
+UME::SIMD single, (float, 2) 1024 Elapsed: 619256 (dev: 4480), error: 0.438352)
+UME::SIMD single, (float, 4) 1024 Elapsed: 848202 (dev: 5019), error: 0.349322)
+UME::SIMD single, (float, 8) 1024 Elapsed: 170937 (dev: 936), error: 0.421056)
+UME::SIMD single, (float, 16) 1024 Elapsed: 157008 (dev: 1135), error: 0.430076)
+UME::SIMD single, (float, 32) 1024 Elapsed: 172331 (dev: 975), error: 0.0363745)
+Scalar single, (float) 2048 Elapsed: 4564511 (dev: 37157), error: 0.265598)
+BLAS single, float 2048 Elapsed: 967738 (dev: 2100), error: 0.314534)
+UME::VECTOR single, (float) 2048 Elapsed: 1403960 (dev: 3983), error: 0.0715054)
+UME::SIMD single, (float, 1) 2048 Elapsed: 4599225 (dev: 37640), error: 0.100018)
+UME::SIMD single, (float, 2) 2048 Elapsed: 2438147 (dev: 12314), error: 0.355704)
+UME::SIMD single, (float, 4) 2048 Elapsed: 3286543 (dev: 18177), error: 0.334293)
+UME::SIMD single, (float, 8) 2048 Elapsed: 1390115 (dev: 3152), error: 0.441777)
+UME::SIMD single, (float, 16) 2048 Elapsed: 1383061 (dev: 2581), error: 0.419921)
+UME::SIMD single, (float, 32) 2048 Elapsed: 1430958 (dev: 3300), error: 0.480235)
+Scalar single, (double) 1 Elapsed: 179 (dev: 14), error: 0.865082)
+BLAS single, double 1 Elapsed: 809 (dev: 575), error: 0.865082)
+UME::VECTOR single, (double) 1 Elapsed: 195 (dev: 16), error: 0.865082)
+UME::SIMD single, (double, 1) 1 Elapsed: 167 (dev: 9), error: 0.865082)
+UME::SIMD single, (double, 2) 1 Elapsed: 168 (dev: 6), error: 0.865082)
+UME::SIMD single, (double, 4) 1 Elapsed: 186 (dev: 11), error: 0.865082)
+UME::SIMD single, (double, 8) 1 Elapsed: 190 (dev: 9), error: 0.865082)
+UME::SIMD single, (double, 16) 1 Elapsed: 225 (dev: 15), error: 0.865082)
+Scalar single, (double) 2 Elapsed: 165 (dev: 2), error: 0.150983)
+BLAS single, double 2 Elapsed: 314 (dev: 97), error: 0.150983)
+UME::VECTOR single, (double) 2 Elapsed: 210 (dev: 7), error: 0.150983)
+UME::SIMD single, (double, 1) 2 Elapsed: 173 (dev: 7), error: 0.150983)
+UME::SIMD single, (double, 2) 2 Elapsed: 171 (dev: 3), error: 0.150983)
+UME::SIMD single, (double, 4) 2 Elapsed: 191 (dev: 5), error: 0.150983)
+UME::SIMD single, (double, 8) 2 Elapsed: 208 (dev: 6), error: 0.150983)
+UME::SIMD single, (double, 16) 2 Elapsed: 255 (dev: 11), error: 0.150983)
+Scalar single, (double) 4 Elapsed: 183 (dev: 5), error: 0.20157)
+BLAS single, double 4 Elapsed: 263 (dev: 28), error: 0.20157)
+UME::VECTOR single, (double) 4 Elapsed: 266 (dev: 7), error: 0.20157)
+UME::SIMD single, (double, 1) 4 Elapsed: 186 (dev: 8), error: 0.20157)
+UME::SIMD single, (double, 2) 4 Elapsed: 186 (dev: 4), error: 0.20157)
+UME::SIMD single, (double, 4) 4 Elapsed: 202 (dev: 5), error: 0.20157)
+UME::SIMD single, (double, 8) 4 Elapsed: 277 (dev: 25), error: 0.20157)
+UME::SIMD single, (double, 16) 4 Elapsed: 343 (dev: 10), error: 0.20157)
+Scalar single, (double) 8 Elapsed: 227 (dev: 5), error: 0.446306)
+BLAS single, double 8 Elapsed: 282 (dev: 36), error: 0.446306)
+UME::VECTOR single, (double) 8 Elapsed: 338 (dev: 10), error: 0.446306)
+UME::SIMD single, (double, 1) 8 Elapsed: 248 (dev: 20), error: 0.446306)
+UME::SIMD single, (double, 2) 8 Elapsed: 233 (dev: 7), error: 0.446306)
+UME::SIMD single, (double, 4) 8 Elapsed: 245 (dev: 4), error: 0.446306)
+UME::SIMD single, (double, 8) 8 Elapsed: 312 (dev: 9), error: 0.446306)
+UME::SIMD single, (double, 16) 8 Elapsed: 489 (dev: 11), error: 0.446306)
+Scalar single, (double) 16 Elapsed: 405 (dev: 11), error: 0.278593)
+BLAS single, double 16 Elapsed: 324 (dev: 36), error: 0.278593)
+UME::VECTOR single, (double) 16 Elapsed: 472 (dev: 6), error: 0.278593)
+UME::SIMD single, (double, 1) 16 Elapsed: 402 (dev: 5), error: 0.278593)
+UME::SIMD single, (double, 2) 16 Elapsed: 367 (dev: 2), error: 0.278593)
+UME::SIMD single, (double, 4) 16 Elapsed: 386 (dev: 25), error: 0.278593)
+UME::SIMD single, (double, 8) 16 Elapsed: 451 (dev: 5), error: 0.278593)
+UME::SIMD single, (double, 16) 16 Elapsed: 687 (dev: 12), error: 0.278593)
+Scalar single, (double) 32 Elapsed: 1144 (dev: 7), error: 0.46353)
+BLAS single, double 32 Elapsed: 538 (dev: 49), error: 0.46353)
+UME::VECTOR single, (double) 32 Elapsed: 974 (dev: 9), error: 0.46353)
+UME::SIMD single, (double, 1) 32 Elapsed: 1198 (dev: 7), error: 0.46353)
+UME::SIMD single, (double, 2) 32 Elapsed: 937 (dev: 6), error: 0.46353)
+UME::SIMD single, (double, 4) 32 Elapsed: 695 (dev: 59), error: 0.46353)
+UME::SIMD single, (double, 8) 32 Elapsed: 792 (dev: 9), error: 0.46353)
+UME::SIMD single, (double, 16) 32 Elapsed: 1344 (dev: 17), error: 0.46353)
+Scalar single, (double) 64 Elapsed: 4610 (dev: 14), error: 0.336662)
+BLAS single, double 64 Elapsed: 1528 (dev: 61), error: 0.336662)
+UME::VECTOR single, (double) 64 Elapsed: 2083 (dev: 13), error: 0.336662)
+UME::SIMD single, (double, 1) 64 Elapsed: 4827 (dev: 23), error: 0.336662)
+UME::SIMD single, (double, 2) 64 Elapsed: 2934 (dev: 7), error: 0.336662)
+UME::SIMD single, (double, 4) 64 Elapsed: 2196 (dev: 509), error: 0.336662)
+UME::SIMD single, (double, 8) 64 Elapsed: 1900 (dev: 70), error: 0.336662)
+UME::SIMD single, (double, 16) 64 Elapsed: 2799 (dev: 23), error: 0.336662)
+Scalar single, (double) 128 Elapsed: 19158 (dev: 218), error: 0.205289)
+BLAS single, double 128 Elapsed: 35585 (dev: 1887), error: 0.205289)
+UME::VECTOR single, (double) 128 Elapsed: 22116 (dev: 651), error: 0.205289)
+UME::SIMD single, (double, 1) 128 Elapsed: 23063 (dev: 590), error: 0.205289)
+UME::SIMD single, (double, 2) 128 Elapsed: 12636 (dev: 123), error: 0.205289)
+UME::SIMD single, (double, 4) 128 Elapsed: 18629 (dev: 193), error: 0.205289)
+UME::SIMD single, (double, 8) 128 Elapsed: 15998 (dev: 78), error: 0.205289)
+UME::SIMD single, (double, 16) 128 Elapsed: 18013 (dev: 247), error: 0.205289)
+Scalar single, (double) 256 Elapsed: 85012 (dev: 1010), error: 0.160349)
+BLAS single, double 256 Elapsed: 48511 (dev: 1849), error: 0.160349)
+UME::VECTOR single, (double) 256 Elapsed: 41470 (dev: 1832), error: 0.160349)
+UME::SIMD single, (double, 1) 256 Elapsed: 88924 (dev: 798), error: 0.160349)
+UME::SIMD single, (double, 2) 256 Elapsed: 49084 (dev: 450), error: 0.160349)
+UME::SIMD single, (double, 4) 256 Elapsed: 38731 (dev: 406), error: 0.0319376)
+UME::SIMD single, (double, 8) 256 Elapsed: 34712 (dev: 154), error: 0.0319376)
+UME::SIMD single, (double, 16) 256 Elapsed: 36448 (dev: 262), error: 0.0319376)
+Scalar single, (double) 512 Elapsed: 345251 (dev: 2565), error: 0.475848)
+BLAS single, double 512 Elapsed: 102595 (dev: 3946), error: 0.477927)
+UME::VECTOR single, (double) 512 Elapsed: 101195 (dev: 2199), error: 0.327119)
+UME::SIMD single, (double, 1) 512 Elapsed: 351487 (dev: 4135), error: 0.338345)
+UME::SIMD single, (double, 2) 512 Elapsed: 184679 (dev: 1793), error: 0.338345)
+UME::SIMD single, (double, 4) 512 Elapsed: 105603 (dev: 618), error: 0.39188)
+UME::SIMD single, (double, 8) 512 Elapsed: 93086 (dev: 1023), error: 0.320706)
+UME::SIMD single, (double, 16) 512 Elapsed: 91659 (dev: 470), error: 0.320706)
+Scalar single, (double) 1024 Elapsed: 1291867 (dev: 6497), error: 0.0957994)
+BLAS single, double 1024 Elapsed: 204096 (dev: 2978), error: 0.382943)
+UME::VECTOR single, (double) 1024 Elapsed: 422217 (dev: 3377), error: 0.236123)
+UME::SIMD single, (double, 1) 1024 Elapsed: 1277611 (dev: 7991), error: 0.282373)
+UME::SIMD single, (double, 2) 1024 Elapsed: 725216 (dev: 4430), error: 0.477156)
+UME::SIMD single, (double, 4) 1024 Elapsed: 460022 (dev: 2444), error: 0.0792287)
+UME::SIMD single, (double, 8) 1024 Elapsed: 426441 (dev: 2932), error: 0.220829)
+UME::SIMD single, (double, 16) 1024 Elapsed: 412413 (dev: 4299), error: 0.076597)
+Scalar single, (double) 2048 Elapsed: 4737750 (dev: 39604), error: 0.107288)
+BLAS single, double 2048 Elapsed: 2210679 (dev: 4725), error: 0.240789)
+UME::VECTOR single, (double) 2048 Elapsed: 2672762 (dev: 8352), error: 0.246406)
+UME::SIMD single, (double, 1) 2048 Elapsed: 4773369 (dev: 26776), error: 0.415561)
+UME::SIMD single, (double, 2) 2048 Elapsed: 3179321 (dev: 13380), error: 0.304065)
+UME::SIMD single, (double, 4) 2048 Elapsed: 2630436 (dev: 7304), error: 0.440485)
+UME::SIMD single, (double, 8) 2048 Elapsed: 2640526 (dev: 7755), error: 0.291573)
+UME::SIMD single, (double, 16) 2048 Elapsed: 2710254 (dev: 7840), error: 0.354602)
+Scalar chained, (float) 1 Elapsed: 179 (dev: 10), error: 5.1076e-09)
+BLAS chained, float 1 Elapsed: 469 (dev: 72), error: 5.1076e-09)
+UME::VECTOR chained, (float) 1 Elapsed: 188 (dev: 9), error: 5.1076e-09)
+UME::SIMD chained, (float, 1) 1 Elapsed: 171 (dev: 9), error: 5.1076e-09)
+UME::SIMD chained, (float, 2) 1 Elapsed: 183 (dev: 13), error: 5.1076e-09)
+UME::SIMD chained, (float, 4) 1 Elapsed: 198 (dev: 18), error: 5.1076e-09)
+UME::SIMD chained, (float, 8) 1 Elapsed: 192 (dev: 19), error: 5.1076e-09)
+UME::SIMD chained, (float, 16) 1 Elapsed: 338 (dev: 32), error: 5.1076e-09)
+UME::SIMD chained, (float, 32) 1 Elapsed: 663 (dev: 60), error: 5.1076e-09)
+Scalar chained, (float) 2 Elapsed: 197 (dev: 13), error: 4.76685e-08)
+BLAS chained, float 2 Elapsed: 425 (dev: 27), error: 4.76685e-08)
+UME::VECTOR chained, (float) 2 Elapsed: 208 (dev: 9), error: 4.76685e-08)
+UME::SIMD chained, (float, 1) 2 Elapsed: 181 (dev: 8), error: 4.76685e-08)
+UME::SIMD chained, (float, 2) 2 Elapsed: 202 (dev: 10), error: 4.76685e-08)
+UME::SIMD chained, (float, 4) 2 Elapsed: 223 (dev: 12), error: 4.76685e-08)
+UME::SIMD chained, (float, 8) 2 Elapsed: 225 (dev: 19), error: 4.76685e-08)
+UME::SIMD chained, (float, 16) 2 Elapsed: 454 (dev: 33), error: 4.76685e-08)
+UME::SIMD chained, (float, 32) 2 Elapsed: 907 (dev: 54), error: 4.76685e-08)
+Scalar chained, (float) 4 Elapsed: 277 (dev: 29), error: 1.01434e-07)
+BLAS chained, float 4 Elapsed: 570 (dev: 59), error: 3.17844e-08)
+UME::VECTOR chained, (float) 4 Elapsed: 300 (dev: 12), error: 1.01434e-07)
+UME::SIMD chained, (float, 1) 4 Elapsed: 246 (dev: 11), error: 1.01434e-07)
+UME::SIMD chained, (float, 2) 4 Elapsed: 290 (dev: 13), error: 5.7517e-08)
+UME::SIMD chained, (float, 4) 4 Elapsed: 281 (dev: 12), error: 1.01434e-07)
+UME::SIMD chained, (float, 8) 4 Elapsed: 341 (dev: 38), error: 1.01434e-07)
+UME::SIMD chained, (float, 16) 4 Elapsed: 724 (dev: 32), error: 1.01434e-07)
+UME::SIMD chained, (float, 32) 4 Elapsed: 1490 (dev: 75), error: 1.01434e-07)
+Scalar chained, (float) 8 Elapsed: 514 (dev: 16), error: 4.59919e-08)
+BLAS chained, float 8 Elapsed: 652 (dev: 58), error: 5.47771e-08)
+UME::VECTOR chained, (float) 8 Elapsed: 567 (dev: 11), error: 4.59919e-08)
+UME::SIMD chained, (float, 1) 8 Elapsed: 452 (dev: 8), error: 4.59919e-08)
+UME::SIMD chained, (float, 2) 8 Elapsed: 489 (dev: 14), error: 5.17692e-08)
+UME::SIMD chained, (float, 4) 8 Elapsed: 433 (dev: 6), error: 5.47771e-08)
+UME::SIMD chained, (float, 8) 8 Elapsed: 361 (dev: 31), error: 9.13538e-08)
+UME::SIMD chained, (float, 16) 8 Elapsed: 1369 (dev: 34), error: 4.59919e-08)
+UME::SIMD chained, (float, 32) 8 Elapsed: 3448 (dev: 586), error: 4.59919e-08)
+Scalar chained, (float) 16 Elapsed: 1497 (dev: 51), error: 1.16214e-07)
+BLAS chained, float 16 Elapsed: 2003 (dev: 27), error: 6.47812e-08)
+UME::VECTOR chained, (float) 16 Elapsed: 1629 (dev: 23), error: 1.16214e-07)
+UME::SIMD chained, (float, 1) 16 Elapsed: 1293 (dev: 18), error: 1.16214e-07)
+UME::SIMD chained, (float, 2) 16 Elapsed: 1229 (dev: 13), error: 7.21653e-08)
+UME::SIMD chained, (float, 4) 16 Elapsed: 1063 (dev: 11), error: 7.93553e-08)
+UME::SIMD chained, (float, 8) 16 Elapsed: 1657 (dev: 57), error: 1.16214e-07)
+UME::SIMD chained, (float, 16) 16 Elapsed: 12622 (dev: 46), error: 1.16214e-07)
+UME::SIMD chained, (float, 32) 16 Elapsed: 6271 (dev: 811), error: 1.16214e-07)
+Scalar chained, (float) 32 Elapsed: 5407 (dev: 524), error: 1.50953e-07)
+BLAS chained, float 32 Elapsed: 11300 (dev: 399), error: 1.08095e-07)
+UME::VECTOR chained, (float) 32 Elapsed: 5283 (dev: 42), error: 1.21024e-07)
+UME::SIMD chained, (float, 1) 32 Elapsed: 4813 (dev: 25), error: 1.21024e-07)
+UME::SIMD chained, (float, 2) 32 Elapsed: 3698 (dev: 36), error: 1.13855e-07)
+UME::SIMD chained, (float, 4) 32 Elapsed: 3265 (dev: 20), error: 8.43528e-08)
+UME::SIMD chained, (float, 8) 32 Elapsed: 11844 (dev: 49), error: 5.77851e-08)
+UME::SIMD chained, (float, 16) 32 Elapsed: 14517 (dev: 67), error: 1.00772e-07)
+UME::SIMD chained, (float, 32) 32 Elapsed: 19410 (dev: 140), error: 1.21024e-07)
+Scalar chained, (float) 64 Elapsed: 22118 (dev: 513), error: 2.63691e-07)
+BLAS chained, float 64 Elapsed: 13463 (dev: 104), error: 1.3452e-07)
+UME::VECTOR chained, (float) 64 Elapsed: 21767 (dev: 171), error: 2.56123e-07)
+UME::SIMD chained, (float, 1) 64 Elapsed: 21172 (dev: 431), error: 2.56123e-07)
+UME::SIMD chained, (float, 2) 64 Elapsed: 13649 (dev: 117), error: 1.16016e-07)
+UME::SIMD chained, (float, 4) 64 Elapsed: 13776 (dev: 81), error: 1.12599e-07)
+UME::SIMD chained, (float, 8) 64 Elapsed: 15124 (dev: 653), error: 1.05639e-07)
+UME::SIMD chained, (float, 16) 64 Elapsed: 19020 (dev: 105), error: 1.18216e-07)
+UME::SIMD chained, (float, 32) 64 Elapsed: 28286 (dev: 215), error: 1.17025e-07)
+Scalar chained, (float) 128 Elapsed: 89853 (dev: 664), error: 2.53556e-07)
+BLAS chained, float 128 Elapsed: 102944 (dev: 2834), error: 1.13703e-07)
+UME::VECTOR chained, (float) 128 Elapsed: 102799 (dev: 1021), error: 2.52716e-07)
+UME::SIMD chained, (float, 1) 128 Elapsed: 96133 (dev: 929), error: 3.66883e-07)
+UME::SIMD chained, (float, 2) 128 Elapsed: 60201 (dev: 639), error: 1.74883e-07)
+UME::SIMD chained, (float, 4) 128 Elapsed: 54782 (dev: 571), error: 1.28425e-07)
+UME::SIMD chained, (float, 8) 128 Elapsed: 26987 (dev: 239), error: 1.49312e-07)
+UME::SIMD chained, (float, 16) 128 Elapsed: 33646 (dev: 240), error: 1.34062e-07)
+UME::SIMD chained, (float, 32) 128 Elapsed: 49940 (dev: 451), error: 1.7777e-07)
+Scalar chained, (float) 256 Elapsed: 380920 (dev: 3866), error: 3.08966e-07)
+BLAS chained, float 256 Elapsed: 107415 (dev: 4518), error: 1.67691e-07)
+UME::VECTOR chained, (float) 256 Elapsed: 397955 (dev: 3795), error: 5.66635e-07)
+UME::SIMD chained, (float, 1) 256 Elapsed: 376640 (dev: 2356), error: 4.36323e-07)
+UME::SIMD chained, (float, 2) 256 Elapsed: 209563 (dev: 1240), error: 2.38431e-07)
+UME::SIMD chained, (float, 4) 256 Elapsed: 245354 (dev: 3314), error: 1.69139e-07)
+UME::SIMD chained, (float, 8) 256 Elapsed: 66388 (dev: 707), error: 1.10966e-07)
+UME::SIMD chained, (float, 16) 256 Elapsed: 74802 (dev: 426), error: 1.43725e-07)
+UME::SIMD chained, (float, 32) 256 Elapsed: 100094 (dev: 1129), error: 1.6608e-07)
+Scalar chained, (float) 512 Elapsed: 1421554 (dev: 8037), error: 8.2699e-07)
+BLAS chained, float 512 Elapsed: 135309 (dev: 3499), error: 1.78428e-07)
+UME::VECTOR chained, (float) 512 Elapsed: 1459296 (dev: 8664), error: 6.47529e-07)
+UME::SIMD chained, (float, 1) 512 Elapsed: 1430438 (dev: 8856), error: 8.67798e-07)
+UME::SIMD chained, (float, 2) 512 Elapsed: 773006 (dev: 6018), error: 3.54603e-07)
+UME::SIMD chained, (float, 4) 512 Elapsed: 1003084 (dev: 6557), error: 2.81283e-07)
+UME::SIMD chained, (float, 8) 512 Elapsed: 244861 (dev: 4763), error: 1.862e-07)
+UME::SIMD chained, (float, 16) 512 Elapsed: 254853 (dev: 4297), error: 1.75109e-07)
+UME::SIMD chained, (float, 32) 512 Elapsed: 298911 (dev: 4758), error: 1.54407e-07)
+Scalar chained, (float) 1024 Elapsed: 5988776 (dev: 46888), error: 1.1073e-06)
+        BLAS chained, float 1024 Elapsed: 1394559 (dev: 10438), error: 1.93452e-07)
+UME::VECTOR chained, (float) 1024 Elapsed: 6086203 (dev: 55450), error: 1.0758e-06)
+UME::SIMD chained, (float, 1) 1024 Elapsed: 5976746 (dev: 44684), error: 7.51857e-07)
+UME::SIMD chained, (float, 2) 1024 Elapsed: 3322382 (dev: 26837), error: 5.9061e-07)
+UME::SIMD chained, (float, 4) 1024 Elapsed: 4262311 (dev: 33224), error: 2.42109e-07)
+UME::SIMD chained, (float, 8) 1024 Elapsed: 1900778 (dev: 6066), error: 1.77701e-07)
+^C
+[pkarpins@opladev39 blas_gemv_simple]$ g++ -std=c++11 BlasGemvSimple.cpp -O2 -DUSE_BLAS -lopenblas -mavx -S
+^C
+[pkarpins@opladev39 blas_gemv_simple]$ icpc -std=c++11 BlasGemvSimple.cpp -O2 -DUSE_BLAS -lopenblas -mavx -S
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                 ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=float]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=float]" at line 76 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=float]" at line 77 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=float]" at line 77 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(70): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+                            ^
+          detected during:
+            instantiation of "void UMEVectorSingleTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=float]" at line 40
+            instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=float]" at line 78 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                   ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=1]" at line 79 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                                                                                   ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=1]" at line 79 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=2]" at line 80 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=2]" at line 80 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=4]" at line 81 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=4]" at line 81 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=8]" at line 82 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=8]" at line 82 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=16]" at line 83 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=16]" at line 83 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=32]" at line 84 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=float, STRIDE=32]" at line 84 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+GemvTest.h(57): warning #2196: routine is both "inline" and "noinline"
+      GemvSingleTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                         ^
+          detected during:
+            instantiation of "GemvSingleTest<FLOAT_T>::GemvSingleTest(int) [with FLOAT_T=double]" at line 61 of "ScalarTest.h"
+            instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                           ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(61): warning #2196: routine is both "inline" and "noinline"
+      ScalarSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                           ^
+          detected during instantiation of "ScalarSingleTest<FLOAT_T>::ScalarSingleTest(int) [with FLOAT_T=double]" at line 89 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                         ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=double]" at line 90 of "BlasGemvSimple.cpp"
+
+BlasTest.h(96): warning #2196: routine is both "inline" and "noinline"
+      BlasSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                         ^
+          detected during instantiation of "BlasSingleTest<FLOAT_T>::BlasSingleTest(int) [with FLOAT_T=double]" at line 90 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                              ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(70): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+              ^
+          detected during:
+            instantiation of "void UMEVectorSingleTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=double]" at line 40
+            instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                              ^
+          detected during instantiation of "UMEVectorSingleTest<FLOAT_T>::UMEVectorSingleTest(int) [with FLOAT_T=double]" at line 91 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=1]" at line 92 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=1]" at line 92 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=2]" at line 93 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=2]" at line 93 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=4]" at line 94 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=4]" at line 94 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=8]" at line 95 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=8]" at line 95 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=16]" at line 96 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(40): warning #2196: routine is both "inline" and "noinline"
+      UMESimdSingleTest(int problem_size) : GemvSingleTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "UMESimdSingleTest<FLOAT_T, STRIDE>::UMESimdSingleTest(int) [with FLOAT_T=double, STRIDE=16]" at line 96 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                                                                                  ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=float]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                    ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                    ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=float]" at line 101 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=float]" at line 102 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                  ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=float]" at line 102 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                       ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(198): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+                            ^
+          detected during:
+            instantiation of "void UMEVectorChainedTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=float]" at line 107
+            instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                       ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=float]" at line 103 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=1]" at line 104 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                                                                                     ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=1]" at line 104 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=2]" at line 105 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=2]" at line 105 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=4]" at line 106 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=4]" at line 106 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=8]" at line 107 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=8]" at line 107 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=16]" at line 108 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=16]" at line 108 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=32]" at line 109 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=float, STRIDE=32]" at line 109 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+GemvTest.h(140): warning #2196: routine is both "inline" and "noinline"
+      GemvChainedTest(int problem_size) : Test(true), problem_size(problem_size) {}
+                          ^
+          detected during:
+            instantiation of "GemvChainedTest<FLOAT_T>::GemvChainedTest(int) [with FLOAT_T=double]" at line 99 of "ScalarTest.h"
+            instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+ScalarTest.h(99): warning #2196: routine is both "inline" and "noinline"
+      ScalarChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                            ^
+          detected during instantiation of "ScalarChainedTest<FLOAT_T>::ScalarChainedTest(int) [with FLOAT_T=double]" at line 114 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                          ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=double]" at line 115 of "BlasGemvSimple.cpp"
+
+BlasTest.h(114): warning #2196: routine is both "inline" and "noinline"
+      BlasChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                          ^
+          detected during instantiation of "BlasChainedTest<FLOAT_T>::BlasChainedTest(int) [with FLOAT_T=double]" at line 115 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                               ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(198): warning #2196: routine is both "inline" and "noinline"
+              evaluateForRow(i);
+              ^
+          detected during:
+            instantiation of "void UMEVectorChainedTest<FLOAT_T>::benchmarked_code() [with FLOAT_T=double]" at line 107
+            instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMEVectorTest.h(107): warning #2196: routine is both "inline" and "noinline"
+      UMEVectorChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                               ^
+          detected during instantiation of "UMEVectorChainedTest<FLOAT_T>::UMEVectorChainedTest(int) [with FLOAT_T=double]" at line 116 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=1]" at line 117 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=1]" at line 117 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=2]" at line 118 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=2]" at line 118 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=4]" at line 119 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=4]" at line 119 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=8]" at line 120 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=8]" at line 120 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=16]" at line 121 of "BlasGemvSimple.cpp"
+
+UMESimdTest.h(131): warning #2196: routine is both "inline" and "noinline"
+      UMESimdChainedTest(int problem_size) : GemvChainedTest<FLOAT_T>(problem_size) {}
+                             ^
+          detected during instantiation of "UMESimdChainedTest<FLOAT_T, STRIDE>::UMESimdChainedTest(int) [with FLOAT_T=double, STRIDE=16]" at line 121 of "BlasGemvSimple.cpp"
+
+[pkarpins@opladev39 blas_gemv_simple]$

@@ -63,11 +63,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD single, (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD single";
         return retval;
     }
 };
@@ -120,11 +116,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::SIMD chained, (" +
-            ScalarToString<FLOAT_T>::value() + ", " +
-            std::to_string(STRIDE) + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::SIMD chained";
         return retval;
     }
 };

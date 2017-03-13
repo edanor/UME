@@ -77,10 +77,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "AsmJIT(UME::VECTOR) single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "AsmJIT evaluator single";
         return retval;
     }
 };
@@ -127,10 +124,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "AsmJIT(UME::VECTOR) chained, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "AsmJIT evaluator chained";
         return retval;
     }
 };
@@ -151,10 +145,7 @@ public:
     UME_NEVER_INLINE virtual void verify() {}
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "Asmjit single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "Asmjit evaluator single";
         return retval;
     }
 };
@@ -172,10 +163,7 @@ public:
     UME_NEVER_INLINE virtual void verify() {}
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "Asmjit chained, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "Asmjit evaluator chained";
         return retval;
     }
 };
