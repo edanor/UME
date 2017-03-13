@@ -222,10 +222,7 @@ public:
     UME_NEVER_INLINE virtual void cleanup() {}
     UME_NEVER_INLINE virtual void verify() {}
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "BLAS single, " +
-            ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(problem_size);
+        std::string retval = "BLAS single";
         return retval;
     }
 };

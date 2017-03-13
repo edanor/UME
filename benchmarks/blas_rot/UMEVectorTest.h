@@ -54,10 +54,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "";
-        retval += "UME::VECTOR single, (" +
-            ScalarToString<FLOAT_T>::value() + ") " +
-            std::to_string(this->problem_size);
+        std::string retval = "UME::VECTOR single";
         return retval;
     }
 };

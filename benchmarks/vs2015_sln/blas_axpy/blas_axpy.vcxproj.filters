@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="asmjit">
-      <UniqueIdentifier>{544d8f22-72ce-4642-a064-6c93fbfcc090}</UniqueIdentifier>
+      <UniqueIdentifier>{d8bf50ba-ffcf-4d25-8c7c-8fb7ba916fb2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +32,39 @@
     </ClInclude>
     <ClInclude Include="..\..\blas_axpy\AxpyTest.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\blas_axpy\AsmjitTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\arm.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apibegin.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apiend.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_build.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\arch.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\assembler.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.h">
+      <Filter>asmjit</Filter>
     </ClInclude>
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codeemitter.h">
       <Filter>asmjit</Filter>
@@ -84,37 +117,13 @@
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\zone.h">
       <Filter>asmjit</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\arch.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\assembler.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apibegin.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_apiend.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\asmjit_build.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\base.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86.h">
       <Filter>asmjit</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\arm.h">
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86assembler.h">
+      <Filter>asmjit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86builder.h">
       <Filter>asmjit</Filter>
     </ClInclude>
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86compiler.h">
@@ -144,19 +153,31 @@
     <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86regalloc_p.h">
       <Filter>asmjit</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86assembler.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utilities\asmjit\src\asmjit\x86\x86builder.h">
-      <Filter>asmjit</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\blas_axpy\AsmjitTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas_axpy\BlasAxpy.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\arch.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\assembler.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeemitter.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeholder.cpp">
+      <Filter>asmjit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\constpool.cpp">
+      <Filter>asmjit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\cpuinfo.cpp">
       <Filter>asmjit</Filter>
@@ -192,27 +213,6 @@
       <Filter>asmjit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\zone.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\arch.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\assembler.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codebuilder.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codecompiler.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeemitter.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\codeholder.cpp">
-      <Filter>asmjit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\utilities\asmjit\src\asmjit\base\constpool.cpp">
       <Filter>asmjit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\utilities\asmjit\src\asmjit\x86\x86assembler.cpp">
