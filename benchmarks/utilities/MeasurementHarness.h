@@ -28,7 +28,7 @@ public:
     T value;
     std::string name;
 
-    ValueParameter(std::string & name, T value) :
+    ValueParameter(std::string name, T value) :
         value(value),
         name(name)
     {}
@@ -105,6 +105,11 @@ private:
     //  available tests.
     bool displayTestInfo;
     bool displayCategoriesInfo;
+    bool outputJSON;
+
+    bool outputToFile;
+    std::string outputFile;
+    std::ostream & outputStream;
 
     // Uncategorized test info
     std::list<Test*> tests;
@@ -115,13 +120,17 @@ private:
 public:
 
     // Construct without input parameters handling
-    BenchmarkHarness() : 
+    BenchmarkHarness() :
         _argc(0),
         _argv(nullptr),
         cmd(nullptr),
         fastExit(false),
         displayTestInfo(false),
-        displayCategoriesInfo(false)
+        displayCategoriesInfo(false),
+        outputJSON(false),
+        outputToFile(false),
+        outputFile(""),
+        outputStream(std::cout)
         {}
 
     // Construct with input parameters handling
@@ -130,11 +139,14 @@ public:
         _argv(argv),
         fastExit(false),
         displayTestInfo(false),
-        displayCategoriesInfo(false)
+        displayCategoriesInfo(false),
+        outputJSON(false),
+        outputToFile(false),
+        outputFile(""),
+        outputStream(std::cout)
     {
         // Parse the input
         cmd = new TCLAP::CmdLine("Use -h for help.", ' ', "");
-
 
         TCLAP::SwitchArg infoFlag("i", "info", "Display list of available tests");
         cmd->add(infoFlag);
@@ -142,7 +154,13 @@ public:
         TCLAP::SwitchArg categoriesFlag("c", "categories", "Display list of available test categories");
         cmd->add(categoriesFlag);
 
-        cmd->parse(_argc, __argv);
+        TCLAP::SwitchArg outputJSONFlag("j", "json", "Present output in JSON format");
+        cmd->add(outputJSONFlag);
+
+        TCLAP::ValueArg<std::string> fileNameFlag("o", "output", "Set output file name.", false, "","file_name");
+        cmd->add(fileNameFlag);
+
+        cmd->parse(_argc, _argv);
 
         if (infoFlag.getValue()) {
             fastExit = true;
@@ -155,6 +173,15 @@ public:
             displayCategoriesInfo = true;
             // Tests are not yet registered.
             // Actual printing has to be delayed.
+        }
+
+        if (outputJSONFlag.getValue()) {
+            outputJSON = true;
+        }
+
+        if (fileNameFlag.getValue() != "") {
+            outputToFile = true;
+            outputFile = fileNameFlag.getValue();
         }
     }
 
@@ -211,25 +238,89 @@ public:
 
     void runAllTests(int RUNS) {
 
+        if (outputJSON)
+        {
+            std::cout << "{ \"test categories\" : [";
+        }
+
         // Execute all categorized tests
         for (auto catIter = testCategories.begin(); catIter != testCategories.end(); catIter++)
         {
             TestCategory* cat = (*catIter);
+
+            if (outputJSON) {
+                // Make sure categories are comma separated
+                if (catIter != testCategories.begin()) {
+                    std::cout << ",";
+                }
+
+                std::cout << "\n { \"name\" : \"" << (*catIter)->name << "\",\n";
+                std::cout << " \"parameters\" : [";
+
+                for (auto paramIter = (*catIter)->parameters.begin();
+                    paramIter != (*catIter)->parameters.end();
+                    paramIter++)
+                {
+                    // Make sure parameters are comma separated
+                    if (paramIter != (*catIter)->parameters.begin()) {
+                        std::cout << ",";
+                    }
+
+                    std::cout << "\n   {"
+                        "  \"name\" : \"" << (*paramIter)->getName() << "\"," <<
+                        "  \"value\" : \"" << (*paramIter)->getValueAsString() << "\"}";
+                }
+
+                std::cout << "\n ]";
+
+                // Add comma between 'parametes' and first 'test' only if tests not empty
+                if (cat->tests.size() > 0) {
+                    std::cout << ",";
+                }
+                std::cout << "\n  \"tests\" : [ ";
+            }
+
             for (auto testIter = cat->tests.begin(); testIter != cat->tests.end(); testIter++)
             {
                 runSingleTest(*testIter, RUNS);
 
-                if ((*testIter)->validTest == true) {
-                    std::cout << (*testIter)->get_test_identifier()
-                        << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
-                        << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
-                        << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+                if (outputJSON) {
+                    // Make sure tests are comma separated.
+                    if (testIter != cat->tests.begin())
+                    {
+                        std::cout << ", ";
+                    }
+
+                    std::cout << "\n   { \"name\" : \"" << (*testIter)->get_test_identifier()
+                        << "\", \"elapsed\" : \"" << (unsigned long long) (*testIter)->stats.getAverage()
+                        << "\", \"stdDev\" : \"" << (unsigned long long) (*testIter)->stats.getStdDev()
+                        << "\", \"error\" : \"" << (*testIter)->error_norm_bignum.ToDouble() << "\"}";
+                    std::cout << std::flush;
                 }
                 else {
-                    std::cout << (*testIter)->get_test_identifier()
-                        << " RESULTS UNAVAILABLE\n";
+                    if ((*testIter)->validTest == true) {
+                        std::cout << (*testIter)->get_test_identifier()
+                            << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
+                            << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
+                            << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+                    }
+                    else {
+                        std::cout << (*testIter)->get_test_identifier()
+                            << " RESULTS UNAVAILABLE\n";
+                    }
                 }
+
             }
+
+            if (outputJSON)
+            {
+                std::cout << "  \n  ] \n }";
+            }
+        }
+
+        if (outputJSON)
+        {
+            std::cout << "\n ]\n}";
         }
 
         // Also execute all uncategorized tests
