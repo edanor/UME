@@ -36,46 +36,28 @@
 #include "UMESimdTest.h"
 #include "UMEVectorTest.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    BenchmarkHarness harness;
+    BenchmarkHarness harness(argc, argv);
+    int MIN_SIZE = 1;
+    int MAX_SIZE = 100000000;
+    int STEP_COUNT = 1000;
+    int PROGRESSION = 10;
 
-    harness.registerTest(new ScalarTest<float, 1, 1000>());
-    harness.registerTest(new UMESimdTest<float, 1, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 1, UME_DEFAULT_SIMD_STRIDE, 1000>());
+    for (int i = MIN_SIZE; i < MAX_SIZE; i *= PROGRESSION)
+    {
+        std::string categoryName = std::string("RK4_bench1");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("step_count"), STEP_COUNT));
 
-    harness.registerTest(new ScalarTest<float, 10, 1000>());
-    harness.registerTest(new UMESimdTest<float, 10, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 10, UME_DEFAULT_SIMD_STRIDE, 1000>());
+        newCategory->registerTest(new ScalarTest<float>(i, STEP_COUNT));
+        newCategory->registerTest(new UMESimdTest<float, UME_DEFAULT_SIMD_STRIDE>(i, STEP_COUNT));
+        newCategory->registerTest(new UMEVectorTest<float>(i, STEP_COUNT));
 
-    harness.registerTest(new ScalarTest<float, 100, 1000>());
-    harness.registerTest(new UMESimdTest<float, 100, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 100, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 1000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 1000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 1000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 10000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 10000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 10000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 100000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 100000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 100000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 1000000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 1000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 1000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 10000000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 10000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float,    10000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
-    harness.registerTest(new ScalarTest<float, 100000000, 1000>());
-    harness.registerTest(new UMESimdTest<float, 100000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-    harness.registerTest(new UMEVectorTest<float, 100000000, UME_DEFAULT_SIMD_STRIDE, 1000>());
-
+        harness.registerTestCategory(newCategory);
+    }
     harness.runAllTests(10);
 
     return 0;
