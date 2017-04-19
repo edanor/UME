@@ -76,10 +76,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "BLAS single, " +
-            ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(this->problem_size);
+        std::string retval = "BLAS single";
         return retval;
     }
 };
@@ -104,10 +101,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "BLAS chained, " +
-            ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(this->problem_size);
+        std::string retval = "BLAS chained";
         return retval;
     }
 };

@@ -8,7 +8,7 @@
 // 2. We need to traverse the tree and compile the function. This should happen preferrably
 //    only once per expression evaluation (some global context needed?).
 // 3. We have to call the pre-compiled function on local data settings.
-template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+template<int VEC_LEN, uint32_t SIMD_STRIDE>
 class AsmjitEvaluator {
     asmjit::JitRuntime runtime;
     asmjit::CodeHolder code;
@@ -37,7 +37,10 @@ public:
 
         code.init(runtime.getCodeInfo());
         asmjit::Error err;
-        cc = new asmjit::X86Compiler(&code);
+
+        asmjit::X86Compiler compiler(&code);
+
+        cc = &compiler;//= new asmjit::X86Compiler(&code);
 
         asmjit::X86Gp cnt = cc->newInt32("cnt");
         offsetRegisters[0] = cc->newIntPtr("Dst");
@@ -141,6 +144,51 @@ public:
         // Call the wrapper function
         eval();
 
+        //delete cc;
+    }
+
+    // Evaluate with scalar destination
+    template<typename SCALAR_T, typename EXP_T>
+    AsmjitEvaluator(
+        SCALAR_T * dst,
+        UME::VECTOR::ArithmeticExpression<SCALAR_T, SIMD_STRIDE, EXP_T> & exp)
+    {
+        EXP_T & reinterpret_exp = static_cast<EXP_T &>(exp);
+
+        code.init(runtime.getCodeInfo());
+        asmjit::Error err;
+        cc = new asmjit::X86Compiler(&code);
+
+        // Visit all nodes and figure out the function signature.
+        argCount = 0;
+        map_arguments(reinterpret_exp);
+
+        // Now when all arguments are already mapped, we can initialize parameters
+        asmjit::CCFunc* evaluator = cc->addFunc(asmjit::FuncSignature0<void>());
+
+        // Initialize destination offset register
+        asmjit::X86Xmm dstReg = cc->newXmm();
+
+        eval_scalar(reinterpret_exp, dstReg);
+
+        asmjit::X86Mem dstOffset = cc->newInt64Const(asmjit::kConstScopeLocal, (uint64_t)dst);
+       // cc->movss(asmjit::x86::ptr(dstOffset), dstReg);
+
+
+        cc->endFunc(); // Close the evaluator function
+
+        cc->finalize();
+
+        evaluatorFunc eval;
+        //err = runtime.add(&fun, &wrapperCode);
+        err = runtime.add(&eval, &code);
+        if (err) {
+            assert(false);
+        }
+
+        // Call the wrapper function
+        eval();
+
         delete cc;
     }
 
@@ -174,6 +222,12 @@ public:
     {
         map_arguments(exp._e1);
         map_arguments(exp._e2);
+    }
+
+    template<typename SCALAR_T, typename E1>
+    UME_FORCE_INLINE void map_arguments(UME::VECTOR::ArithmeticHADDExpression<SCALAR_T, SIMD_STRIDE, E1> exp)
+    {
+        map_arguments(exp._e1);
     }
 
     // TODO: we need a dispatch to make differentiation between SIMD strides and register mappings
@@ -280,4 +334,74 @@ public:
         assert(err == 0);
     }
 
+    template<typename SCALAR_T, typename E1>
+    UME_FORCE_INLINE void eval_scalar(UME::VECTOR::ArithmeticHADDExpression<SCALAR_T, SIMD_STRIDE, E1> & exp, asmjit::X86Xmm & dst) {
+        /*
+        asmjit::X86Gp cnt = cc->newInt32("cnt");
+        asmjit::X86Gp t0 = cc->newInt64Const(asmjit::kConstScopeLocal, exp.LENGTH());
+        cc->mov(cnt, t0);
+
+        asmjit::Label peel_loop_begin = cc->newLabel();
+        asmjit::Label peel_loop_end = cc->newLabel();
+        asmjit::Label reminder_loop_begin = cc->newLabel();
+        asmjit::Label reminder_loop_end = cc->newLabel();
+        asmjit::Label exit = cc->newLabel();
+
+        asmjit::X86Ymm partial_sum_vec = cc->newYmmPs(); // Intermediate result
+
+        err = cc->cmp(cnt, SIMD_STRIDE);
+        err = cc->jl(peel_loop_end); // skip the peel loop if element count too small
+
+
+        err = cc->bind(peel_loop_begin);
+        {
+            // SIMD loop
+            asmjit::X86Ymm partial_vec = cc->newYmmPs();
+            eval_simd(reinterpret_exp, partial_vec);
+
+            err = cc->vaddps(partial_sum_vec, partial_sum_vec, partial_vec);
+
+            // TODO: we should advance only children sources!
+            // Advance loop
+            //    Advance destination register
+            err = cc->add(offsetRegisters[0], sizeof(SCALAR_T)*SIMD_STRIDE);
+            //    Advance other registers
+            for (int i = 1; i < argCount; i++)
+            {
+                cc->add(offsetRegisters[i], sizeof(SCALAR_T)*SIMD_STRIDE);
+            }
+        }
+        err = cc->add(cnt, -(int)SIMD_STRIDE);
+        err = cc->cmp(cnt, SIMD_STRIDE);
+        err = cc->jge(peel_loop_begin);
+        err = cc->bind(peel_loop_end);
+
+        // Check if reminder present
+        err = cc->test(cnt, cnt);
+        err = cc->jz(exit);  // Exit if no reminder
+
+                             // Scalar code to handle reminder
+        err = cc->bind(reminder_loop_begin);
+        {
+            // scalar loop
+            asmjit::X86Xmm dst = cc->newXmmPs();
+            eval_scalar(reinterpret_exp, dst);
+
+            err = cc->movss(asmjit::x86::ptr(offsetRegisters[0]), dst);
+
+            // Advance loop
+            //    Advance destination register
+            err = cc->add(offsetRegisters[0], sizeof(SCALAR_T));
+            //    Advance other registers
+            for (int i = 1; i < argCount; i++)
+            {
+                cc->add(offsetRegisters[i], sizeof(SCALAR_T));
+            }
+        }
+        err = cc->dec(cnt);
+        err = cc->jnz(reminder_loop_begin);
+
+        err = cc->bind(exit);
+        cc->ret();*/
+    }
 };

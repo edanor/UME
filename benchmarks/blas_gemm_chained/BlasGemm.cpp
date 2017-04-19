@@ -49,17 +49,17 @@
 
 int main(int argc, char **argv)
 {
-    int MIN_SIZE = 512;
-    int MAX_SIZE = 4096;
+    int MIN_SIZE = 128;
+    int MAX_SIZE = 2048;
     int PROGRESSION = 2;
-    int ITERATIONS = 2;
+    int ITERATIONS = 10;
 
     BenchmarkHarness harness(argc, argv);
 
     std::cout <<
         "[Compile with -DUSE_BLAS to enable blas benchmarks (requires BLAS)]\n"
         "\nTODO:\n\n";
-
+    /*
     // Single execution (single precision)
     for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION) {
         std::string categoryName = std::string("BLAS_GEMV");
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         newCategory->registerTest(new BlasSplitSingleTest<double>(i));
 
         harness.registerTestCategory(newCategory);
-    }
+    }*/
 
     // Chained execution (single precision)
     for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION) {
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
         newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
         newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
 
-        newCategory->registerTest(new ScalarChainedTest<float>(i));
+        //newCategory->registerTest(new ScalarChainedTest<float>(i));
         newCategory->registerTest(new BlasChainedTest<float>(i));
         newCategory->registerTest(new BlasSplitChainedTest<float>(i));
 
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
         newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
         newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
 
-        newCategory->registerTest(new ScalarChainedTest<double>(i));
+        //newCategory->registerTest(new ScalarChainedTest<double>(i));
         newCategory->registerTest(new BlasChainedTest<double>(i));
         newCategory->registerTest(new BlasSplitChainedTest<double>(i));
 

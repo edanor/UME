@@ -313,64 +313,38 @@ public:
 //        std::cout << "B2:" << std::endl;
 //        printMatrix(this->problem_size/2, b2);
 
-        //GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size, FLOAT_T(1.0f), this->A, this->B, FLOAT_T(0.0f), this->R);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a0, b0, FLOAT_T(0.0f), t0);
+        // t0 <- a0*b0 + a1*b2  ~= (k0 + k1)
+        // t1 <- a0*b1 
 
-//        std::cout << "t0 1:" << std::endl;
-//        printMatrix(this->problem_size/2, t0);
 
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a1, b2, FLOAT_T(1.0f), t0);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a0, b0, FLOAT_T(0.0f), t0); // k0
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size / 2, FLOAT_T(1.0f), a0, b1, FLOAT_T(0.0f), t1); // k2
 
-//        std::cout << "t0 2:" << std::endl;
-//        printMatrix(this->problem_size/2, t0);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a1, b2, FLOAT_T(1.0f), t0); // t0
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a1, b3, FLOAT_T(1.0f), t1); // t1
 
-//        std::cout << "b1:" << std::endl;
-//        printMatrix(this->problem_size/2, b1);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t0, c0, FLOAT_T(0.0f), r0); // k8
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size / 2, FLOAT_T(1.0f), t0, c1, FLOAT_T(0.0f), r1); // k10
 
-//        std::cout << "b3:" << std::endl;
-//        printMatrix(this->problem_size/2, b3);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t1, c2, FLOAT_T(1.0f), r0); // r0
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t1, c3, FLOAT_T(1.0f), r1); // r1
 
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a0, b1, FLOAT_T(0.0f), t1);
-//        std::cout << "t1 1:" << std::endl;
-//        printMatrix(this->problem_size/2, t0);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a1, b3, FLOAT_T(1.0f), t1);
-//        std::cout << "t1 2:" << std::endl;
-//        printMatrix(this->problem_size/2, t0);
-
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a2, b0, FLOAT_T(0.0f), t2);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a3, b2, FLOAT_T(1.0f), t2);
         
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a2, b1, FLOAT_T(0.0f), t3);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a3, b3, FLOAT_T(1.0f), t3);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a2, b0, FLOAT_T(0.0f), t2); // k4
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size / 2, FLOAT_T(1.0f), a2, b1, FLOAT_T(0.0f), t3); // k6
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a3, b2, FLOAT_T(1.0f), t2); // t2
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), a3, b3, FLOAT_T(1.0f), t3); // t3
 
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t2, c0, FLOAT_T(0.0f), r2); // k12
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size / 2, FLOAT_T(1.0f), t2, c1, FLOAT_T(0.0f), r3); // k14
 
-//        std::cout << "C0:" << std::endl;
-//        printMatrix(this->problem_size/2, c0);
-
-//        std::cout << "C2:" << std::endl;
-//        printMatrix(this->problem_size/2, c2);
-
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t0, c0, FLOAT_T(0.0f), r0);
-//        std::cout << "r0 1:" << std::endl;
-//        printMatrix(this->problem_size/2, r0);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t1, c2, FLOAT_T(1.0f), r0);
-//        std::cout << "r0 2:" << std::endl;
-//        printMatrix(this->problem_size/2, r0);
-
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t0, c1, FLOAT_T(0.0f), r1);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t1, c3, FLOAT_T(1.0f), r1);
-        
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t2, c0, FLOAT_T(0.0f), r2);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t3, c2, FLOAT_T(1.0f), r2);
-
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t2, c1, FLOAT_T(0.0f), r3);
-        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t3, c3, FLOAT_T(1.0f), r3);
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t3, c2, FLOAT_T(1.0f), r2); // r2
+        GEMM_kernel<FLOAT_T>::blas_gemm(this->problem_size/2, FLOAT_T(1.0f), t3, c3, FLOAT_T(1.0f), r3); // r3
 
         //std::cout << "Before:" << std::endl;
         //printMatrix(this->problem_size, this->R);
 //        std::cout << "R:" << std::endl;
 //        printMatrix(this->problem_size, this->R);
-
     }
 
     UME_NEVER_INLINE virtual void optional_cleanup() {

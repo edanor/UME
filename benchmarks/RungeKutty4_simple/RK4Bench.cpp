@@ -40,11 +40,26 @@ int main(int argc, char** argv)
 {
     BenchmarkHarness harness(argc, argv);
     int MIN_SIZE = 1;
-    int MAX_SIZE = 100000000;
+    int MAX_SIZE = 10000000;
     int STEP_COUNT = 1000;
     int PROGRESSION = 10;
 
-    for (int i = MIN_SIZE; i < MAX_SIZE; i *= PROGRESSION)
+    for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION)
+    {
+        std::string categoryName = std::string("RK4_bench1");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("step_count"), STEP_COUNT));
+
+        newCategory->registerTest(new ScalarTest<double>(i, STEP_COUNT));
+        newCategory->registerTest(new UMESimdTest<double, DefaultStride<double>::value>(i, STEP_COUNT));
+        newCategory->registerTest(new UMEVectorTest<double>(i, STEP_COUNT));
+
+        harness.registerTestCategory(newCategory);
+    }
+
+    for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION)
     {
         std::string categoryName = std::string("RK4_bench1");
         TestCategory *newCategory = new TestCategory(categoryName);
@@ -53,7 +68,7 @@ int main(int argc, char** argv)
         newCategory->registerParameter(new ValueParameter<int>(std::string("step_count"), STEP_COUNT));
 
         newCategory->registerTest(new ScalarTest<float>(i, STEP_COUNT));
-        newCategory->registerTest(new UMESimdTest<float, UME_DEFAULT_SIMD_STRIDE>(i, STEP_COUNT));
+        newCategory->registerTest(new UMESimdTest<float, DefaultStride<float>::value>(i, STEP_COUNT));
         newCategory->registerTest(new UMEVectorTest<float>(i, STEP_COUNT));
 
         harness.registerTestCategory(newCategory);

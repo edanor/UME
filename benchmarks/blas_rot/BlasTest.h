@@ -90,25 +90,25 @@ public:
 };
 
 template<typename FLOAT_T>
-class rotg_kernel {
+class rot_kernel {
     // Only specializations of this class should be allowed.
 private:
-    rotg_kernel() {}
-    ~rotg_kernel() {}
+    rot_kernel() {}
+    ~rot_kernel() {}
 };
 
 template<>
-class rotg_kernel<float> {
+class rot_kernel<float> {
 public:
-    UME_FORCE_INLINE static void blas_rotg(int N, float *a, float *b, float c, float s) {
+    UME_FORCE_INLINE static void blas_rot(int N, float *a, float *b, float c, float s) {
         cblas_srot(N, a, 1, b, 1, c, s);
     }
 };
 
 template<>
-class rotg_kernel<double> {
+class rot_kernel<double> {
 public:
-    UME_FORCE_INLINE static void blas_rotg(int N, double *a, double *b, double c, double s) {
+    UME_FORCE_INLINE static void blas_rot(int N, double *a, double *b, double c, double s) {
         cblas_drot(N, a, 1, b, 1, c, s);
     }
 };
@@ -119,14 +119,11 @@ public:
     BlasSingleTest(int problem_size) : RotSingleTest<FLOAT_T>(problem_size) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        rotg_kernel<FLOAT_T>::blas_rotg(this->problem_size, this->x, this->y, this->c, this->s);
+        rot_kernel<FLOAT_T>::blas_rot(this->problem_size, this->x, this->y, this->c, this->s);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-        retval += "BLAS single, " +
-            ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(this->problem_size);
+        std::string retval = "BLAS";
         return retval;
     }
 };

@@ -33,19 +33,21 @@
 #include "../utilities/MeasurementHarness.h"
 #include "../utilities/UMERandomValues.h"
 
+#include "../../umevector/evaluators/DyadicEvaluator.h"
+
 template<typename FLOAT_T>
 class UMEVectorTest : public RK4Test<FLOAT_T> {
 private:
     static const int OPTIMAL_ALIGNMENT = 64;
 
     template<typename USER_LAMBDA_T>
-    UME_NEVER_INLINE void rk4_vectorized(
+    UME_FORCE_INLINE auto rk4_vectorized(
         UME::VECTOR::Vector<FLOAT_T> x,
-        UME::VECTOR::Vector<FLOAT_T> & y,
+        UME::VECTOR::Vector<FLOAT_T> y,
         FLOAT_T dx,
         USER_LAMBDA_T & f)
     {
-        float halfdx = dx * 0.5f;
+        FLOAT_T halfdx = dx * FLOAT_T(0.5f);
 
         // Implement RK4 algorithm - very straightforward process.
         // the user function is here attached as a fragment of computation
@@ -56,16 +58,17 @@ private:
         auto k4 = dx * f(x + dx, y + k3 * dx);
 
         // Merge into full computational graph and start evaluation.
-        y = y + (1.0f / 6.0f) * (k1 + 2.0f * k2 + 2.0f * k3 + k4);
+        return y + (FLOAT_T(1.0f / 6.0f)) * (k1 + FLOAT_T(2.0f) * k2 + FLOAT_T(2.0f) * k3 + k4);
     }
 
 public:
     UMEVectorTest(int problem_size, int step_count) : RK4Test<FLOAT_T>(problem_size, step_count) {}
 
     UME_NEVER_INLINE virtual void benchmarked_code() {
-        float timestep = 0.001f;
+        FLOAT_T timestep = 0.001f;
 
-        auto userFunction = [](auto X, auto Y) { return X * X + Y; };
+        //auto userFunction = [](auto X, auto Y) { return X.exp() * Y.sin(); };
+        auto userFunction = [](auto X, auto Y) { return X*X + Y; };
 
         for (int i = 0; i < this->step_count; i++) {
             // Bind the buffers to the UME::VECTOR objects.
@@ -73,24 +76,21 @@ public:
             UME::VECTOR::Vector<FLOAT_T> x_vec(this->problem_size, this->x);
 
             // Calculate the derivative
-            rk4_vectorized(
+            auto t0 = rk4_vectorized(
                 x_vec,
                 y_vec,
                 timestep,
                 userFunction);
 
             // Increment x with the timestep
-            x_vec = x_vec + timestep;
+            auto t1 = x_vec + timestep;
+
+            UME::VECTOR::DyadicEvaluator eval(y_vec, t0, x_vec, t1);
         }
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-
-        retval += "UME::VECTOR (X*X+Y), " +
-            ScalarToString<FLOAT_T>::value() + " " +
-            std::to_string(this->problem_size);
-
+        std::string retval = "UME::VECTOR (X*X+Y)";
         return retval;
     }
 };

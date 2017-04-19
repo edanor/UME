@@ -64,6 +64,10 @@ public:
     UME_NEVER_INLINE virtual void cleanup() = 0;
     UME_NEVER_INLINE virtual void verify() = 0;
     UME_NEVER_INLINE virtual std::string get_test_identifier() = 0;
+
+    // Optional Init and Cleanup are not measured with 'benchmarked code'
+    UME_NEVER_INLINE virtual void optional_init() {}
+    UME_NEVER_INLINE virtual void optional_cleanup() {}
 };
 
 // Test category represents all tests with directly comparable results.
@@ -222,12 +226,16 @@ public:
             // interesting for us
             test->initialize();
 
+            test->optional_init();
+
             // Start measurement
             start = get_timestamp();
                 // The critical fragment of the code being benchmarked
                 test->benchmarked_code();
 
             end = get_timestamp();
+
+            test->optional_cleanup();
 
             test->verify();
             test->cleanup();
@@ -309,7 +317,6 @@ public:
                             << " RESULTS UNAVAILABLE\n";
                     }
                 }
-
             }
 
             if (outputJSON)

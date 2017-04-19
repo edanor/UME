@@ -72,7 +72,7 @@ public:
         UME::VECTOR::Vector<FLOAT_T> y_vec(this->problem_size, this->y);
 
         auto t0 = this->alpha * x_vec + y_vec;
-        AsmjitEvaluator<UME_DYNAMIC_LENGTH, UME_DEFAULT_SIMD_STRIDE> eval(y_vec, t0);
+        AsmjitEvaluator<UME_DYNAMIC_LENGTH, DefaultStride<FLOAT_T>::value> eval(y_vec, t0);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
@@ -119,7 +119,7 @@ public:
             alpha6*x6_vec + alpha7*x7_vec +
             alpha8*x8_vec + alpha9*x9_vec;
 
-        AsmjitEvaluator<UME_DYNAMIC_LENGTH, UME_DEFAULT_SIMD_STRIDE> eval(y_vec, t0);
+        AsmjitEvaluator<UME_DYNAMIC_LENGTH, DefaultStride<FLOAT_T>::value> eval(y_vec, t0);
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()

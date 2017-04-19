@@ -72,7 +72,8 @@ public:
     UME_NEVER_INLINE virtual void benchmarked_code() {
         float timestep = 0.001f;
 
-        auto userFunction = [](auto X, auto Y) { return X * X + Y; };
+        //auto userFunction = [](auto X, auto Y) { return std::exp(X)*std::sin(Y); };
+        auto userFunction = [](auto X, auto Y) { return X*X + Y; };
 
         for (int i = 0; i < this->step_count; i++) {
 
@@ -92,12 +93,7 @@ public:
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
-        std::string retval = "";
-
-        retval += "Scalar (X*X+Y), " +
-            ScalarToString<SCALAR_T>::value() + " " +
-            std::to_string(this->problem_size);
-
+        std::string retval = "Scalar (X*X+Y)";
         return retval;
     }
 };

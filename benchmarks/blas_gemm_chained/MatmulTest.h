@@ -32,8 +32,6 @@
 #define GEMM_BENCH_H_
 
 #include <umesimd/UMESimd.h>
-#define USE_BLAS
-
 
 #include "../utilities/MeasurementHarness.h"
 #include "../utilities/UMEScalarToString.h"

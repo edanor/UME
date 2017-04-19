@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 {
     int MIN_SIZE = 1;
     int MAX_SIZE = 268435456;
-    int ITERATIONS = 10;
+    int ITERATIONS = 3;
     int PROGRESSION = 2;
 
     BenchmarkHarness harness(argc, argv);
@@ -79,15 +79,15 @@ int main(int argc, char **argv)
 
         newCategory->registerTest(new ScalarSingleTest<float>(i));
         // harness.registerTest(new UMEAsmjitSingleTest<float>(i));
-        newCategory->registerTest(new UMEVectorAsmjitSingleTest<float>(i));
+        //newCategory->registerTest(new UMEVectorAsmjitSingleTest<float>(i));
         newCategory->registerTest(new BlasSingleTest<float>(i));
         newCategory->registerTest(new UMEVectorSingleTest<float>(i));
-        newCategory->registerTest(new UMESimdSingleTest<float, 1>(i));
-        newCategory->registerTest(new UMESimdSingleTest<float, 2>(i));
-        newCategory->registerTest(new UMESimdSingleTest<float, 4>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<float, 1>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<float, 2>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<float, 4>(i));
         newCategory->registerTest(new UMESimdSingleTest<float, 8>(i));
-        newCategory->registerTest(new UMESimdSingleTest<float, 16>(i));
-        newCategory->registerTest(new UMESimdSingleTest<float, 32>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<float, 16>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<float, 32>(i));
 
         harness.registerTestCategory(newCategory);
     }
@@ -101,15 +101,15 @@ int main(int argc, char **argv)
 
         newCategory->registerTest(new ScalarChainedTest<float>(i));
         //harness.registerTest(new UMEAsmjitChainedTest<float>(i));
-        newCategory->registerTest(new UMEVectorAsmjitChainedTest<float>(i));
+        //newCategory->registerTest(new UMEVectorAsmjitChainedTest<float>(i));
         newCategory->registerTest(new BlasChainedTest<float>(i));
         newCategory->registerTest(new UMEVectorChainedTest<float>(i));
-        newCategory->registerTest(new UMESimdChainedTest<float, 1>(i));
-        newCategory->registerTest(new UMESimdChainedTest<float, 2>(i));
-        newCategory->registerTest(new UMESimdChainedTest<float, 4>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<float, 1>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<float, 2>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<float, 4>(i));
         newCategory->registerTest(new UMESimdChainedTest<float, 8>(i));
-        newCategory->registerTest(new UMESimdChainedTest<float, 16>(i));
-        newCategory->registerTest(new UMESimdChainedTest<float, 32>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<float, 16>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<float, 32>(i));
 
         harness.registerTestCategory(newCategory);
     }
@@ -124,17 +124,17 @@ int main(int argc, char **argv)
         newCategory->registerTest(new ScalarSingleTest<double>(i));
         newCategory->registerTest(new BlasSingleTest<double>(i));
         newCategory->registerTest(new UMEVectorSingleTest<double>(i));
-        newCategory->registerTest(new UMESimdSingleTest<double, 1>(i));
-        newCategory->registerTest(new UMESimdSingleTest<double, 2>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<double, 1>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<double, 2>(i));
         newCategory->registerTest(new UMESimdSingleTest<double, 4>(i));
-        newCategory->registerTest(new UMESimdSingleTest<double, 8>(i));
-        newCategory->registerTest(new UMESimdSingleTest<double, 16>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<double, 8>(i));
+        //newCategory->registerTest(new UMESimdSingleTest<double, 16>(i));
 
         harness.registerTestCategory(newCategory);
     }
 
     // Chained execution (double precision)
-    for (int i = 1; i <= MAX_SIZE; i *= PROGRESSION) {
+    for (int i = 1; i <= MAX_SIZE / 8; i *= PROGRESSION) {
         std::string categoryName = std::string("BLAS_AXPY_chained");
         TestCategory *newCategory = new TestCategory(categoryName);
         newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
@@ -143,11 +143,11 @@ int main(int argc, char **argv)
         newCategory->registerTest(new ScalarChainedTest<double>(i));
         newCategory->registerTest(new BlasChainedTest<double>(i));
         newCategory->registerTest(new UMEVectorChainedTest<double>(i));
-        newCategory->registerTest(new UMESimdChainedTest<double, 1>(i));
-        newCategory->registerTest(new UMESimdChainedTest<double, 2>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<double, 1>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<double, 2>(i));
         newCategory->registerTest(new UMESimdChainedTest<double, 4>(i));
-        newCategory->registerTest(new UMESimdChainedTest<double, 8>(i));
-        newCategory->registerTest(new UMESimdChainedTest<double, 16>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<double, 8>(i));
+        //newCategory->registerTest(new UMESimdChainedTest<double, 16>(i));
 
         harness.registerTestCategory(newCategory);
     }

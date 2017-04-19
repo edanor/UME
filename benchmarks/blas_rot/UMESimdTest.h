@@ -71,7 +71,7 @@ public:
 
     UME_NEVER_INLINE virtual std::string get_test_identifier()
     {
-        std::string retval = "UME::SIMD single (SIMD: " + std::to_string(STRIDE) + ")";
+        std::string retval = "UME::SIMD (STRIDE: " + std::to_string(STRIDE) + ")";
         return retval;
     }
 };
