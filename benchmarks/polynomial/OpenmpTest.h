@@ -32,9 +32,8 @@
 #include "../utilities/MeasurementHarness.h"
 #include "../utilities/UMEScalarToString.h"
 
-
 template<typename FLOAT_T>
-class ScalarTest : public Test {
+class OpenmpTest : public Test {
 private:
     int problem_size;
 
@@ -42,7 +41,7 @@ private:
     FLOAT_T *x, *y;
 
 public:
-    ScalarTest(int problem_size) : Test(true), problem_size(problem_size) {}
+    OpenmpTest(int problem_size) : Test(true), problem_size(problem_size) {}
 
     UME_NEVER_INLINE virtual void initialize() {
         x = (FLOAT_T *)UME::DynamicMemory::AlignedMalloc(problem_size * sizeof(FLOAT_T), sizeof(FLOAT_T));
@@ -54,7 +53,7 @@ public:
         {
             // Generate random numbers in range (0.0;1.0)
             x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
-            y[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
+            y[i] = 0;
         }
 
         for (int i = 0; i < 17; i++)
@@ -75,13 +74,13 @@ public:
         //      + x^8*(a8+a9*x + x^2*(a10 + a11*x) + x^4*(a12 + a13*x + x^2*(a14 + a15*x)) +
         //      + a16*x^16
         //
-        FLOAT_T x2, x4, x8, x16;
-
+        //aligned(x, y)
+        #pragma omp simd 
         for (int i = 0; i < problem_size; i++) {
-            x2 = x[i] * x[i];
-            x4 = x2*x2;
-            x8 = x4*x4;
-            x16 = x8*x8;
+            FLOAT_T x2 = x[i] * x[i];
+            FLOAT_T x4 = x2*x2;
+            FLOAT_T x8 = x4*x4;
+            FLOAT_T x16 = x8*x8;
 
             y[i] = (a[0] + a[1] * x[i])
                 + x2*(a[2] + a[3] * x[i])
@@ -101,7 +100,7 @@ public:
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
 
-        retval += "Scalar, " +
+        retval += "OpenMP SIMD, " +
             ScalarToString<FLOAT_T>::value() + " " +
             std::to_string(problem_size);
 

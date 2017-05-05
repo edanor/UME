@@ -44,19 +44,27 @@
 
 #include "ScalarTest.h"
 #include "UMESimdTest.h"
+#include "UMESimdOmpParallelTest.h"
 #include "AVXTest.h"
 #include "AVX512Test.h"
+#include "OpenmpTest.h"
+#include "OpenmpParallelTest.h"
 
 #include "../utilities/TimingStatistics.h"
 
 // Introducing inline assembly forces compiler to generate
 #define BREAK_COMPILER_OPTIMIZATION() __asm__ ("NOP");
 
-const int ARRAY_SIZE = 600000; // TODO: modify benchmarks to consider peeling effect.
+const int ARRAY_SIZE = 1000000000; // TODO: modify benchmarks to consider peeling effect.
 
-int main()
+int main(int argc, char **argv)
 {
-    const int ITERATIONS = 100;
+    int MIN_SIZE = 1;
+    int MAX_SIZE = 536870912;
+    const int ITERATIONS = 5;
+    int PROGRESSION = 2;
+
+    BenchmarkHarness harness(argc, argv);
 
     std::cout << "The result is amount of time it takes to calculate polynomial of\n" 
                  "order 16 (no zero-coefficients) of: " << ARRAY_SIZE << " elements.\n" 
@@ -65,31 +73,62 @@ int main()
                  "SIMD version uses following operations: \n"
                  " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
 
-    BenchmarkHarness harness;
-
-
     TimingStatistics stats_scalar_f, stats_scalar_d;
 
-    harness.registerTest(new ScalarTest<float>(ARRAY_SIZE));
-    harness.registerTest(new AVXTest<float>(ARRAY_SIZE));
-    harness.registerTest(new AVX512Test<float>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 1>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 2>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 4>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 8>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 16>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<float, 32>(ARRAY_SIZE));
+    //for (int i = MIN_SIZE; i <= MAX_SIZE; i*=PROGRESSION) {
+        std::string categoryName = std::string("polynomial");
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), ARRAY_SIZE));
 
-    harness.registerTest(new ScalarTest<double>(ARRAY_SIZE));
-    harness.registerTest(new AVXTest<double>(ARRAY_SIZE));
-    harness.registerTest(new AVX512Test<double>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<double, 1>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<double, 2>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<double, 4>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<double, 8>(ARRAY_SIZE));
-    harness.registerTest(new UMESimdTest<double, 16>(ARRAY_SIZE));
+        newCategory->registerTest(new ScalarTest<float>(ARRAY_SIZE));
+        newCategory->registerTest(new OpenmpTest<float>(ARRAY_SIZE));
+        newCategory->registerTest(new OpenmpParallelTest<float>(ARRAY_SIZE));
+        newCategory->registerTest(new AVXTest<float>(ARRAY_SIZE));
+        newCategory->registerTest(new AVX512Test<float>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 1>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 2>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 4>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 8>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 16>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<float, 32>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 1>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 2>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 4>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 8>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 16>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<float, 32>(ARRAY_SIZE));
 
-    harness.runAllTests(ITERATIONS);
+        harness.registerTestCategory(newCategory);
+    //}
+
+    //for (int i = MIN_SIZE; i <= MAX_SIZE /2; i*= PROGRESSION) {
+        categoryName = std::string("polynomial");
+        newCategory = new TestCategory(categoryName);
+        
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 64));
+        newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), ARRAY_SIZE));
+
+        newCategory->registerTest(new ScalarTest<double>(ARRAY_SIZE));
+        newCategory->registerTest(new OpenmpTest<double>(ARRAY_SIZE));
+        newCategory->registerTest(new OpenmpParallelTest<double>(ARRAY_SIZE));
+        newCategory->registerTest(new AVXTest<double>(ARRAY_SIZE));
+        newCategory->registerTest(new AVX512Test<double>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<double, 1>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<double, 2>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<double, 4>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<double, 8>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdTest<double, 16>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<double, 1>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<double, 2>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<double, 4>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<double, 8>(ARRAY_SIZE));
+        newCategory->registerTest(new UMESimdOmpParallelTest<double, 16>(ARRAY_SIZE));
+
+        harness.registerTestCategory(newCategory);
+    //}
+
+    harness.runTests(ITERATIONS);
 
     return 0;
 }

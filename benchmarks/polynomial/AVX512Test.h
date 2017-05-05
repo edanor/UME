@@ -38,7 +38,7 @@ private:
     int problem_size;
 
 public:
-    AVX512Test(int priblem_size) : Test(false), problem_size(problem_size) {}
+    AVX512Test(int problem_size) : Test(false), problem_size(problem_size) {}
 
     UME_NEVER_INLINE virtual void initialize() {}
     UME_NEVER_INLINE virtual void benchmarked_code() {}

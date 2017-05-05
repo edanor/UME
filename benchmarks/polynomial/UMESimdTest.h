@@ -53,7 +53,7 @@ public:
 
         srand((unsigned int)time(NULL));
         // Initialize arrays with random data
-        for (int i = 0; i < ARRAY_SIZE; i++)
+        for (int i = 0; i < problem_size; i++)
         {
             // Generate random numbers in range (0.0;1000.0)
             x[i] = static_cast <FLOAT_T> (rand()) / static_cast <FLOAT_T> (RAND_MAX);
