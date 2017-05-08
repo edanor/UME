@@ -73,8 +73,6 @@ int main(int argc, char **argv)
                  "SIMD version uses following operations: \n"
                  " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
 
-    TimingStatistics stats_scalar_f, stats_scalar_d;
-
     //for (int i = MIN_SIZE; i <= MAX_SIZE; i*=PROGRESSION) {
         std::string categoryName = std::string("polynomial");
         TestCategory *newCategory = new TestCategory(categoryName);
