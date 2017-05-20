@@ -28,13 +28,16 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-#ifndef BITMAP_H_
-#define BITMAP_H_
+#pragma once
 
 #include <string>
-#include <umesimd/UMEBasicTypes.h>
+#include <iostream>
+#include <fstream>
+#include <assert.h>
+#include <umesimd/UMESimd.h>
 
 #include "UMEConstants.h"
+#include "UMEEndianness.h"
 
 namespace UME
 {
@@ -90,36 +93,250 @@ namespace UME
     {
     public:
         Bitmap() {};
-        Bitmap(uint32_t x, uint32_t y, PIXEL_TYPE type);
-        Bitmap(std::string const & fileName);
-        Bitmap(Bitmap & original, bool copyData);
-        Bitmap(BitmapFileHeader &header, BitmapDIBHeader &dIBHeader);
-        ~Bitmap();
+        Bitmap(uint32_t width, uint32_t height, PIXEL_TYPE type)
+        {
+            (void)type; // ignore unuesed parameter
+
+            uint32_t imageSize;// = ((24*width + 31)/32)*4*height; // Size of data. Every horizontal line has to be 32b aligned.
+                               //mPaddedWidth = (uint32_t) std::ceil(((double)width*3) / 32) * 32;
+            mPaddedWidth = (uint32_t)std::ceil((double)width * 24 / 32) * 4;
+            imageSize = height*mPaddedWidth;
+            // header length is 14 bytes
+            mHeader.headerID = 0x4d42;
+            WRITE_WORD(mHeader.raw + 0, mHeader.headerID);
+            mHeader.fileSize = imageSize + 14 + 40; // image size + header size + DIB header size
+            WRITE_DWORD(mHeader.raw + 2, mHeader.fileSize);
+            mHeader.reserved1 = 0;
+            WRITE_WORD(mHeader.raw + 6, mHeader.reserved1);
+            mHeader.reserved2 = 0;
+            WRITE_WORD(mHeader.raw + 8, mHeader.reserved2);
+            mHeader.imageOffset = 0x36;
+            WRITE_DWORD(mHeader.raw + 10, mHeader.imageOffset);
+
+            // DIB header length is 40 bytes
+            mDIBHeader.headerSize = 0x28;
+            WRITE_DWORD(mDIBHeader.raw + 0, mDIBHeader.headerSize);
+            mDIBHeader.width = width;
+            WRITE_DWORD(mDIBHeader.raw + 4, mDIBHeader.width);
+            mDIBHeader.height = height;
+            WRITE_DWORD(mDIBHeader.raw + 8, mDIBHeader.height);
+            mDIBHeader.colorPlanes = 0x1;   // number of color planes
+            WRITE_WORD(mDIBHeader.raw + 12, mDIBHeader.colorPlanes);
+            mDIBHeader.bitsPerPixel = 24;   // use RGB only data
+            WRITE_WORD(mDIBHeader.raw + 14, mDIBHeader.bitsPerPixel);
+
+            WRITE_DWORD(mDIBHeader.raw + 16, 0); // compresion method (0 == BI_RGB - none)
+            WRITE_DWORD(mDIBHeader.raw + 20, imageSize); // image size 
+            WRITE_DWORD(mDIBHeader.raw + 24, 0); // horizontal resolution
+            WRITE_DWORD(mDIBHeader.raw + 28, 0); // vertical re solution
+            WRITE_DWORD(mDIBHeader.raw + 32, 0); // number of colors in the color palette (0 for 2^n)
+            WRITE_DWORD(mDIBHeader.raw + 36, 0); // number of important colors
+
+            this->mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(GetBitmapSize());
+        }
+        Bitmap(std::string const & fileName)
+        {
+            if (!LoadFromFile(fileName))
+            {
+                std::cerr << "Failed to load file: " + fileName << std::endl;
+            }
+        }
+        Bitmap(Bitmap & original, bool copyData)
+        {
+            this->mHeader = original.mHeader;
+            this->mDIBHeader = original.mDIBHeader;
+            this->mPaddedWidth = original.mPaddedWidth;
+
+            unsigned int bitmapSize = GetBitmapSize();
+            this->mRasterData = (uint8_t*)UME::DynamicMemory::Malloc(bitmapSize);
+
+            if (copyData) // copy whole blob
+            {
+                std::memcpy(this->mRasterData, original.mRasterData, bitmapSize);
+            }
+            else
+            {
+                std::memset(this->mRasterData, 0, bitmapSize);
+            }
+        }
+        Bitmap(BitmapFileHeader &header, BitmapDIBHeader &dIBHeader)
+        {
+            uint32_t rasterSize = GetBitmapSize();
+            this->mHeader = header;
+            this->mDIBHeader = dIBHeader;
+
+            memset(this->mRasterData, 0, rasterSize);
+
+            mPaddedWidth = (uint32_t)std::ceil((double)mDIBHeader.width*mDIBHeader.bitsPerPixel / 32) * 4;
+        }
+
+        ~Bitmap() {
+            UME::DynamicMemory::Free(mRasterData);
+        }
 
         bool LoadFromFile(std::string const & fileName);
-        bool SaveToFile(std::string const & fileName);
+        UME_FORCE_INLINE bool SaveToFile(std::string const & fileName)
+        {
+            bool retval = true;
 
+            std::ofstream file(
+                fileName.c_str(), 
+                std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
 
-        uint8_t* GetRasterData();   // get pointer to the pixels info
-        void     CopyRasterData(uint8_t* data); // copy raster data from external location
-        uint32_t GetPixelCount();   // get number of pixels available in picture
-        uint8_t GetPixelSize();     // get pixel size in bytes
+            if (file.is_open()) {
+                assert(sizeof(uint8_t) == sizeof(char));
+                file.write((char*)mHeader.raw, UME_BITMAP_HEADER_LENGTH);
+                file.write((char*)mDIBHeader.raw, mDIBHeader.headerSize);
 
-        PixelCoord2D GetPixelCoord(uint8_t *pixel);
-        inline uint32_t GetWidth() { return mDIBHeader.width; }
-        inline uint32_t GetPaddedWidth() { return mPaddedWidth; } // Bitmap definition states that every bitmap data line has to be 32b aligned
-        inline uint32_t GetHeight() { return mDIBHeader.height; }
-        uint32_t GetPixelValue(uint32_t x, uint32_t y);
+                file.write((char*)mRasterData, GetBitmapSize());
+
+                file.close();
+            }
+            else {
+                std::cerr << "Error: cannot open file: " << fileName << std::endl;
+                std::cerr << "Check if file name contains any 'strange' characters." << std::endl;
+                assert(false);
+                retval = false;
+            }
+
+            return retval;
+        }
+
+        UME_FORCE_INLINE uint8_t* GetRasterData() { return mRasterData; }   // get pointer to the pixels info
+        UME_FORCE_INLINE void     CopyRasterData(uint8_t* data) { memcpy(mRasterData, data, GetBitmapSize()); } // copy raster data from external location
+        UME_FORCE_INLINE uint32_t GetPixelCount() { return mDIBHeader.width*mDIBHeader.height; }   // get number of pixels available in picture
+        UME_FORCE_INLINE uint8_t GetPixelSize() { return mDIBHeader.bitsPerPixel / 8; }     // get pixel size in bytes
+
+        UME_FORCE_INLINE PixelCoord2D GetPixelCoord(uint8_t *pixel) {
+            uint32_t offset = (uint32_t)(pixel - mRasterData);
+            uint32_t y = offset / (mDIBHeader.width * GetPixelSize());
+            uint32_t x = offset / GetPixelSize() - y*mDIBHeader.width;
+
+            return PixelCoord2D(x, y);
+        }
+        UME_FORCE_INLINE uint32_t GetWidth() { return mDIBHeader.width; }
+        UME_FORCE_INLINE uint32_t GetPaddedWidth() { return mPaddedWidth; } // Bitmap definition states that every bitmap data line has to be 32b aligned
+        UME_FORCE_INLINE uint32_t GetHeight() { return mDIBHeader.height; }
+        UME_FORCE_INLINE uint32_t GetPixelValue(uint32_t x, uint32_t y) {
+            uint32_t rasterDataOffset = y*GetPaddedWidth() + x*GetPixelSize();
+            uint32_t value = 0;
+
+            for (int i = 0; i < GetPixelSize(); i++)
+            {
+                value += mRasterData[rasterDataOffset + i] << 8 * i;
+            }
+
+            return value;
+        }
         // Load multiple pixel values as 32b integers into array. Pixels are read horiozontal-wide.
-        uint32_t* GetPixelValues(uint32_t start_x, uint32_t start_y, int count, uint32_t *destination);
-        void     SetPixelValue(uint32_t x, uint32_t y, uint32_t value);
-        void GetHeader(BitmapFileHeader *headerContainter);
-        void GetDIBHeader(BitmapDIBHeader *headerContainer);
-        inline uint32_t GetBitmapSize() { return mHeader.fileSize - UME_BITMAP_DIB_HEADER_LENGTH - UME_BITMAP_HEADER_LENGTH; }
-        inline uint32_t GetPixelsOffset() { return UME_BITMAP_DIB_HEADER_LENGTH + UME_BITMAP_HEADER_LENGTH; }
+        UME_FORCE_INLINE uint32_t* GetPixelValues(uint32_t start_x, uint32_t start_y, int count, uint32_t *destination) {
+            // TODO: this doesn't seem right!!!
+            uint32_t rasterDataOffset = (start_x*GetWidth() + start_y)*GetPixelSize();
+            uint32_t *value = destination;
+            uint32_t pixelSize = GetPixelSize();
+
+            for (int currPixel = 0; currPixel < count; currPixel++)
+            {
+                *value = 0;
+                for (int channel = 0; channel < GetPixelSize(); channel++)
+                {
+                    (*value) += mRasterData[rasterDataOffset + currPixel*pixelSize + channel] << 8 * channel;
+                }
+            }
+
+            return destination;
+        }
+        UME_FORCE_INLINE void     SetPixelValue(uint32_t x, uint32_t y, uint32_t value) {
+            assert(x < GetWidth());
+            assert(y < GetHeight());
+
+            uint32_t rasterDataOffset = y*GetPaddedWidth() + x*GetPixelSize();
+
+            for (int channel = 0; channel < GetPixelSize(); channel++)
+            {
+                mRasterData[rasterDataOffset + channel] = (uint8_t)(((0xFF << 8 * channel) & value) >> 8 * channel);
+            }
+        }
+        UME_FORCE_INLINE void GetHeader(BitmapFileHeader *headerContainer)
+        {
+            headerContainer->headerID = mHeader.headerID;
+            headerContainer->imageOffset = mHeader.imageOffset;
+            headerContainer->fileSize = mHeader.fileSize;
+            headerContainer->reserved1 = mHeader.reserved1;
+            headerContainer->reserved2 = mHeader.reserved2;
+
+            memcpy(headerContainer->raw, mHeader.raw, UME_BITMAP_HEADER_LENGTH);
+        }
+        UME_FORCE_INLINE void GetDIBHeader(BitmapDIBHeader *headerContainer)
+        {
+            headerContainer->bitsPerPixel = mDIBHeader.bitsPerPixel;
+            headerContainer->colorPlanes = mDIBHeader.colorPlanes;
+            headerContainer->headerSize = mDIBHeader.headerSize;
+            headerContainer->height = mDIBHeader.height;
+            headerContainer->width = mDIBHeader.width;
+
+            memset(headerContainer->zeros, 0, UME_BITMAP_DIB_HEADER_ZEROS_LENGTH);
+            memcpy(headerContainer->raw, mDIBHeader.raw, UME_BITMAP_DIB_HEADER_LENGTH);
+        }
+        UME_FORCE_INLINE uint32_t GetBitmapSize() { return mHeader.fileSize - UME_BITMAP_DIB_HEADER_LENGTH - UME_BITMAP_HEADER_LENGTH; }
+        UME_FORCE_INLINE uint32_t GetPixelsOffset() { return UME_BITMAP_DIB_HEADER_LENGTH + UME_BITMAP_HEADER_LENGTH; }
   
-        void ClearTarget(uint8_t r, uint8_t g, uint8_t b);
-        void DrawLine(double r, double theta, Color color);
+        UME_FORCE_INLINE void ClearTarget(uint8_t r, uint8_t g, uint8_t b) {
+            uint32_t pixelSize = GetPixelSize();
+            for (uint32_t i = 0; i < GetPixelCount()*pixelSize; i += pixelSize)
+            {
+                mRasterData[i] = r;
+                mRasterData[i + 1] = g;
+                mRasterData[i + 2] = b;
+            }
+        }
+        UME_FORCE_INLINE void DrawLine(double r, double theta, Color color) {
+            const double EPS = 0.001;
+            const uint32_t WIDTH = this->GetWidth();
+            const uint32_t HEIGHT = this->GetHeight();
+            const double SIN_THETA = sin(theta);
+            const double COS_THETA = cos(theta);
+            const double TAN_THETA = SIN_THETA / COS_THETA;
+            const double CTAN_THETA = COS_THETA / SIN_THETA;
+            const double R_D_COS_THETA = r / COS_THETA;
+            const double R_D_SIN_THETA = r / SIN_THETA;
+
+            // Check if the line is vertical
+            //if((theta < (PI_HALF + EPS) && theta > (PI_HALF - EPS) ) ||
+            //   (theta > (3*PI_HALF - EPS) && theta < (3*PI_HALF - EPS)))
+            if ((theta < EPS || theta > 2 * UME::CONSTANTS::PI) ||
+                (theta > UME::CONSTANTS::PI - EPS && theta <UME::CONSTANTS::PI + EPS))
+            {
+                if (r > 0.0 && r < (double)WIDTH)
+                {
+                    for (uint32_t i = 0; i < HEIGHT; i++)
+                    {
+                        SetPixelValue((uint32_t)r, i, color);
+                    }
+                }
+            }
+            else
+            {
+                // convert (r,theta) to (a,b)
+                for (uint32_t y = 0; y < HEIGHT; y++)
+                {
+                    double x = R_D_COS_THETA - (double)y * TAN_THETA;
+                    if (x > 0.0 && x < (double)WIDTH)
+                    {
+                        SetPixelValue((uint32_t)x, y, color);
+                        // this->SaveToFile(std::string("..\\..\\out_debug.bmp"));
+                    }
+                }
+                for (uint32_t x = 0; x < WIDTH; x++)
+                {
+                    double y = R_D_SIN_THETA - (double)x * CTAN_THETA;
+                    if (y > 0.0 && y < (double)HEIGHT)
+                    {
+                        SetPixelValue(x, (uint32_t)y, color);
+                    }
+                }
+            }
+        }
     private:
         // Parsed data
         BitmapFileHeader mHeader;
@@ -132,6 +349,3 @@ namespace UME
         uint8_t *mRasterData;
     };
 } // UME
-
-#endif //BITMAP_H_
-

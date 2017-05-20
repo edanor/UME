@@ -50,8 +50,8 @@ public:
     bool validTest;
     ttmath::Big<8, 8> error_norm_bignum;
 
-    Test(bool validTest) : validTest(validTest), iterationOverrider(-1) {}
-    Test() : validTest(false), iterationOverrider(-1) {}
+    Test(bool validTest) : iterationOverrider(-1), validTest(validTest)  {}
+    Test() : iterationOverrider(-1), validTest(false) {}
 
     // All the member functions are forced to never inline,
     // so that the compiler doesn't make any opportunistic guesses.
@@ -81,7 +81,7 @@ public:
     std::list<TestParameter*> parameters;
     int iterations;
 
-    TestCategory(std::string name) : name(name), iterationOverrider(-1) {}
+    TestCategory(std::string name) : iterationOverrider(-1), name(name) {}
 
     void registerTest(Test *newTest) {
         tests.push_back(newTest);
@@ -125,9 +125,9 @@ public:
 
     // Construct without input parameters handling
     BenchmarkHarness() :
+        cmd(nullptr),
         _argc(0),
         _argv(nullptr),
-        cmd(nullptr),
         fastExit(false),
         displayTestInfo(false),
         displayCategoriesInfo(false),

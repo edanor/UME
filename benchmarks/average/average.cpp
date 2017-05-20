@@ -68,7 +68,8 @@ int main(int argc, char **argv)
 
     for(int i = MIN_PROBLEM_SIZE; i < MAX_PROBLEM_SIZE; i*=PROGRESSION) {
         std::string categoryName = std::string("average");
-        TestCategory *newCategory = new TestCategory(categoryName);newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
+        TestCategory *newCategory = new TestCategory(categoryName);
+        newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
         newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i+PROBLEM_SIZE_OFFSET));
 
         newCategory->registerTest(new ScalarAverageTest<float>(i+PROBLEM_SIZE_OFFSET));
