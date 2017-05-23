@@ -169,7 +169,7 @@ public:
         FLOAT_T uT = 0;
         for (uint32_t i = 0; i < L; i++) {
             p[i] = p[i] / FLOAT_T(N);
-            uT = FLOAT_T(i)*p[i];
+            uT += FLOAT_T(i)*p[i];
         }
 
         FLOAT_T maxSigmaB_sq = 0;
@@ -190,10 +190,10 @@ public:
             /*std::cout << " Verification:\n"
             << " w0*u0 + w1*u1= " << w0*u0 + w1*u1 << " uT=" << uT << "\n"
             << " w0 + w1= " << w0 + w1 << "\n";*/
-            assert(w0*u0 + w1*u1 < uT*1.05);
-            assert(w0*u0 + w1*u1 > uT*0.95);
-            assert(w0 + w1 < 1.05);
-            assert(w0 + w1 > 0.95);
+            assert(w0*u0 + w1*u1 <= uT*1.05);
+            assert(w0*u0 + w1*u1 >= uT*0.95);
+            assert(w0 + w1 <= 1.05);
+            assert(w0 + w1 >= 0.95);
 
             // calculate the objective function
             FLOAT_T sigmaB_sq = (uT*w0 - uk)*(uT*w0 - uk) / (w0 * (1 - w0));

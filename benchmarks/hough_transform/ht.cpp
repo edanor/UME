@@ -48,6 +48,15 @@
 
 int main(int argc, char **argv)
 {
+   /* uint32_t test[15] = { 1, 2, 3, 6, 8, 9, 3, 2, 1, 1, 12, 8, 7, 21, 20 };
+
+    Vector<uint32_t> A(15, test);
+
+    auto t0 = A.hmax();
+    uint32_t res = 0;
+    MonadicEvaluator eval(&res, t0);*/
+
+
     const int ITERATIONS = 10;
 
     srand ((unsigned int)time(NULL));
@@ -85,13 +94,14 @@ int main(int argc, char **argv)
     for (uint32_t i = 0; i < inputFileNames.size(); i++) {
         TestCategory *newCategory = new TestCategory(categoryName[i]);
         newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
-        newCategory->registerTest(new UmevectorHTTest<float>(inputFileNames[i], resultFileNames[i]));
-        //newCategory->registerTest(new UmesimdHTTest<float, 8>(inputFileNames[i], resultFileNames[i]));
-        //newCategory->registerTest(new UmesimdHTTest<float, 16>(inputFileNames[i], resultFileNames[i]));
-        newCategory->registerTest(new UmesimdHTTest<float, 32>(inputFileNames[i], resultFileNames[i]));
-        //newCategory->registerTest(new AvxHTTest<float>(inputFileNames[i], resultFileNames[i]));
-        //newCategory->registerTest(new Avx512HTTest<float>(inputFileNames[i], resultFileNames[i]));
         //newCategory->registerTest(new ScalarHTTest<float>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new UmevectorHTTest<float>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new UmesimdHTTest<float, 8>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new UmesimdHTTest<float, 16>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new UmesimdHTTest<float, 32>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new AvxHTTest<float>(inputFileNames[i], resultFileNames[i]));
+        //newCategory->registerTest(new Avx512HTTest<float>(inputFileNames[i], resultFileNames[i]));
+        newCategory->registerTest(new ScalarHTTest<float>(inputFileNames[i], resultFileNames[i]));
         harness.registerTestCategory(newCategory);
     }
 

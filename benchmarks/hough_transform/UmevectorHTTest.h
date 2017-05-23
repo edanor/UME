@@ -39,6 +39,8 @@
 #include <assert.h>
 #include <umevector/UMEVector.h>
 
+#include <umevector/evaluators/DyadicEvaluator.h>
+
 using namespace UME::VECTOR;
 
 template<typename FLOAT_T>
@@ -65,36 +67,20 @@ public:
         // The input to this phase is the bitmap image, the output is Hough space
         // histogram filled with votes.
 
-        // Populate a register with theta offset values
-        //alignas(SIMDVec<uint32_t, SIMD_STRIDE>::alignment()) uint32_t raw[SIMD_STRIDE];
-        //for (int i = 0; i < SIMD_STRIDE; i++) {
-        //    raw[i] = uint32_t(i);
-        //}
-
-        //SIMDVec<uint32_t, SIMD_STRIDE> thetaOffset_int_vec(raw);
-        //SIMDVec<FLOAT_T, SIMD_STRIDE> thetaOffset_vec = thetaOffset_int_vec;
-        //const SIMDVec<FLOAT_T, SIMD_STRIDE> dTheta_vec(dTheta);
-        FLOAT_T rCoordConstMultiplier(FLOAT_T(rHeight) / (R_MAX - R_MIN));
-        //const SIMDVec<FLOAT_T, SIMD_STRIDE> RMAX_vec(R_MAX);
-        //SIMDVec<FLOAT_T, SIMD_STRIDE> theta_vec;
-
-        //SIMDVec<FLOAT_T, SIMD_STRIDE> cos_vec, sin_vec;
-        //SIMDVec<uint32_t, SIMD_STRIDE> r_coord, targetCoord_vec, currValues_vec;
-
         // Populate lookup table
         FLOAT_T *cos_lookup = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*thetaWidth, 64);
         FLOAT_T *sin_lookup = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*thetaWidth, 64);
-        //FLOAT_T theta = 0.0;
 
+        FLOAT_T rCoordConstMultiplier(FLOAT_T(rHeight) / (R_MAX - R_MIN));
         Vector<float> cos_vec(thetaWidth, cos_lookup);
         Vector<float> sin_vec(thetaWidth, sin_lookup);
 
-        Vector<float> theta_vec(thetaWidth, 0.0, dTheta); // This is a linspace vector
-        Vector<uint32_t> thetaOffset_int_vec(thetaWidth, uint32_t(0), uint32_t(1));
+        Vector<float> theta_vec(thetaWidth, 0.0, dTheta); // This is a linspace vector of all 'theta' values used in the algorithm.
+        Vector<uint32_t> thetaOffset_int_vec(thetaWidth, uint32_t(0), uint32_t(1)); // This is a linspace vector for indices of theta values
 
-        Vector<uint32_t> histogram(thetaWidth*rHeight, this->mHistogram);
+        Vector<uint32_t> histogram(thetaWidth*rHeight, this->mHistogram); // This is a binding to the histogram (a bitmap)
 
-        // Populate the lookup table
+        // Populate the lookup tables
         cos_vec = theta_vec.cos();
         sin_vec = theta_vec.sin();
 
@@ -104,19 +90,15 @@ public:
 
                 // Only proceed with calculations if any of the pixels is non-zero
                 if (pixelValue == 0) {
-                    auto t0 = sin_vec*FLOAT_T(y);
-                    //auto r_vec = cos_vec * FLOAT_T(x) + t0;
-                    auto r_vec = cos_vec.fmuladd(FLOAT_T(x), t0);
+                    auto sin_y_exp = sin_vec*FLOAT_T(y);
+                    auto r_exp = cos_vec.fmuladd(FLOAT_T(x), sin_y_exp); // r = cos[x]*x + sin[y]*y
 
-                    auto r_coord_0 = rCoordConstMultiplier*(r_vec + R_MAX);
-                    auto r_coord_1 = r_coord_0.ftou();
+                    auto r_coord_exp = (rCoordConstMultiplier*(r_exp + R_MAX)).ftou(); // r scaled to bitmap dimensions
 
-                    auto targetCoord_vec = r_coord_1*thetaWidth + thetaOffset_int_vec;
+                    auto targetCoord_exp = r_coord_exp*thetaWidth + thetaOffset_int_vec; // offset in the bitmap
+                    auto currValues_exp = histogram.gather(targetCoord_exp) + uint32_t(1); // gather from histogram and increment
 
-                    auto currValues_0 = histogram.gather(targetCoord_vec);
-                    auto currValues_1 = currValues_0 + uint32_t(1);
-
-                    MonadicEvaluator eval(histogram, currValues_1, targetCoord_vec);
+                    MonadicEvaluator eval(histogram, currValues_exp, targetCoord_exp); // evaluate with scatter indexing
                 }
             }
         }
@@ -131,51 +113,63 @@ public:
 
         uint32_t L = 0;
         uint32_t N = rHeight*thetaWidth;
-        for (uint32_t i = 0; i < N; i++) {
-            L = std::max(L, this->mHistogram[i]);
-        }
+
+        auto histmax_exp = histogram.hmax();
+        MonadicEvaluator eval2(&L, histmax_exp);
         L++; // There are L+1 levels including level '0'
 
-             //std::cout << "L: " << L << std::endl;
+        //std::cout << "L: " << L << std::endl;
 
         FLOAT_T* p = (FLOAT_T*)UME::DynamicMemory::AlignedMalloc(sizeof(FLOAT_T)*L, 64);
         memset((void*)p, 0, sizeof(FLOAT_T)*L);
 
-        // Build the Otsu histogram
+        // 2.1 Build the Otsu histogram
+
+        // Note: this loop is unlikely to be vectorized.
+        //       Even if a conflict can be detected, handling
+        //       it will take more time than serialize
+        //       increments using scalar instructions.
         for (uint32_t i = 0; i < N; i++) {
             uint32_t value = this->mHistogram[i];
             p[value] += FLOAT_T(1.0);
         }
 
+        // calculate 'uT'
+        Vector<FLOAT_T> p_vec(L, p); // bind vector to 'p'
         FLOAT_T uT = 0;
-        for (uint32_t i = 0; i < L; i++) {
-            p[i] = p[i] / FLOAT_T(N);
-            uT = FLOAT_T(i)*p[i];
-        }
+        Vector<FLOAT_T> L_linspace_vec(L, FLOAT_T(0.0), FLOAT_T(1.0));
+
+        auto p_normalized_exp = p_vec / FLOAT_T(N);               // p[i]/N
+        auto uT_exp = (p_normalized_exp * L_linspace_vec).hadd(); // (p[i]/N)*i
+        DyadicEvaluator(p_vec, p_normalized_exp, &uT, uT_exp);
 
         FLOAT_T maxSigmaB_sq = 0;
         for (uint32_t k = 0; k < L; k++) {
             FLOAT_T w0 = 0, w1 = 0;
             FLOAT_T uk = 0, u0 = 0, u1 = 0;
-            for (uint32_t i = 0; i <= k; i++) {
-                w0 += p[i];
-                uk += FLOAT_T(i + 1)*p[i];
-            }
+
+            Vector<FLOAT_T> k_linspace_vec(k+1, FLOAT_T(1.0), FLOAT_T(1.0));
+            Vector<FLOAT_T> p_vec2(k+1, p); // p[0:k]
+            auto w0_exp = p_vec2.hadd();
+            auto uk_exp = (p_vec2*k_linspace_vec).hadd();
+            DyadicEvaluator eval5(&w0, w0_exp, &uk, uk_exp);
+
+            //std::cout << "w0: " << w0 << " uk: " << uk << "uT: " << uT << std::endl;
             w1 = 1 - w0;
             u0 = uk / w0;
             u1 = (uT - uk) / (1 - w0);
-
+            
             // Following should hold:
             // w0*u0 + w1*u1 = uT
             // w0 + w1 = 1
-            /*std::cout << " Verification:\n"
-            << " w0*u0 + w1*u1= " << w0*u0 + w1*u1 << " uT=" << uT << "\n"
-            << " w0 + w1= " << w0 + w1 << "\n";*/
-            assert(w0*u0 + w1*u1 < uT*1.05);
-            assert(w0*u0 + w1*u1 > uT*0.95);
-            assert(w0 + w1 < 1.05);
-            assert(w0 + w1 > 0.95);
-
+            //std::cout << " Verification:\n"
+            //<< " w0*u0 + w1*u1= " << w0*u0 + w1*u1 << " uT=" << uT << "\n"
+            //<< " w0 + w1= " << w0 + w1 << "\n";
+            assert(w0*u0 + w1*u1 <= uT*1.05);
+            assert(w0*u0 + w1*u1 >= uT*0.95);
+            assert(w0 + w1 <= 1.05);
+            assert(w0 + w1 >= 0.95);
+            //assert(false);
             // calculate the objective function
             FLOAT_T sigmaB_sq = (uT*w0 - uk)*(uT*w0 - uk) / (w0 * (1 - w0));
             // look for MAX
@@ -187,14 +181,11 @@ public:
             }
         }
         UME::DynamicMemory::AlignedFree(p);
-
-        //std::cout << "Threshold: " << this->mThreshold << std::endl;
-        this->mThreshold *= 0.95;
     }
 
     UME_NEVER_INLINE virtual std::string get_test_identifier() {
         std::string retval = "";
-        retval += "HT Lines UME SIMD, " + ScalarToString<FLOAT_T>::value();
+        retval += "HT Lines UME VECTOR, " + ScalarToString<FLOAT_T>::value();
         return retval;
     }
 };
