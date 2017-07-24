@@ -4,3 +4,6 @@
 [submodule "umevector"]
 	path = umevector
 	url = https://github.com/edanor/umevector
+[submodule "benchmarks/utilities/json"]
+	path = benchmarks/utilities/json
+	url = https://github.com/nlohmann/json.git
