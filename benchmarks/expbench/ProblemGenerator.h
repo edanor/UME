@@ -176,23 +176,35 @@ class ProblemTree {
 private:
     std::random_device rd;
     int MAX_NESTING = 10;
+	int NODE_COUNT_LIMIT = 20;
 
-    ProblemNode* getRandomTree(int nesting) {
+	int getRandomOpClass(int nesting, int nodeCount) {
+		int max_value = 100;		
+		if(nesting >= MAX_NESTING || nodeCount >= NODE_COUNT_LIMIT ) {
+			max_value = 30;
+		}
+		
+		std::uniform_int_distribution<int> dist(0, max_value);
+		
+		int opClass;
+		
+        int draw = dist(rd);
+		if(draw <= 10) opClass = OP_CLASS_SCALAR;
+		else if(draw <= 20) opClass = OP_CLASS_VECTOR;
+		else if(draw <= 60) opClass = OP_CLASS_UNARY;
+		else if(draw <= 100) opClass = OP_CLASS_BINARY;
+		
+		assert(opClass >= 0 && opClass < OP_CLASS_COUNT);
+		
+		return opClass;
+	}
+	
+	
+    ProblemNode* getRandomTree(int nesting, int & nodeCount) {		
         ProblemNode* newNode = nullptr;
-        
-        int max_class_value = OP_CLASS_COUNT - 1;
-        // Put a limit on nesting so that we don't explode the stack.
-        // It is also necessary as we don't want to generate too big
-        // kernels at the moment.
-        if(nesting > MAX_NESTING)
-        {
-           // generate a terminal node: a scalar or a vector
-           max_class_value = std::max(OP_CLASS_SCALAR, OP_CLASS_VECTOR);
-        }
-
-        std::uniform_int_distribution<int> dist1(0, max_class_value);
-        
-        int opClass = dist1(rd); 
+		nodeCount++;
+		
+        int opClass = getRandomOpClass(nesting, nodeCount);
         assert(opClass < OP_CLASS_COUNT);
         
         if(opClass == OP_CLASS_SCALAR) {
@@ -204,14 +216,14 @@ private:
         else if(opClass == OP_CLASS_UNARY) {
             std::uniform_int_distribution<int> dist2(0, OP_UNARY_COUNT-1);
             int opId = dist2(rd);
-            ProblemNode* randomChild = getRandomTree(nesting+1);
+            ProblemNode* randomChild = getRandomTree(nesting+1, nodeCount);
             newNode = new ProblemNode(OP_CLASS_ID(opClass), opId, randomChild, nullptr);
         }
         else if(opClass == OP_CLASS_BINARY) {
             std::uniform_int_distribution<int> dist3(0, OP_BINARY_COUNT-1);
             int opId = dist3(rd);
-            ProblemNode* randomChild1 = getRandomTree(nesting+1);
-            ProblemNode* randomChild2 = getRandomTree(nesting+2);
+            ProblemNode* randomChild1 = getRandomTree(nesting+1, nodeCount);
+            ProblemNode* randomChild2 = getRandomTree(nesting+1, nodeCount);
             newNode = new ProblemNode(OP_CLASS_ID(opClass), opId, randomChild1, randomChild2);
         }
         
@@ -292,7 +304,8 @@ public:
     ProblemNode* root;
     
     ProblemTree() {
-        root = getRandomTree(0);
+		int nodeCount = 0;
+        root = getRandomTree(0, nodeCount);
     }
 
     ~ProblemTree() {

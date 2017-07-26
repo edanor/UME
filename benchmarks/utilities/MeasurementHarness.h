@@ -3,6 +3,8 @@
 
 #include <time.h>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 #include <umesimd/UMESimd.h>
 #include "TimingStatistics.h"
@@ -161,8 +163,8 @@ public:
         TCLAP::SwitchArg outputJSONFlag("j", "json", "Present output in JSON format");
         cmd->add(outputJSONFlag);
 
-        TCLAP::ValueArg<std::string> fileNameFlag("o", "output", "Set output file name.", false, "","file_name");
-        cmd->add(fileNameFlag);
+        TCLAP::ValueArg<std::string> outputFileNameFlag("o", "output", "Set output file name.", false, "","file_name");
+        cmd->add(outputFileNameFlag);
 
         cmd->parse(_argc, _argv);
 
@@ -183,9 +185,9 @@ public:
             outputJSON = true;
         }
 
-        if (fileNameFlag.getValue() != "") {
+        if (outputFileNameFlag.getValue() != "") {
             outputToFile = true;
-            outputFile = fileNameFlag.getValue();
+            outputFile = outputFileNameFlag.getValue();
         }
     }
 
@@ -237,7 +239,7 @@ public:
 
             test->optional_cleanup();
 
-            test->verify();
+            //test->verify();
             test->cleanup();
 
             test->stats.update(end - start);
@@ -245,10 +247,12 @@ public:
     }
 
     void runAllTests(int RUNS) {
+		
+		std::string outputString = "";
 
         if (outputJSON)
         {
-            std::cout << "{ \"test categories\" : [";
+            outputString += "{ \"test categories\" : [";
         }
 
         // Execute all categorized tests
@@ -259,11 +263,11 @@ public:
             if (outputJSON) {
                 // Make sure categories are comma separated
                 if (catIter != testCategories.begin()) {
-                    std::cout << ",";
+                    outputString += ",";
                 }
 
-                std::cout << "\n { \"name\" : \"" << (*catIter)->name << "\",\n";
-                std::cout << " \"parameters\" : [";
+                outputString +=  "\n { \"name\" : \"" + (*catIter)->name + "\",\n";
+                outputString += " \"parameters\" : [";
 
                 for (auto paramIter = (*catIter)->parameters.begin();
                     paramIter != (*catIter)->parameters.end();
@@ -271,21 +275,21 @@ public:
                 {
                     // Make sure parameters are comma separated
                     if (paramIter != (*catIter)->parameters.begin()) {
-                        std::cout << ",";
+                        outputString += ",";
                     }
 
-                    std::cout << "\n   {"
-                        "  \"name\" : \"" << (*paramIter)->getName() << "\"," <<
-                        "  \"value\" : \"" << (*paramIter)->getValueAsString() << "\"}";
+                    outputString += "\n   {"
+                        "  \"name\" : \"" + (*paramIter)->getName() + "\"," +
+                        "  \"value\" : \"" + (*paramIter)->getValueAsString() + "\"}";
                 }
 
-                std::cout << "\n ]";
+                outputString += "\n ]";
 
                 // Add comma between 'parametes' and first 'test' only if tests not empty
                 if (cat->tests.size() > 0) {
-                    std::cout << ",";
+                    outputString += ",";
                 }
-                std::cout << "\n  \"tests\" : [ ";
+                outputString += "\n  \"tests\" : [ ";
             }
 
             for (auto testIter = cat->tests.begin(); testIter != cat->tests.end(); testIter++)
@@ -296,38 +300,38 @@ public:
                     // Make sure tests are comma separated.
                     if (testIter != cat->tests.begin())
                     {
-                        std::cout << ", ";
+                        outputString += ", ";
                     }
 
-                    std::cout << "\n   { \"name\" : \"" << (*testIter)->get_test_identifier()
-                        << "\", \"elapsed\" : \"" << (unsigned long long) (*testIter)->stats.getAverage()
-                        << "\", \"stdDev\" : \"" << (unsigned long long) (*testIter)->stats.getStdDev()
-                        << "\", \"error\" : \"" << (*testIter)->error_norm_bignum.ToDouble() << "\"}";
-                    std::cout << std::flush;
+                    outputString += "\n   { \"name\" : \"" + (*testIter)->get_test_identifier()
+                        + "\", \"elapsed\" : \"" + std::to_string((unsigned long long) (*testIter)->stats.getAverage())
+                        + "\", \"stdDev\" : \"" + std::to_string((unsigned long long) (*testIter)->stats.getStdDev())
+                        + "\", \"error\" : \"" + std::to_string((*testIter)->error_norm_bignum.ToDouble()) + "\"}";
+                    //std::cout << std::flush;
                 }
                 else {
                     if ((*testIter)->validTest == true) {
-                        std::cout << (*testIter)->get_test_identifier()
-                            << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
-                            << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
-                            << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+                        outputString += (*testIter)->get_test_identifier()
+                            + " Elapsed: " + std::to_string((unsigned long long) (*testIter)->stats.getAverage())
+                            + " (dev: " + std::to_string((unsigned long long) (*testIter)->stats.getStdDev())
+                            + "), error: " + std::to_string((*testIter)->error_norm_bignum.ToDouble()) + ")\n";
                     }
                     else {
-                        std::cout << (*testIter)->get_test_identifier()
-                            << " RESULTS UNAVAILABLE\n";
+                        outputString += (*testIter)->get_test_identifier()
+                            + " RESULTS UNAVAILABLE\n";
                     }
                 }
             }
 
             if (outputJSON)
             {
-                std::cout << "  \n  ] \n }";
+                outputString += "  \n  ] \n }";
             }
         }
 
         if (outputJSON)
         {
-            std::cout << "\n ]\n}";
+            outputString += "\n ]\n}";
         }
 
         // Also execute all uncategorized tests
@@ -335,16 +339,26 @@ public:
             runSingleTest(*testIter, RUNS);
 
             if ((*testIter)->validTest == true) {
-                std::cout << (*testIter)->get_test_identifier()
-                    << " Elapsed: " << (unsigned long long) (*testIter)->stats.getAverage()
-                    << " (dev: " << (unsigned long long) (*testIter)->stats.getStdDev()
-                    << "), error: " << (*testIter)->error_norm_bignum.ToDouble() << ")\n";
+                outputString +=  (*testIter)->get_test_identifier()
+                    + " Elapsed: " + std::to_string((unsigned long long) (*testIter)->stats.getAverage())
+                    + " (dev: " + std::to_string((unsigned long long) (*testIter)->stats.getStdDev())
+                    + "), error: " + std::to_string((*testIter)->error_norm_bignum.ToDouble()) + ")\n";
             }
             else {
-                std::cout << (*testIter)->get_test_identifier()
-                    << " RESULTS UNAVAILABLE\n";
+                outputString += (*testIter)->get_test_identifier()
+                    + " RESULTS UNAVAILABLE\n";
             }
         }
+		
+		std::cout << outputString;
+		
+		if(outputToFile)
+		{
+			std::ofstream out(outputFile.c_str());
+			out << outputString;
+			out.close();
+		}
+		
     }
 
     void runTests(int RUNS) {

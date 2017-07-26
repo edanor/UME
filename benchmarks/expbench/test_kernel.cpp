@@ -9,15 +9,16 @@
 int main(int argc, char **argv)
 {
     int MIN_SIZE = 1;
-    int MAX_SIZE = 1024*1024;
+    int MAX_SIZE = 16*1024*1024;
     int PROGRESSION = 2;
-    int ITERATIONS = 5;
+    int ITERATIONS = 20;
 
     BenchmarkHarness harness(argc, argv);
 
     // Chained execution (single precision)
     for (int i = MIN_SIZE; i <= MAX_SIZE; i *= PROGRESSION) {
-        std::string categoryName = std::string("BLAS_GEMV_chained");
+		
+        std::string categoryName = "UME::VECTOR";
         TestCategory *newCategory = new TestCategory(categoryName);
         newCategory->registerParameter(new ValueParameter<int>(std::string("precision"), 32));
         newCategory->registerParameter(new ValueParameter<int>(std::string("problem_size"), i));

@@ -11,16 +11,8 @@
 #include "../utilities/TimingStatistics.h"
 
 #include "ProblemGenerator.h"
-
-class BenchmarkInfo {
-public:
-    std::string platformDescriptor;
-    std::string problemIdentifier;
-    int problemSize;
-    float averageTime, stdDevTime;
-    
-    BenchmarkInfo() : problemSize(0), averageTime(0.0f), stdDevTime(0.0f) {}
-};
+#include "JsonFormat.h"
+#include "DatabaseManager.h"
 
 class Benchmarker {	
 private:
@@ -142,44 +134,59 @@ private:
 
         return code;
     }
-
+	
+	std::string JSON_FILE_NAME = "benchmark_results.json";
+	
 public:
     Benchmarker() {}
     ~Benchmarker() {}
     		
-	void buildBenchmark(std::string const & exec_file_name)
+	int buildBenchmark(std::string const & exec_file_name)
     {
-        std::string command = "time g++ test_kernel.cpp -std=c++11 -O3 -DUSE_BLAS -mavx2 -lopenblas -o ";
+        std::string command = "time g++ test_kernel.cpp -std=c++11 -O3 -mavx2 -o ";
         command += exec_file_name;
-        command += ".out ";
      
         std::cout << "Execute: " << command << std::endl;
         int retval = system(command.c_str());
         std::cout << "Returned: " << retval << "\n";
+		
+		return retval;
     }    
 	
-    void executeBenchmark(std::string const & exec_file_name)
+    int executeBenchmark(std::string const & exec_file_name)
     {
         std::string command = "time taskset -c 3 ./";
         command += exec_file_name;
-        command += ".out";
+		command += " -o " + JSON_FILE_NAME + " -j ";
         std::cout << command << std::endl;
         int retval = system(command.c_str());
         std::cout << "Returned: " << retval << "\n";
+		
+		return retval;
     }
     
-    BenchmarkInfo readBenchmarkResults(std::string const & results_file_name) {
+    int parseBenchmarkResults(std::string const & results_file_name) {
         // TODO: benchmark results should've been written to the .json results file
+		JsonFormat inJson(results_file_name);
+		
+		DatabaseManager db("measurements.db");
+		
+		int retval = db.insert(inJson.testResults);
+		return retval;
     }
     
     void cleanBenchmark(std::string const & exec_file_name)
     {
-        std::string command = "rm " + exec_file_name + ".out";
+        std::string command = "rm " + exec_file_name;
         std::cout << "Execute: " << command << std::endl;
+		int retval = system(command.c_str());
+		
+		command = "rm benchmark_results.json";
+		std::cout << "Execute: " << command << std::endl;
+		retval = system(command.c_str());
     }
     
-    
-    void runBenchmark(ProblemTree * problem) {
+    int runBenchmark(ProblemTree * problem) {
         std::string kernelCode = generatePrototypeKernel(problem);
         std::ofstream kernelFile("PrototypeTest.h");
         kernelFile << kernelCode;
@@ -187,9 +194,27 @@ public:
         
         std::string benchmarkFileName = "benchmark.out";
         
-        buildBenchmark(benchmarkFileName);
-        executeBenchmark(benchmarkFileName);
+        int retval = buildBenchmark(benchmarkFileName);
+		if(retval != 0) {
+			std::cout << "Failed to build benchmark.\n";
+			goto exit;
+		}
+
+        retval = executeBenchmark(benchmarkFileName);
+		if(retval != 0) {
+			std::cout << "Failed to execute benchmark.\n";
+			goto exit;
+		}
+		
+		retval = parseBenchmarkResults("benchmark_results.json");
+		if(retval != 0) {
+			std::cout << "Failed to parse benchmark.\n";
+		}
+		
+	exit:
         cleanBenchmark(benchmarkFileName);
+		
+		return retval;
     }
 };
 
@@ -198,8 +223,9 @@ int main()
     //Benchmarker bench;
     
     ProblemGenerator gen;
+	int executions = 1000;
     
-    for(int i = 0; i < 1; i++) {
+    for(int i = 0; i < executions; i++) {
         ProblemTree * problem = gen.getRandomProblem();
         std::cout << problem->getDescriptor().c_str() << std::endl;
         problem->print();        
